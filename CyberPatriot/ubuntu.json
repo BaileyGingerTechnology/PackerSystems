@@ -45,7 +45,7 @@
 		"iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.3-server-amd64.iso",
 		"iso_checksum_url": "http://releases.ubuntu.com/16.04/SHA256SUMS",
 		"iso_checksum_type": "sha256",
-		"output_directory": "output-virtualbox",
+		"output_directory": "output-vmware",
 		"disk_size": 15000,
 		"headless": "false",
 		"http_directory": "http",
@@ -73,7 +73,11 @@
 		"ssh_timeout": "60m",
 		"ssh_username": "administrator",
 		"ssh_password": "UberPassword",
-		"shutdown_command": "sudo systemctl poweroff"
+		"shutdown_command": "sudo systemctl poweroff",
+		"vmx_data": {
+		  "memsize": "1024",
+		  "numvcpus": "2"
+		}
 	}],
 	"provisioners": [{
 		"type": "shell",
