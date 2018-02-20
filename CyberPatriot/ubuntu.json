@@ -1,9 +1,9 @@
 {
 	"builders": [{
 		"type": "qemu",
-        "vm_name": "UbuntuWeb",
-		"iso_url": "../ISO/ubuntu.iso",
-		"iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+        "vm_name": "{{user `vm_name`}}",
+		"iso_url": "{{user `iso_url`}}",
+		"iso_checksum": "{{user `iso_checksum`}}",
 		"iso_checksum_type": "sha256",
 		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
 		"disk_size": 15000,
@@ -31,22 +31,22 @@
 		  "<enter>"
 		],
 		"ssh_timeout": "60m",
-		"ssh_username": "administrator",
-		"ssh_password": "UberPassword",
-		"shutdown_command": "sudo systemctl poweroff",
+		"ssh_username": "{{user `username`}}",
+		"ssh_password": "{{user `password`}}",
+		"shutdown_command": "{{user `shutdown_command`}}",
 		"qemuargs": [
-		  ["-m", 1024],
-		  ["-smp", 2]
+		  ["-m", "{{user `memsize`}}"],
+		  ["-smp", "{{user `numcpus`}}"]
 		]
 	  },
 	  {
 		"type": "virtualbox-iso",
 		"guest_os_type": "Ubuntu_64",
-        "vm_name": "UbuntuWeb",
-		"iso_url": "../ISO/ubuntu.iso",
-		"iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+        "vm_name": "{{user `vm_name`}}",
+		"iso_url": "{{user `iso_url`}}",
+		"iso_checksum": "{{user `iso_checksum`}}",
 		"iso_checksum_type": "sha256",
-		"output_directory": "output-virtualbox",
+		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
 		"disk_size": 15000,
 		"headless": "false",
 		"http_directory": "http",
@@ -72,22 +72,22 @@
             "<enter>"
 		],
 		"ssh_timeout": "60m",
-		"ssh_username": "administrator",
-		"ssh_password": "UberPassword",
-		"shutdown_command": "sudo systemctl poweroff",
+		"ssh_username": "{{user `username`}}",
+		"ssh_password": "{{user `password`}}",
+		"shutdown_command": "{{user `shutdown_command`}}",
 		"vboxmanage": [
-			["modifyvm", "{{.Name}}", "--memory", 1024],
-			["modifyvm", "{{.Name}}", "--cpus", 2]
+			["modifyvm", "{{.Name}}", "--memory", "{{user `memsize`}}"],
+			["modifyvm", "{{.Name}}", "--cpus", "{{user `numcpus`}}"]
 		]
 	},
 	{
 		"type": "vmware-iso",
 		"guest_os_type": "Ubuntu-64",
-        "vm_name": "UbuntuWeb",
-		"iso_url": "../ISO/ubuntu.iso",
-		"iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+        "vm_name": "{{user `vn_name`}}",
+		"iso_url": "{{user `iso_url`}}",
+		"iso_checksum": "{{user `iso_checksum`}}",
 		"iso_checksum_type": "sha256",
-		"output_directory": "output-vmware",
+		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
 		"disk_size": 15000,
 		"headless": "false",
 		"http_directory": "http",
@@ -113,12 +113,12 @@
             "<enter>"
 		],
 		"ssh_timeout": "60m",
-		"ssh_username": "administrator",
-		"ssh_password": "UberPassword",
-		"shutdown_command": "sudo systemctl poweroff",
+		"ssh_username": "{{user `username`}}",
+		"ssh_password": "{{user `password`}}",
+		"shutdown_command": "{{user `shutdown_command`}}",
 		"vmx_data": {
-		  "memsize": "1024",
-		  "numvcpus": "2"
+		  "memsize": "{{user `memsize`}}",
+		  "numvcpus": "{{user `numcpus`}}"
 		}
 	}],
 	"provisioners": [
@@ -137,10 +137,26 @@
 			"destination": "/temp/wp/wordpress.sql"
 		},
 		{
+			"type": "file",
+			"source": "files/userlist.txt",
+			"destination": "/temp/userlist.txt"
+		},
+		{
 			"type": "shell",
 			"scripts": [
 				"scripts/ubuntu/ubuntu.sh"
 			]
 		}
-	]
+	],
+	"variables": {
+	  "vm_name": "UbuntuWeb",
+	  "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+	  "iso_url": "../ISO/ubuntu.iso",
+	  "shutdown_command": "sudo systemctl poweroff",
+	  "username": "administrator",
+	  "password": "UberPassword",
+	  "memsize": "2048",
+	  "numcpus": "2",
+	  "version": "0.1.0"
+	}
 }

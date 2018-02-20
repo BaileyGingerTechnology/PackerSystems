@@ -5,3 +5,6 @@ packer_cache/
 *.box
 
 *output*
+
+ISO/win10.iso
+ISO/Win2012r2.iso

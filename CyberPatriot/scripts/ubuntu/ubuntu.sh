@@ -15,11 +15,11 @@ echo "Installing MariaDB Client, Apache, and PHP 7"
 sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache2-mod-php7.0 php7.0-mcrypt
 echo "Making database"
 sudo mysql -u root -ppassword -e 'create database wordpress;'
-# Move into and taking ownership of temporary folder
+# Move into and take ownership of temporary folder
 sudo chown -R administrator /temp/wp
 cd /temp/wp
 # Import database
-sudo mysql -u root -ppassword -p wordpress < /temp/wp/wordpress.sql
+sudo mysql -u root -ppassword wordpress < /temp/wp/wordpress.sql
 
 # I made changes to the Wordpress site, so get it from the files folder rather than
 # downloading the latest version. This also helps keep it a little outdated. I want
@@ -56,6 +56,51 @@ sudo apt -y install kubuntu-desktop
 # Let's start intentioally making ourselves vulnerable, that's always fun
 
 # To start off, let's make ourselves vulnerable to Shellshock
-sudo bash -c 'echo "deb http://us.archive.ubuntu.com/ubuntu trusty main"'
+sudo bash -c 'echo "deb http://us.archive.ubuntu.com/ubuntu trusty main" >> /etc/apt/sources.list'
 sudo apt update
-sudo apt install bash=4.3-6ubuntu1
+sudo apt -y --allow-downgrades install bash=4.3-6ubuntu1
+
+# Now we need ourselves some vsftpd. Uber secure
+sudo apt -y install vsftpd
+sudo sed -i 's/NO/YES/g' /etc/vsftpd.conf
+sudo sed -i 's/ssl_enable=YES/ssl_enable=NO/g' /etc/vsftpd.conf
+sudo systemctl enable vsftpd
+
+# Let's get some VNC up in here
+sudo apt -y install tightvncserver
+
+# Gonna add a couple of users with weak passwords
+function make_users
+{
+    cd /temp
+	for i in `more userlist.txt `
+		do
+		echo $i
+		useradd -m $i
+        echo "good_password" | passwd –-stdin "$i"
+        echo; echo "User $username’s password changed!"
+        # You know what? Everyone should be an admin!
+        usermod -aG sudo $i
+	done
+}
+
+sudo make_users
+
+# Let's have some fun with SSH settings.
+sudo sed -i 's/Protocol\ 2/Protocol\ 1/g' /etc/ssh/sshd_config
+sudo sed -i 's/prohibit-password/yes/g' /etc/ssh/sshd_config
+sudo sed -i 's/PermitEmptyPasswords\ no/PermitEmptyPasswords\ yes/g' /etc/ssh/sshd_config
+
+# Back in my day, we had to work if we wanted Google!
+sudo bash -c 'echo "34.196.155.28 google.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 bing.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 yahoo.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 duckduckgo.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 startpage.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 aol.com" >> /etc/hosts'
+sudo bash -c 'echo "34.196.155.28 www.google.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 www.bing.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 www.yahoo.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 www.duckduckgo.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 www.startpage.com" >> /etc/hosts'
+sudo bash -c 'echo "0.0.0.0 www.aol.com" >> /etc/hosts'

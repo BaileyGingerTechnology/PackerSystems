@@ -6,14 +6,15 @@
       "disk_size": 61440,
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
-        "floppy/Win10/update-windows.ps1",
-        "floppy/Win10/configure-winrm.ps1"
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
       ],
       "guest_os_type": "windows8srv-64",
       "headless": false,
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "sha1",
-      "iso_checksum": "{{user `iso_checksum`}}",    
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "output-windows-10-amd64-{{build_type}}",
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
@@ -32,14 +33,15 @@
       "disk_size": 61440,
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
-        "floppy/Win10/update-windows.ps1",
-        "floppy/Win10/configure-winrm.ps1"
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
       ],
       "guest_os_type": "Windows10_64",
       "headless": false,
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "sha1",
       "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "output-windows-10-amd64-{{build_type}}",
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
@@ -76,13 +78,14 @@
       "disk_size": 61440,
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
-        "floppy/Win10/update-windows.ps1",
-        "floppy/Win10/configure-winrm.ps1"
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
       ],
       "headless": false,
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "sha1",
       "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "output-windows-10-amd64-{{build_type}}",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "communicator": "winrm",
       "winrm_username": "{{user `username`}}",

@@ -1,12 +1,13 @@
 {
     "builders": [
-  
       {
         "communicator": "winrm",
         "winrm_port": "5985",
         "disk_size": "{{user `disk_size`}}",
         "floppy_files": [
-          "floppy/Win2012/Autounattend.xml"
+          "floppy/Win2012/Autounattend.xml",
+          "floppy/update-windows.ps1",
+          "floppy/configure-winrm.ps1"
         ],
         "guest_additions_mode": "attach",
         "guest_os_type": "Windows2012_64",
@@ -15,10 +16,10 @@
         "iso_checksum": "{{ user `iso_checksum` }}",
         "iso_checksum_type": "sha1",
         "iso_url": "{{ user `iso_url` }}",
+        "output_directory": "output-windows-server-amd64-{{build_type}}",
         "shutdown_command": "{{ user `shutdown_command`}}",
         "post_shutdown_delay": "30s",
         "type": "virtualbox-iso",
-        "output_directory": "output-virtualbox",
         "vboxmanage": [
           [
             "modifyvm",
@@ -46,7 +47,7 @@
           ]
         ],
         "vm_name": "Win2012r2",
-        "winrm_password": "Administrator",
+        "winrm_password": "GingerTech",
         "winrm_timeout": "10000s",
         "winrm_username": "UberPassword"
       },
@@ -55,35 +56,25 @@
         "winrm_port": "5985",
         "disk_size": "{{user `disk_size`}}",
         "floppy_files": [
-          "floppy/Autounattend.xml"
+          "floppy/Win2012/Autounattend.xml",
+          "floppy/update-windows.ps1",
+          "floppy/configure-winrm.ps1"
         ],
-        "guest_additions_mode": "attach",
-        "guest_os_type": "Windows2012_64",
-        "hard_drive_interface": "sata",
+        "guest_os_type": "windows8srv-64",
         "headless": "{{ user `headless` }}",
         "iso_checksum": "{{ user `iso_checksum` }}",
         "iso_checksum_type": "sha1",
         "iso_url": "{{ user `iso_url` }}",
+        "output_directory": "output-windows-server-amd64-{{build_type}}",
         "shutdown_command": "{{ user `shutdown_command`}}",
-        "post_shutdown_delay": "30s",
         "type": "vmware-iso",
-        "output_directory": "output-vmware",
-        "vboxmanage": [
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--memory",
-            "2048"
-          ],
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--cpus",
-            "2"
-          ]
-        ],
+        "vmx_data": {
+          "memsize": "2048",
+          "numvcpus": "2",
+          "scsi0.virtualDev": "lsisas1068"
+        },
         "vm_name": "Win2012r2",
-        "winrm_password": "Administrator",
+        "winrm_password": "GingerTech",
         "winrm_timeout": "10000s",
         "winrm_username": "UberPassword"
       }
@@ -97,17 +88,6 @@
       }
     ],
     "provisioners": [
-      {
-        "environment_vars": [
-          "CM={{user `cm`}}",
-          "CM_VERSION={{user `cm_version`}}",
-          "UPDATE={{user `update`}}"
-        ],
-        "scripts": [
-          "scripts/winserver/AdPrereqs.ps1"
-        ],
-        "type": "powershell"
-      }
     ],
     "variables": {
       "cm": "chef",
@@ -115,7 +95,7 @@
       "disk_size": "40960",
       "headless": "false",
       "iso_checksum": "b6f063436056510357cb19cb77db781ed9c11df3",
-      "iso_url": "../ISO/Win2012R2.iso",
+      "iso_url": "../ISO/Win2012r2.iso",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "update": "true",
       "version": "0.1.0"
