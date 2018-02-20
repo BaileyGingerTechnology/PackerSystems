@@ -1,0 +1,146 @@
+{
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "communicator": "winrm",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/Win10/update-windows.ps1",
+        "floppy/Win10/configure-winrm.ps1"
+      ],
+      "guest_os_type": "windows8srv-64",
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "{{user `iso_checksum`}}",    
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "tools_upload_flavor": "windows",
+      "vm_name": "{{user `vm_name`}}",
+      "vmx_data": {
+        "memsize": "2048",
+        "numvcpus": "2",
+        "scsi0.virtualDev": "lsisas1068"
+      }
+    },
+    {
+      "type": "virtualbox-iso",
+      "communicator": "winrm",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/Win10/update-windows.ps1",
+        "floppy/Win10/configure-winrm.ps1"
+      ],
+      "guest_os_type": "Windows10_64",
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "post_shutdown_delay": "30s",
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "guest_additions_mode": "upload",
+      "guest_additions_path": "c:/Windows/Temp/windows.iso",
+      "vm_name": "{{user `vm_name`}}",
+      "vboxmanage": [
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--memory",
+            "2048"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--cpus",
+            "2"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--vram", 
+            "32"
+          ]	
+        ]
+    },
+    {
+      "type": "qemu",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/Win10/update-windows.ps1",
+        "floppy/Win10/configure-winrm.ps1"
+      ],
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "communicator": "winrm",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "boot_wait":"2s",
+      "vm_name": "{{user `vm_name`}}"
+    }
+
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "inline": ["powershell -NoLogo -ExecutionPolicy RemoteSigned iex (new-object net.webclient).downloadstring('https://get.scoop.sh')"]
+    },
+    {
+      "type": "powershell",
+      "inline": ["Write-Host 'Installing Git'",
+        "scoop install git",
+        "cd C:\\Users\\GingerTech\\Desktop\\",
+        "git clone https://github.com/W4RH4WK/Debloat-Windows-10.git"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "powershell",
+      "inline": ["cd C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10\\scripts",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\block-telemetry.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\disable-services.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\disable-windows-defender.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\fix-privacy-settings.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\optimize-user-interface.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\optimize-windows-update.ps1",
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\remove-default-apps.ps1",
+        "cd ..\\..\\",
+        "del Debloat-Windows-10"
+      ]
+    }
+  ],
+  "variables": {
+    "vm_name": "Windows 10",
+    "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
+    "iso_url": "../ISO/win10.iso",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "username": "GingerTech",
+    "password": "UberPassword",
+    "update": "true",
+    "version": "0.1.0"
+  }
+}
