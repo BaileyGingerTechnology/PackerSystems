@@ -1,0 +1,4 @@
+Firstname:Lastname:SAM:OU:Maildomain:Password:Description
+Naruto:Uzumaki:Naruto:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Uzumaki Naruto
+John:Steele:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Steele John
+Andrea:Cooper:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Cooper Andrea

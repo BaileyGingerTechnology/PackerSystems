@@ -124,7 +124,10 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"inline": "sudo mkdir -p /temp/wp ; sudo chown -R administrator /temp/wp"
+			"inline": [
+				"sudo mkdir -p /temp/wp ; sudo chown -R administrator /temp/wp",
+				"sudo mkdir -p /temp/other ; sudo chown -R administrator /temp/other"
+			]
 		},
 		{
 			"type": "file",
@@ -138,8 +141,8 @@
 		},
 		{
 			"type": "file",
-			"source": "files/userlist.txt",
-			"destination": "/temp/userlist.txt"
+			"source": "files/userlist-nix.csv",
+			"destination": "/temp/other/userlist.csv"
 		},
 		{
 			"type": "shell",

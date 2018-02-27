@@ -173,7 +173,7 @@
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>powershell -NoLogo -ExecutionPolicy RemoteSigned -File a:\update-windows.ps1</CommandLine>
+                    <CommandLine>powershell -NoLogo -ExecutionPolicy RemoteSigned -File a:\configure-winrm.ps1</CommandLine>
                     <Description>Update Windows, and when finished, run configure-winrm.ps1 to turn WinRM on so this party can get started</Description>
                     <Order>13</Order>
                 </SynchronousCommand>

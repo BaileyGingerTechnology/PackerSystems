@@ -105,13 +105,36 @@
   ],
   "provisioners": [
     {
+			"type": "file",
+			"source": "files/eicar.com",
+			"destination": "C:\\eicar.com"
+    },
+    {
       "type": "windows-shell",
-      "inline": ["powershell -NoLogo -ExecutionPolicy RemoteSigned iex (new-object net.webclient).downloadstring('https://get.scoop.sh')"]
+      "inline": "runas /user:Administrator \"MOVE /Y C:\\eicar.com C:\\Windows\\SysWOW64\\eicar.com\""
+    }
+    {
+			"type": "file",
+			"source": "scripts/winshared/InstallScoop.ps1",
+			"destination": "C:\\InstallScoop.ps1"
+    },
+		{
+			"type": "file",
+			"source": "files/userlist-win.csv",
+			"destination": "C:\\userlist.csv"
+		},
+    {
+      "type": "powershell",
+      "inline": [
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
+      ]
     },
     {
       "type": "powershell",
-      "inline": ["Write-Host 'Installing Git'",
+      "inline": [
+        "Write-Host 'Installing Git'",
         "scoop install git",
+        "scoop update scoop",
         "cd C:\\Users\\GingerTech\\Desktop\\",
         "git clone https://github.com/W4RH4WK/Debloat-Windows-10.git"
       ]
@@ -124,15 +147,20 @@
     {
       "type": "powershell",
       "inline": ["cd C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10\\scripts",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\block-telemetry.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\disable-services.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\disable-windows-defender.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\fix-privacy-settings.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\optimize-user-interface.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\optimize-windows-update.ps1",
-        "powershell -NoLogo -ExecutionPolicy RemoteSigned .\\remove-default-apps.ps1",
-        "cd ..\\..\\",
-        "del Debloat-Windows-10"
+        "Get-Content .\\block-telemetry.ps1 | Invoke-Expression",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-services.ps1",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-windows-defender.ps1",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\fix-privacy-settings.ps1",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\optimize-user-interface.ps1",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\optimize-windows-update.ps1",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\remove-default-apps.ps1",
+        "del C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10"
+      ]
+    },
+    {
+      "type": "powershell",
+      "scripts": [
+        "scripts/win10/Setup.ps1"
       ]
     }
   ],

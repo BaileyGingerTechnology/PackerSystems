@@ -3,7 +3,7 @@
 # Updating to most recent packages. Will probably have at least one thing out of date by the time it's used
 echo "Updating"
 sudo apt update
-sudo apt -y upgrade
+#sudo apt -y upgrade
 
 # Setting up LAMP stack
 echo "Installing MariaDB Server"
@@ -70,21 +70,8 @@ sudo systemctl enable vsftpd
 sudo apt -y install tightvncserver
 
 # Gonna add a couple of users with weak passwords
-function make_users
-{
-    cd /temp
-	for i in `more userlist.txt `
-		do
-		echo $i
-		useradd -m $i
-        echo "good_password" | passwd –-stdin "$i"
-        echo; echo "User $username’s password changed!"
-        # You know what? Everyone should be an admin!
-        usermod -aG sudo $i
-	done
-}
-
-sudo make_users
+cd /temp/other/
+sudo newusers < userlist.csv
 
 # Let's have some fun with SSH settings.
 sudo sed -i 's/Protocol\ 2/Protocol\ 1/g' /etc/ssh/sshd_config
@@ -92,15 +79,15 @@ sudo sed -i 's/prohibit-password/yes/g' /etc/ssh/sshd_config
 sudo sed -i 's/PermitEmptyPasswords\ no/PermitEmptyPasswords\ yes/g' /etc/ssh/sshd_config
 
 # Back in my day, we had to work if we wanted Google!
-sudo bash -c 'echo "34.196.155.28 google.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 bing.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 yahoo.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 duckduckgo.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 startpage.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 aol.com" >> /etc/hosts'
-sudo bash -c 'echo "34.196.155.28 www.google.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 www.bing.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 www.yahoo.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 www.duckduckgo.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 www.startpage.com" >> /etc/hosts'
-sudo bash -c 'echo "0.0.0.0 www.aol.com" >> /etc/hosts'
+sudo bash -c 'echo "34.196.155.28 google.com
+0.0.0.0 bing.com
+0.0.0.0 yahoo.com
+0.0.0.0 duckduckgo.com
+0.0.0.0 startpage.com
+0.0.0.0 aol.com
+34.196.155.28 www.google.com
+0.0.0.0 www.bing.com
+0.0.0.0 www.yahoo.com
+0.0.0.0 www.duckduckgo.com
+0.0.0.0 www.startpage.com
+0.0.0.0 www.aol.com" >> /etc/hosts'
