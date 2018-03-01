@@ -1,5 +1,5 @@
 # Author: Bailey Kasin
-# This script setups/messes up the Windows 10 image
+# This script setups/messes up the Windows Server image
 
 # Share the C:\ drive, because duh, that's a great idea
 net share FullDrive=C:\ /grant:Everyone,Full
@@ -54,6 +54,7 @@ Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
 # User creation
+'''
 $Users = Import-Csv -Delimiter : -Path "C:\userlist.csv"
 foreach ($User in $Users)
 {
@@ -68,3 +69,4 @@ foreach ($User in $Users)
     New-LocalUser $UserFirstname -NoPassword -FullName $Displayname -Description $Description
     Write-Host "User " + $UserFirstname + " has been made."
 }
+'''

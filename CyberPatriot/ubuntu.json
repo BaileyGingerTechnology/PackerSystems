@@ -40,6 +40,7 @@
 		]
 	  },
 	  {
+		"name": "virtualbox",
 		"type": "virtualbox-iso",
 		"guest_os_type": "Ubuntu_64",
         "vm_name": "{{user `vm_name`}}",
@@ -81,6 +82,7 @@
 		]
 	},
 	{
+		"name": "vmware",
 		"type": "vmware-iso",
 		"guest_os_type": "Ubuntu-64",
         "vm_name": "{{user `vn_name`}}",
@@ -112,6 +114,7 @@
             "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
             "<enter>"
 		],
+		"tools_upload_flavor": "linux",
 		"ssh_timeout": "60m",
 		"ssh_username": "{{user `username`}}",
 		"ssh_password": "{{user `password`}}",
@@ -122,6 +125,16 @@
 		}
 	}],
 	"provisioners": [
+		{
+			"type": "shell",
+			"scripts": "scripts/vbox-tools.sh",
+			"only": ["virtualbox"]
+		},
+		{
+			"type": "shell",
+			"scripts": "scripts/vmware-tools.sh",
+			"only": ["vmware"]
+		},
 		{
 			"type": "shell",
 			"inline": [

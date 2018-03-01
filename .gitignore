@@ -7,4 +7,6 @@ packer_cache/
 *output*
 
 ISO/win10.iso
-ISO/Win2012r2.iso
+ISO/Win2012R2.iso
+
+CyberPatriot/manifest.json

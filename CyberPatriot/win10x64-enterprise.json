@@ -105,14 +105,18 @@
   ],
   "provisioners": [
     {
+      "type": "powershell",
+      "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+    },
+    {
 			"type": "file",
 			"source": "files/eicar.com",
 			"destination": "C:\\eicar.com"
     },
     {
       "type": "windows-shell",
-      "inline": "runas /user:Administrator \"MOVE /Y C:\\eicar.com C:\\Windows\\SysWOW64\\eicar.com\""
-    }
+      "inline": "MOVE /Y C:\\eicar.com C:\\Windows\\SysWOW64\\eicar.com"
+    },
     {
 			"type": "file",
 			"source": "scripts/winshared/InstallScoop.ps1",
@@ -147,7 +151,7 @@
     {
       "type": "powershell",
       "inline": ["cd C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10\\scripts",
-        "Get-Content .\\block-telemetry.ps1 | Invoke-Expression",
+        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\block-telemetry.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-services.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-windows-defender.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\fix-privacy-settings.ps1",
