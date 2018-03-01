@@ -16,18 +16,70 @@ and I hope to be able to keep the example of a real environment up to date.
 Ubuntu and Windows 10 are both functional and build the base of what I want. But only in Virtualbox for Windows 10, so now my goal is to get it working in VMware and KVM.
 
 For Ubuntu:
+
+    - Installs VMware/Vbox tools
+
     - Has KDE for the desktop, since I'm nice. That can be changed in the ubuntu.sh script
+
     - It sets up a LAMP stack
+
     - Puts Wordpress on that stack
+
     - Installs a version of bash vulnerable to Shellshock
 
+    - Installs tigervnc
+
+    - Installs and makes vsftpd not very secure
+
+    - Makes SSH super insecure
+
+    - Makes some users with weak passwords and adds them to sudo
+
+    - Uses the hosts file to route search engines to localhost, except for Google which goes to ask.com's IP
+
 For Windows 10:
+
     - Installs updates that are the latest at the time of building
+
     - Runs most of the scripts from https://github.com/W4RH4WK/Debloat-Windows-10
+
+        - This causes Windows Update to break and uber disables Windows Defender
+
     - Shares the whole C:\ drive to all the people
 
+    - Puts the eicar test file (file that gets flagged as malware but actually does nothing) in SysWOW64
+
+    - Makes a few fake users
+
+    - Disables password policy
+
+    - Sets proxy.google.com to be a web proxy
+
+    - Routes search engines to localhost in the hosts file (except Google, which goes to ask.com's IP)
+
+    - Disables Windows firewall
+
+    - Installs scoop package manager for future use
+
 For Windows Server 2012r2:
-    - Ehhh... It might build sometimes
+
+    - Does not install updates
+
+    - Shares the whole C:\ drive to all the people
+
+    - Puts the eicar test file (file that gets flagged as malware but actually does nothing) in SysWOW64
+
+    - Disables password policy
+
+    - Sets proxy.google.com to be a web proxy
+
+    - Routes search engines to localhost in the hosts file (except Google, which goes to ask.com' IP)
+
+    - Disables Windows firewall
+
+    - Installs scoop package manager for future use
+
+    - I need to research some AD PowerShell tricks to better mess up this box
 
 ## Build instructions:
 
