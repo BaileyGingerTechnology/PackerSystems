@@ -83,7 +83,7 @@ For Windows Server 2012r2:
 
     - Shares the whole C:\ drive to all the people
 
-    - Puts the eicar test file (file that gets flagged as malware but actually does nothing) in SysWOW64
+    - Puts the eicar test file (file that gets flagged as malware but actually does nothing) in system32
 
     - Disables password policy
 
