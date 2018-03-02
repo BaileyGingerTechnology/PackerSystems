@@ -99,7 +99,7 @@ For Windows Server 2012r2:
 
 ### CCDC:
 
-So I already know that getting a faithful CCDC to be built through an automated process is going to be extremely difficult. The things they do to those boxes make grown men cry (literally). But I shall do the best I can.
+So I already know that getting a faithful CCDC environemnt to be built through an automated process is going to be extremely difficult. The things they do to those boxes make grown men cry (literally). But I shall do the best I can.
 
 My current plans are something along the lines of:
 
@@ -111,13 +111,15 @@ An Arch Database:
 
 A Windows workstation:
 
-    - I'm thinking either XP or Windows 7
+    - I'm thinking either XP or Windows 7. I want to do Vista to be mean, but honestly it's too unrealistic and uses too much of the host's resources to actually function.
 
     - Both can be considered old at this point and have their share of vulnerablities that an automated pen testing system could make use of. It mainly depends on how difficult it is to Packer a Windows XP build.
 
 A Linux workstation:
 
-    - Fedora is a the easy choice for this. Popular, but not as popular as Ubuntu.
+    - Fedora is the easy choice for this. Popular, but not as popular as Ubuntu.
+
+    - I've been informed that ESXi and Fedora are not friends with each other. So maybe a different workstation. One of a more GENTlemanly flavor.
 
 FreeBSD BAMP server:
 

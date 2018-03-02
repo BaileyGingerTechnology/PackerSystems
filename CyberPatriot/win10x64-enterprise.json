@@ -166,6 +166,11 @@
       "scripts": [
         "scripts/win10/Setup.ps1"
       ]
+    },
+    { 
+      "type": "windows-shell",
+      "inline": ["cd C:\\Windows\\system32\\",
+        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\" /sc Hourly /ru \"GingerTech\" /rp \"UberPassword\""]
     }
   ],
   "variables": {

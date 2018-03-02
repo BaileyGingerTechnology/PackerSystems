@@ -99,6 +99,12 @@
         "scoop install git",
         "scoop update scoop"
       ]
+    },
+    {
+      "type": "powershell",
+      "scripts": [
+        "scripts/winserver/Setup.ps1"
+      ]
     }
   ],
   "post-processors": [

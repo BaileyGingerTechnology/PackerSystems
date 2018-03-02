@@ -9,4 +9,4 @@ echo -e 'vboxguest\nvboxsf\nvboxvideo' > /etc/modules-load.d/virtualbox.conf
 /usr/bin/systemctl enable rpcbind.service
 
 # Add groups for VirtualBox folder sharing
-/usr/bin/usermod --append --groups administrator,vboxsf GinerTech
+/usr/bin/usermod --append --groups administrator,vboxsf administrator
