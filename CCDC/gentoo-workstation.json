@@ -7,7 +7,11 @@
       "country": "USA",
       "arch_country": "US",
       "headless": "false",
-      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20180227T214504Z/stage3-amd64-20180227T214504Z.tar.xz"
+      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20180227T214504Z/stage3-amd64-20180227T214504Z.tar.xz",
+      "cpus": "2",
+      "cpus_after": "2",
+      "memory": "2048",
+      "disk_size": "20480"
   },
   "builders": [
       {
@@ -27,13 +31,17 @@
             "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/GentooInstall.tar.gz<enter><wait10>",
             "tar xvf GentooInstall.tar.gz && rm -f GentooInstall.tar.gz<enter><wait10>"
           ],
-          "disk_size": 20480,
+          "disk_size": "{{user `disk_size`}}",
           "hard_drive_interface": "sata",
           "ssh_username": "administrator",
           "ssh_password": "password",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
           "shutdown_command": "poweroff",
-          "headless" : "{{ user `headless`}}"
+          "headless" : "{{ user `headless`}}",
+          "vboxmanage": [
+              ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+              ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+          ]
       },
       {
           "type": "vmware-iso",
@@ -50,12 +58,19 @@
             "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/GentooInstall.tar.gz<enter><wait10>",
             "tar xvf GentooInstall.tar.gz && rm -f GentooInstall.tar.gz<enter><wait10>"
           ],
-          "disk_size": 20480,
+          "disk_size": "{{user `disk_size`}}",
           "ssh_username": "administrator",
           "ssh_password": "password",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
           "shutdown_command": "poweroff",
-          "headless" : "{{ user `headless`}}"
+          "headless" : "{{ user `headless`}}",
+          "vmx_data": {
+              "memsize": "{{user `memory`}}",
+              "numvcpus": "{{user `cpus`}}"
+          },
+          "vmx_data_post": {
+              "numvcpus": "{{user `cpus_after`}}"
+          }
       },
       {
           "type": "qemu",
@@ -72,12 +87,16 @@
               "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/GentooInstall.tar.gz<enter><wait10>",
               "tar xvf GentooInstall.tar.gz && rm -f GentooInstall.tar.gz<enter><wait10>"
           ],
-          "disk_size": 20480,
+          "disk_size": "{{user `disk_size`}}",
           "ssh_username": "administrator",
           "ssh_password": "password",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
           "shutdown_command": "poweroff",
-          "headless" : "{{ user `headless`}}"
+          "headless" : "{{ user `headless`}}",
+          "qemuargs": [
+            ["-m", "{{user `memory`}}"],
+            ["-smp", "{{user `cpus`}}"]
+          ]
       }
   ],
   "provisioners": [
@@ -94,6 +113,17 @@
         ],
         "type": "shell",
         "expect_disconnect": "true"
+      },
+      {
+        "pause_before": "20s",
+        "environment_vars": [
+            "COUNTRY={{ user `country` }}"
+        ],
+        "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "scripts": [
+          "scripts/gentoo/gentoo-workstation.sh"
+        ],
+        "type": "shell"
       }
   ]
 }

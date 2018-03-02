@@ -7,7 +7,6 @@ cd /GentooInstall/
 
 source ./include/src/preflight.sh
 source ./include/src/disk_functions.sh
-source ./include/src/menu.sh
 source ./include/src/tarball_functions.sh
 source ./include/src/useful_functions.sh
 source ./include/src/profile_functions.sh
@@ -66,10 +65,31 @@ download_install_kernel
 # Go into system_var_functions and configure stuff there
 set_hostname
 # Configure network interface
+function configure_network
+{
+    # Install netifrc
+    emerge --noreplace net-misc/netifrc
+
+    # Make array of network interfaces
+    interfaces=( $(ls /sys/class/net |grep -v lo |sort -u -) ) 
+
+    # Send the selected one to a file
+    echo 'config_${interfaces[$choice-1]}="dhcp"'
+
+    # Set that interface to start at boot
+    cd /etc/init.d
+    ln -s net.lo net.${interfaces[0]}
+    rc-update add net.${interfaces[0]} default
+}
+
 configure_network
 
+emerge sys-apps/shadow
 echo "Now setting password for root user!"
-passwd
+chpasswd <<EOL
+root:password
+EOL
+passwd -e root
 
 # Installing system tools
 # Logger
@@ -95,9 +115,13 @@ greenEcho "Installing grub"
 # Install GRUB on that disk
 install_grub /dev/sda
 
+emerge app-admin/sudo
+/usr/bin/useradd --password password --comment 'administrator User' --create-home --user-group administrator
+echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
+echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
+/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator
+
 greenEcho "We should be done."
 
 greenEcho "Going to reboot now. Good luck, soldier."
 greenEcho "I suggest making a new user after the reboot. Refer to the Finalizing page of the Gentoo handbook for details on that."
-
-reboot

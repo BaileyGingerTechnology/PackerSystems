@@ -10,7 +10,7 @@ function set_locales
     greenEcho "You can use ctrl+w to search the file for the ones you want."
 
     # Open locales folder and good luck
-    sed -i 's/#en_US/en_us/g' /etc/locale.gen
+    sed -i 's/[#]//g' /etc/locale.gen
     locale-gen
 
     greenEcho "Here is the list of the ones you picked. Which one should be the default? (Enter it's number)"
