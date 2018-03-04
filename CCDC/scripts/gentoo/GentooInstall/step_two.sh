@@ -62,6 +62,7 @@ emerge_update
 pick_profile
 # Install mirrorselect
 emerge mirrorselect
+mirrorselect -s4 -b10 -o -c ${COUNTRY:-USA} -D >> /etc/portage/make.conf
 # Download the kernel sources
 download_install_kernel
 # Go into system_var_functions and configure stuff there
@@ -90,7 +91,7 @@ configure_network
 emerge sys-apps/shadow
 echo "Now setting password for root user!"
 chpasswd <<EOL
-root:password
+root:3dG5^hwo
 EOL
 passwd -e root
 
@@ -119,7 +120,7 @@ greenEcho "Installing grub"
 install_grub /dev/sda
 
 emerge app-admin/sudo
-/usr/bin/useradd --password password --comment 'administrator User' --create-home --user-group administrator
+/usr/bin/useradd --password 3dG5^hwo --comment 'administrator User' --create-home --user-group administrator
 echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
 /usr/bin/chmod 0440 /etc/sudoers.d/10_administrator

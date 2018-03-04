@@ -1,59 +1,59 @@
 {
-	"builders": [{
-		"type": "qemu",
+  "builders": [{
+    "type": "qemu",
         "vm_name": "{{user `vm_name`}}",
-		"iso_url": "{{user `iso_url`}}",
-		"iso_checksum": "{{user `iso_checksum`}}",
-		"iso_checksum_type": "sha256",
-		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
-		"disk_size": 15000,
-		"headless": "false",
-		"http_directory": "http",
-		"boot_wait": "5s",
-		"boot_command": [
-		  "<enter><wait>",
-		  "<f6><esc>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-		  "<bs><bs><bs>",
-		  "/install/vmlinuz ",
-		  "initrd=/install/initrd.gz ",
-		  "net.ifnames=0 ",
-		  "auto-install/enable=true ",
-		  "debconf/priority=critical ",
-		  "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
-		  "<enter>"
-		],
-		"ssh_timeout": "60m",
-		"ssh_username": "{{user `username`}}",
-		"ssh_password": "{{user `password`}}",
-		"shutdown_command": "{{user `shutdown_command`}}",
-		"qemuargs": [
-		  ["-m", "{{user `memsize`}}"],
-		  ["-smp", "{{user `numcpus`}}"]
-		]
-	  },
-	  {
-		"name": "virtualbox",
-		"type": "virtualbox-iso",
-		"guest_os_type": "Ubuntu_64",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "sha256",
+    "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+    "disk_size": 15000,
+    "headless": "false",
+    "http_directory": "http",
+    "boot_wait": "5s",
+    "boot_command": [
+      "<enter><wait>",
+      "<f6><esc>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+      "<bs><bs><bs>",
+      "/install/vmlinuz ",
+      "initrd=/install/initrd.gz ",
+      "net.ifnames=0 ",
+      "auto-install/enable=true ",
+      "debconf/priority=critical ",
+      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+      "<enter>"
+    ],
+    "ssh_timeout": "60m",
+    "ssh_username": "{{user `username`}}",
+    "ssh_password": "{{user `password`}}",
+    "shutdown_command": "{{user `shutdown_command`}}",
+    "qemuargs": [
+      ["-m", "{{user `memsize`}}"],
+      ["-smp", "{{user `numcpus`}}"]
+    ]
+    },
+    {
+    "name": "virtualbox",
+    "type": "virtualbox-iso",
+    "guest_os_type": "Ubuntu_64",
         "vm_name": "{{user `vm_name`}}",
-		"iso_url": "{{user `iso_url`}}",
-		"iso_checksum": "{{user `iso_checksum`}}",
-		"iso_checksum_type": "sha256",
-		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
-		"disk_size": 15000,
-		"headless": "false",
-		"http_directory": "http",
-		"boot_wait": "5s",
-		"boot_command": [
-			"<enter><wait>",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "sha256",
+    "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+    "disk_size": 15000,
+    "headless": "false",
+    "http_directory": "http",
+    "boot_wait": "5s",
+    "boot_command": [
+      "<enter><wait>",
             "<f6><esc>",
             "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
             "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
@@ -71,31 +71,31 @@
             "debconf/priority=critical ",
             "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
             "<enter>"
-		],
-		"ssh_timeout": "60m",
-		"ssh_username": "{{user `username`}}",
-		"ssh_password": "{{user `password`}}",
-		"shutdown_command": "{{user `shutdown_command`}}",
-		"vboxmanage": [
-			["modifyvm", "{{.Name}}", "--memory", "{{user `memsize`}}"],
-			["modifyvm", "{{.Name}}", "--cpus", "{{user `numcpus`}}"]
-		]
-	},
-	{
-		"name": "vmware",
-		"type": "vmware-iso",
-		"guest_os_type": "Ubuntu-64",
+    ],
+    "ssh_timeout": "60m",
+    "ssh_username": "{{user `username`}}",
+    "ssh_password": "{{user `password`}}",
+    "shutdown_command": "{{user `shutdown_command`}}",
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "{{user `memsize`}}"],
+      ["modifyvm", "{{.Name}}", "--cpus", "{{user `numcpus`}}"]
+    ]
+  },
+  {
+    "name": "vmware",
+    "type": "vmware-iso",
+    "guest_os_type": "Ubuntu-64",
         "vm_name": "{{user `vn_name`}}",
-		"iso_url": "{{user `iso_url`}}",
-		"iso_checksum": "{{user `iso_checksum`}}",
-		"iso_checksum_type": "sha256",
-		"output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
-		"disk_size": 15000,
-		"headless": "false",
-		"http_directory": "http",
-		"boot_wait": "5s",
-		"boot_command": [
-			"<enter><wait>",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "sha256",
+    "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+    "disk_size": 15000,
+    "headless": "false",
+    "http_directory": "http",
+    "boot_wait": "5s",
+    "boot_command": [
+      "<enter><wait>",
             "<f6><esc>",
             "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
             "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
@@ -113,66 +113,66 @@
             "debconf/priority=critical ",
             "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
             "<enter>"
-		],
-		"tools_upload_flavor": "linux",
-		"ssh_timeout": "60m",
-		"ssh_username": "{{user `username`}}",
-		"ssh_password": "{{user `password`}}",
-		"shutdown_command": "{{user `shutdown_command`}}",
-		"vmx_data": {
-		  "memsize": "{{user `memsize`}}",
-		  "numvcpus": "{{user `numcpus`}}"
-		}
-	}],
-	"provisioners": [
-		{
-			"type": "shell",
-			"scripts": "scripts/vbox-tools.sh",
-			"only": ["virtualbox"]
-		},
-		{
-			"type": "shell",
-			"scripts": "scripts/vmware-tools.sh",
-			"only": ["vmware"]
-		},
-		{
-			"type": "shell",
-			"inline": [
-				"sudo mkdir -p /temp/wp ; sudo chown -R administrator /temp/wp",
-				"sudo mkdir -p /temp/other ; sudo chown -R administrator /temp/other"
-			]
-		},
-		{
-			"type": "file",
-			"source": "files/wordpress.tar",
-			"destination": "/temp/wp/wordpress.tar"
-		},
-		{
-			"type": "file",
-			"source": "files/wordpress.sql",
-			"destination": "/temp/wp/wordpress.sql"
-		},
-		{
-			"type": "file",
-			"source": "files/userlist-nix.csv",
-			"destination": "/temp/other/userlist.csv"
-		},
-		{
-			"type": "shell",
-			"scripts": [
-				"scripts/ubuntu/ubuntu.sh"
-			]
-		}
-	],
-	"variables": {
-	  "vm_name": "UbuntuWeb",
-	  "iso_checksum": "http://releases.ubuntu.com/16.04/SHA256SUMS",
-	  "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso",
-	  "shutdown_command": "sudo systemctl poweroff",
-	  "username": "administrator",
-	  "password": "UberPassword",
-	  "memsize": "2048",
-	  "numcpus": "2",
-	  "version": "0.1.0"
-	}
+    ],
+    "tools_upload_flavor": "linux",
+    "ssh_timeout": "60m",
+    "ssh_username": "{{user `username`}}",
+    "ssh_password": "{{user `password`}}",
+    "shutdown_command": "{{user `shutdown_command`}}",
+    "vmx_data": {
+      "memsize": "{{user `memsize`}}",
+      "numvcpus": "{{user `numcpus`}}"
+    }
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": "scripts/vbox-tools.sh",
+      "only": ["virtualbox"]
+    },
+    {
+      "type": "shell",
+      "scripts": "scripts/vmware-tools.sh",
+      "only": ["vmware"]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p /temp/wp ; sudo chown -R administrator /temp/wp",
+        "sudo mkdir -p /temp/other ; sudo chown -R administrator /temp/other"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/wordpress.tar",
+      "destination": "/temp/wp/wordpress.tar"
+    },
+    {
+      "type": "file",
+      "source": "files/wordpress.sql",
+      "destination": "/temp/wp/wordpress.sql"
+    },
+    {
+      "type": "file",
+      "source": "files/userlist-nix.csv",
+      "destination": "/temp/other/userlist.csv"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/ubuntu/ubuntu.sh"
+      ]
+    }
+  ],
+  "variables": {
+    "vm_name": "UbuntuWeb",
+    "iso_checksum": "http://releases.ubuntu.com/16.04/SHA256SUMS",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso",
+    "shutdown_command": "sudo systemctl poweroff",
+    "username": "administrator",
+    "password": "UberPassword",
+    "memsize": "2048",
+    "numcpus": "2",
+    "version": "0.1.0"
+  }
 }

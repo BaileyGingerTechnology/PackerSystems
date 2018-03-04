@@ -72,9 +72,9 @@
   ],
   "provisioners": [
     {
-			"type": "file",
-			"source": "scripts/winshared/InstallScoop.ps1",
-			"destination": "C:\\InstallScoop.ps1"
+      "type": "file",
+      "source": "scripts/winshared/InstallScoop.ps1",
+      "destination": "C:\\InstallScoop.ps1"
     },
     {
       "type": "powershell",
@@ -84,9 +84,9 @@
       ]
     },
     {
-			"type": "file",
-			"source": "files/eicar.com",
-			"destination": "C:\\eicar.com"
+      "type": "file",
+      "source": "files/eicar.com",
+      "destination": "C:\\eicar.com"
     },
     {
       "type": "windows-shell",

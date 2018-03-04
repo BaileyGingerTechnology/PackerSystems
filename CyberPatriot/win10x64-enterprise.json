@@ -109,24 +109,24 @@
       "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
     },
     {
-			"type": "file",
-			"source": "files/eicar.com",
-			"destination": "C:\\eicar.com"
+      "type": "file",
+      "source": "files/eicar.com",
+      "destination": "C:\\eicar.com"
     },
     {
       "type": "windows-shell",
       "inline": "MOVE /Y C:\\eicar.com C:\\Windows\\SysWOW64\\eicar.com"
     },
     {
-			"type": "file",
-			"source": "scripts/winshared/InstallScoop.ps1",
-			"destination": "C:\\InstallScoop.ps1"
+      "type": "file",
+      "source": "scripts/winshared/InstallScoop.ps1",
+      "destination": "C:\\InstallScoop.ps1"
     },
-		{
-			"type": "file",
-			"source": "files/userlist-win.csv",
-			"destination": "C:\\userlist.csv"
-		},
+    {
+      "type": "file",
+      "source": "files/userlist-win.csv",
+      "destination": "C:\\userlist.csv"
+    },
     {
       "type": "powershell",
       "inline": [
