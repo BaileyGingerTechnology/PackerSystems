@@ -60,10 +60,13 @@ echo "Preflight done, should be good to go!"
 emerge_update
 # Select the profile
 pick_profile
+# Install mirrorselect
+emerge mirrorselect
 # Download the kernel sources
 download_install_kernel
 # Go into system_var_functions and configure stuff there
 set_hostname
+
 # Configure network interface
 function configure_network
 {

@@ -55,7 +55,6 @@ echo "$(tput setaf 3)
 
 $(tput sgr0)";
 
-rsync -ah --progress include/src/install_mirrorselect.sh /tmp/install_mirrorselect.sh
 source ./include/src/preflight.sh
 
 # Check for root privileges
@@ -72,8 +71,6 @@ echo "Using disk /dev/sda. This next step will wipe that disk, is that okay?"
 
 partition_disk /dev/sda
 
-# Get the disk to mount from the file it was saved in and then append 4 to it
-
 # Mount that disk to be used as the actual install location
 mkdir /mnt/gentoo
 mount /dev/sda4 /mnt/gentoo
@@ -82,7 +79,6 @@ toolLocation=$( find / |grep GentooInstall |head -n1 )
 cd $toolLocation && cd ../
 rsync -ah --progress GentooInstall /mnt/gentoo/
 
-# Move the diskUsed file over
 mkdir /mnt/gentoo/tmp
 rsync -ah --progress /tmp/diskUsed.txt /mnt/gentoo/tmp
 

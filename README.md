@@ -9,6 +9,8 @@ The goal of this project is to eventually provide practice environments for thin
 Long term goals for the first two are to have a basic scoring engine that will give points as the player fixes bad practices and implements good ones
 and I hope to be able to keep the example of a real environment up to date.
 
+3/3/2018: I am making a file server to host the Windows ISO's on, and am moving the ISO's that I was keeping in the git repo to being downloads again because git lfs is painful.
+
 ## Build instructions:
 
 Install packer (packer-io on Arch Linux) and a hypervisor (Virtualbox, KVM, or VMware. I might support Parallels and Hyper-V in the future, but not yet).

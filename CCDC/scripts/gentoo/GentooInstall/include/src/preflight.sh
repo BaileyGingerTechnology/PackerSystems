@@ -43,6 +43,5 @@ function check_distro
       _BANNER=""
       pacman -Sy
       pacman -S --noconfirm rsync git wget links ntp dialog
-      not_gentoo
     fi
 }

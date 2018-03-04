@@ -57,7 +57,7 @@ function resolv_mount
 
 	greenEcho "About to chroot. This will begin step two, which will cause a second run of the preflight steps, and then everything will pick up where it left off. Press enter to continue."
 	read enter
-	chroot /mnt/gentoo /bin/bash GentooInstall/step_two.sh
+	chroot /mnt/gentoo /bin/bash COUNTRY=${COUNTRY} GentooInstall/step_two.sh
 }
 
 function make_make
@@ -65,12 +65,6 @@ function make_make
 	# Get how many cores/threads the CPU has, and then add 1
 	core_count=$(lscpu |grep CPU |(sed -n 2p) |awk '{print $2}')
 	let core_count+=1
-
-	# Use the mirrorselect script to autoselect the best mirror to sync from
-	greenEcho "Now autopicking the closest mirror to you by downloading 100kb from each option and going with the fastest one."
-	greenEcho "To limit how long this will take..."
-
-    mirrorselect -s4 -b10 -o -c ${COUNTRY:-USA} -D >> /mnt/gentoo/etc/portage/make.conf
 
 	# If setting the core count kept the plus, set it to 2 instead
 	# Otherwise, echo the core count into make.conf

@@ -115,7 +115,7 @@
         "expect_disconnect": "true"
       },
       {
-        "pause_before": "20s",
+        "pause_before": "1m",
         "environment_vars": [
             "COUNTRY={{ user `country` }}"
         ],
