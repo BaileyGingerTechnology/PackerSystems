@@ -115,7 +115,7 @@
     }
   ],
   "variables": {
-    "iso_url": "../ISO/Win2012R2.iso",
+    "iso_url": "https://files.gingertechnology.net/packersystems/winserver.iso",
     "iso_checksum_type": "md5",
     "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
     "autounattend": "floppy/Win2012/Autounattend.xml",
