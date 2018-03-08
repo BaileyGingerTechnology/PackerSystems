@@ -106,7 +106,7 @@ hostCheck='34.196.155.28 google.com
 0.0.0.0 www.startpage.com
 0.0.0.0 www.aol.com >> /etc/hosts'
 
-if [[ $(cat /etc/ssh/sshd_config) == *"$hostCheck"* ]]; then
+if [[ $(cat /etc/ssh/sshd_config) == *"${hostCheck}"* ]]; then
   HOSTS='false'
 else
   HOSTS='true'
