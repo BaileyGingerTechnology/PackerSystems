@@ -1,0 +1,135 @@
+#!/bin/bash
+# Author: Bailey Kasin
+
+# This is not the best way, or maybe even a good way, to make a scoring engine. It is completely in user space, and is not in any way encrypted or hidden.
+# But this is because I am leaving it up to the user to not mess with it, since this is for learning. In the future I might, but will probably not, come
+# back and rebuild this in such a way that this is no longer the case. But for now, meh.
+
+# Set all possible bad things to bad (false means that it is currently an issue)
+FTPanon='false'
+FTPlog='false'
+FTPanonup='false'
+FTPssl='false'
+VNC='false'
+USERSpriv='false'
+USERSpass='false'
+SSHproto='false'
+SSHroot='false'
+SSHpass='false'
+HOSTS='false'
+CRON='false'
+SHELLSHOCK='false'
+
+rm /etc/gingertechengine/post
+touch /etc/gingertechengine/post
+
+# Start checks
+# None of these are really the best way to check, as they can be easily cheated.
+# Will come back to this and make them better
+if [[ $(cat /etc/vsftpd.conf) == *"anonymous_enable=NO"* ]]; then
+  FTPanon='true'
+  echo 'Anonymous FTP login disabled' > /etc/gingertechengine/post
+else
+  FTPanon='false'
+fi
+
+if [[ $(cat /etc/vsftpd.conf) == *"xferlog_enable=YES"* ]]; then
+  FTPlog='true'
+  echo 'FTP logging enabled' >> /etc/gingertechengine/post
+else
+  FTPlog='false'
+fi
+
+if [[ $(cat /etc/vsftpd.conf) == *"anon_upload_enable=NO"* ]]; then
+  FTPanonup='true'
+  echo 'Anonymous FTP upload disabled' >> /etc/gingertechengine/post
+else
+  FTPanonup='false'
+fi
+
+if [[ $(cat /etc/vsftpd.conf) == *"ssl_enable=YES"* ]]; then
+  FTPssl='true'
+  echo 'FTP SSL enabled' >> /etc/gingertechengine/post
+else
+  FTPssl='false'
+fi
+
+if [[ $(apt list --installed) == *"tightvncserver"* ]]; then
+  VNC='false'
+else
+  VNC='true'
+  echo 'Unauthorized VNC server removed' >> /etc/gingertechengine/post
+fi
+
+# Get a bit fancier for the privilege check
+sudoList=$(cat /etc/group |grep sudo)
+IFS=':' read -r -a sudoUsers <<< "$sudoList"
+
+if [[ ${sudoUsers[*]} != *"nuzumaki"* ]] || [[ ${sudoUsers[*]} != *"jprice"* ]] || [[ ${sudoUsers[*]} != *"lpena"* ]] || [[ ${sudoUsers[*]} != *"rparker"* ]]; then
+  if [[ ${sudoUsers[*]} == *"administrator"* ]] && [[ ${sudoUsers[*]} == *"acooper"* ]] && [[ ${sudoUsers[*]} == *"bkasin"* ]]; then
+    USERSpriv='true'
+    echo 'User privileges fixed' >> /etc/gingertechengine/post
+  fi
+  USERSpriv='false'
+else
+  USERSpriv='false'
+fi
+
+if [[ $(cat /etc/ssh/sshd_config) == *"Protocol 2"* ]]; then
+  SSHproto='true'
+  echo 'SSH set to protocol 2' >> /etc/gingertechengine/post
+else
+  SSHproto='false'
+fi
+
+if [[ $(cat /etc/ssh/sshd_config) == *"PermitRootLogin no"* ]]; then
+  SSHroot='true'
+  echo 'SSH root login disabled' >> /etc/gingertechengine/post
+else
+  SSHroot='false'
+fi
+
+if [[ $(cat /etc/ssh/sshd_config) == *"PermitEmptyPasswords no"* ]]; then
+  SSHpass='true'
+  echo 'SSH login with empty passwords disabled' >> /etc/gingertechengine/post
+else
+  SSHpass='false'
+fi
+
+hostCheck='34.196.155.28 google.com
+0.0.0.0 bing.com
+0.0.0.0 yahoo.com
+0.0.0.0 duckduckgo.com
+0.0.0.0 startpage.com
+0.0.0.0 aol.com
+34.196.155.28 www.google.com
+0.0.0.0 www.bing.com
+0.0.0.0 www.yahoo.com
+0.0.0.0 www.duckduckgo.com
+0.0.0.0 www.startpage.com
+0.0.0.0 www.aol.com'
+
+if [[ $(cat /etc/hosts) == *"${hostCheck}"* ]]; then
+  HOSTS='false'
+else
+  HOSTS='true'
+  echo 'hosts file fixed' >> /etc/gingertechengine/post
+fi
+
+cd /etc/gingertechengine
+
+bash -c "x='() { :;}; echo VULN' bash -c :" > /etc/gingertechengine/ss
+if [[ $(cat /etc/gingertechengine/ss) == *"VULN"* ]]; then
+  SHELLSHOCK='false'
+else
+  SHELLSHOCK='true'
+  echo 'Shellshock patched' >> /etc/gingertechengine/post
+fi
+
+# Put results into file and then post
+TITLE=`date '+%Y-%m-%d %H:%M:%S'`
+
+# Template command for inserting a post with current status
+# Will make post body the current score, and the title a time code
+cd /var/www/html
+wp post create /etc/gingertechengine/post --post_title='${TITLE} Checks' --post_type=post --post_status=publish --post_author=2

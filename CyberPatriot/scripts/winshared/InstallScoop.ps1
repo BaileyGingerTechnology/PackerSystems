@@ -57,4 +57,6 @@ ensure_scoop_in_path
 success 'Scoop was installed successfully!'
 Write-Output "Type 'scoop help' for instructions."
 
+scoop install git
+
 del C:\InstallScoop.ps1
