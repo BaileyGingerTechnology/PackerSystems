@@ -136,8 +136,6 @@
     {
       "type": "powershell",
       "inline": [
-        "Write-Host 'Installing Git'",
-        "scoop install git",
         "scoop update scoop",
         "cd C:\\Users\\GingerTech\\Desktop\\",
         "git clone https://github.com/W4RH4WK/Debloat-Windows-10.git"
@@ -170,13 +168,13 @@
     { 
       "type": "windows-shell",
       "inline": ["cd C:\\Windows\\system32\\",
-        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\" /sc Hourly /ru \"GingerTech\" /rp \"UberPassword\""]
+        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"UberPassword\""]
     }
   ],
   "variables": {
     "vm_name": "Windows 10",
     "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
-    "iso_url": "../ISO/win10.iso",
+    "iso_url": "https://files.gingertechnology.net/packersystems/win10.iso",
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
     "username": "GingerTech",
     "password": "UberPassword",

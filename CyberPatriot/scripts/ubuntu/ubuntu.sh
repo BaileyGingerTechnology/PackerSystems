@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: Bailey Kasin
 
 # Updating to most recent packages. Will probably have at least one thing out of date by the time it's used
 echo "Updating"
@@ -64,6 +65,8 @@ sudo apt -y --allow-downgrades install bash=4.3-6ubuntu1
 sudo apt -y install vsftpd
 sudo sed -i 's/NO/YES/g' /etc/vsftpd.conf
 sudo sed -i 's/ssl_enable=YES/ssl_enable=NO/g' /etc/vsftpd.conf
+sudo sed -i 's/xferlog_enable=YES/xferlog_enable=NO/g' /etc/vsftpd.conf
+sudo sed -i 's/#anon_upload_enable=YES/anon_upload_enable=YES/g' /etc/vsftpd.conf
 sudo systemctl enable vsftpd
 
 # Let's get some VNC up in here
@@ -72,6 +75,8 @@ sudo apt -y install tightvncserver
 # Gonna add a couple of users with weak passwords
 cd /temp/other/
 sudo newusers < userlist.csv
+sudo usermod -aG sudo bkasin
+sudo usermod -aG sudo rparker
 
 # Let's have some fun with SSH settings.
 sudo sed -i 's/Protocol\ 2/Protocol\ 1/g' /etc/ssh/sshd_config
@@ -91,3 +96,33 @@ sudo bash -c 'echo "34.196.155.28 google.com
 0.0.0.0 www.duckduckgo.com
 0.0.0.0 www.startpage.com
 0.0.0.0 www.aol.com" >> /etc/hosts'
+
+# Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
+sudo mkdir /etc/gingertechengine/
+sudo mv /temp/other/notify.sh /etc/gingertechengine/
+sudo mv /temp/other/post_score /etc/gingertechengine/
+sudo chmod +x /etc/gingertechengine/*
+
+(crontab -l 2>/dev/null; echo "* */1 * * * /etc/gingertechengine/notify.sh") | crontab -
+
+# Set Apache2 and MySQL to start at boot
+echo "sudo /etc/init.d/apache2 start" >> /home/administrator/.bash_profile
+echo "sudo /etc/init.d/mysql start" >> /home/administrator/.bash_profile
+
+# Setup the database for ScoringEngine
+mysql -u root -ppassword -e "grant all privileges on wordpress.* to 'ScoringEngine'@'localhost' identified by 'password123';"
+mysql -u root -ppassword -e "use wordpress; insert into wp_users(ID,user_login,user_pass,user_nicename,user_email,user_url,user_registered,user_status,display_name) values (2,'ScoringEngine','\$1\$tcm9IzQV\$GjrEqkpJ9.cPsScdYvD991','ScoringEngine','bailey@gingertechnology.net','https://blog.gingertechnology.net',NOW(),0,'ScoringEngine');"
+cd /temp/other
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
+
+# Make scoring engine user
+sudo useradd -M  -s /bin/bash ScoringEngine
+sudo usermod -aG sudo ScoringEngine
+sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/post_score" >> /etc/crontab'
+sudo chown -R ScoringEngine /etc/gingertechengine
+sudo chmod +x /etc/gingertechengine/post_score
+
+# Kill temp dir
+sudo rm -rf /temp/*
