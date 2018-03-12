@@ -1,0 +1,12 @@
+{
+  "Machine": "WinServer",
+  "Version": "0.1.0",
+
+  "Checks": [
+    {
+      "type": "powershell",
+      "inline": "Write-Host 'Wow'",
+      "info": "This actually works"
+    }
+  ]
+}
