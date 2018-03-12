@@ -128,6 +128,11 @@
       "destination": "C:\\userlist.csv"
     },
     {
+      "type": "file",
+      "source": "files/payload.exe",
+      "destination": "C:\\payload.exe"
+    },
+    {
       "type": "powershell",
       "inline": [
         "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
@@ -136,7 +141,6 @@
     {
       "type": "powershell",
       "inline": [
-        "scoop update scoop",
         "cd C:\\Users\\GingerTech\\Desktop\\",
         "git clone https://github.com/W4RH4WK/Debloat-Windows-10.git"
       ]
@@ -148,7 +152,8 @@
     },
     {
       "type": "powershell",
-      "inline": ["cd C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10\\scripts",
+      "inline": [
+        "cd C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10\\scripts",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\block-telemetry.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-services.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-windows-defender.ps1",
@@ -167,7 +172,8 @@
     },
     { 
       "type": "windows-shell",
-      "inline": ["cd C:\\Windows\\system32\\",
+      "inline": [
+        "cd C:\\Windows\\system32\\",
         ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"UberPassword\""]
     }
   ],

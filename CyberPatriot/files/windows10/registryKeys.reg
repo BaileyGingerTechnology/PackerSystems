@@ -1,0 +1,8 @@
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe]
+"Debugger"="Hotkey Disabled"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID]
+"FlipFlopWheel"="1"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon]
+"DisableCAD"="1"

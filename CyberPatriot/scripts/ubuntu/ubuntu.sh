@@ -118,7 +118,7 @@ chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
 # Make scoring engine user
-sudo useradd -M  -s /bin/bash ScoringEngine
+sudo useradd -M -s /bin/bash ScoringEngine
 sudo usermod -aG sudo ScoringEngine
 sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/post_score" >> /etc/crontab'
 sudo chown -R ScoringEngine /etc/gingertechengine
