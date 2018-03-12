@@ -53,20 +53,47 @@ Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
-# User creation
-'''
-$Users = Import-Csv -Delimiter : -Path "C:\userlist.csv"
-foreach ($User in $Users)
-{
-    $Displayname = $User.'Firstname' + " " + $User.'Lastname'
-    $UserFirstname = $User.'Firstname'
-    $UserLastname = $User.'Lastname'
-    $OU = $User.'OU'
-    $SAM = $User.'SAM'
-    $UPN = $User.'Firstname' + "." + $User.'Lastname' + "@" + $User.'Maildomain'
-    $Description = $User.'Description'
-    $Password = $User.'Password'
-    New-LocalUser $UserFirstname -NoPassword -FullName $Displayname -Description $Description
-    Write-Host "User " + $UserFirstname + " has been made."
+Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
+
+Import-Module ADDSDeployment
+Install-ADDSForest `
+-CreateDnsDelegation:$false `
+-DatabasePath "C:\Windows\NTDS" `
+-DomainMode "Win2012R2" `
+-DomainName "gingertech.com" `
+-SafeModeAdministratorPassword:(ConvertTo-SecureString -String UberPassword -AsPlainText -Force) `
+-DomainNetbiosName "GINGERTECH" `
+-ForestMode "Win2012R2" `
+-InstallDns:$true `
+-LogPath "C:\Windows\NTDS" `
+-NoRebootOnCompletion:$true `
+-SysvolPath "C:\Windows\SYSVOL" `
+-Force:$true
+
+# Mwuahahaha suffer with Exhange
+Install-WindowsFeature RSAT-ADDS
+Install-WindowsFeature AS-HTTP-Activation, Desktop-Experience, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS
+
+$file = "C:\Ucma.exe"
+if (Get-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\UCMA4" -ErrorAction SilentlyContinue) {
+    Write-Host "Unified Communications Managed API 4.0 Runtime is already installed." -ForegroundColor Cyan
 }
-'''
+else {
+    if (Test-Path $file) {
+        Write-Host "The installer file exists: $file" -ForegroundColor Green
+        Write-Host "Installing Microsoft UM API" -ForegroundColor Yellow
+        $arg = "/quiet /norestart"
+        $status = (Start-Process $file -ArgumentList $arg -Wait -PassThru).ExitCode
+        if ($status -eq 0) {
+            Write-Host "Successful install" - -ForegroundColor Green
+        }
+        if ($status -ne 0) {
+            Write-Host "Failed install" -ForegroundColor Red
+        }
+    }
+    else {
+        Write-Host "$file does not exist" -ForegroundColor Red
+    }
+}
+
+Install-WindowsFeature ADLDS

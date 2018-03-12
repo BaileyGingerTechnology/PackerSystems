@@ -1,5 +1,5 @@
 # Author: Bailey Kasin
-# This script setups/messes up the Windows 10 image
+# This script sets/messes up the Windows 10 image
 
 # Share the C:\ drive, because duh, that's a great idea
 net share FullDrive=C:\ /grant:Everyone,Full
@@ -68,3 +68,67 @@ foreach ($User in $Users)
     New-LocalUser $UserFirstname -NoPassword -FullName $Displayname -Description $Description
     Write-Host "User " + $UserFirstname + " has been made."
 }
+
+# Disable autologon
+$Regkey= "HKLM:\Software\Microsoft\Windows NT\Currentversion\WinLogon"
+$DefaultUserName = ''
+$DefaultPassword = ''
+
+# This function just gets $true or $false
+function Test-RegistryValue($path, $name)
+{
+    $key = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+    $key -and $null -ne $key.GetValue($name, $null)
+}
+
+# Gets the specified registry value or $null if it is missing
+function Get-RegistryValue($path, $name)
+{
+    $key = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+    if ($key) {$key.GetValue($name, $null)}
+}
+
+#AutoAdminLogon Value
+$AALRegValExist = Test-RegistryValue $Regkey AutoAdminLogon
+$AALRegVal = Get-RegistryValue $RegKey AutoAdminLogon
+
+if ($AALRegValExist -eq $null)
+{
+    New-ItemProperty -Path $Regkey -Name AutoAdminLogon -Value 0
+}
+
+elseif ($AALRegVal -ne 0)
+{
+    Set-ItemProperty -Path $Regkey -Name AutoAdminLogon -Value 0
+}
+
+#DefaultUserName Value
+$DUNRegValExist = Test-RegistryValue $Regkey DefaultUserName
+$DUNRegVal = Get-RegistryValue $RegKey DefaultUserName
+
+if ($DUNRegValExist -eq $null)
+{
+    New-ItemProperty -Path $Regkey -Name DefaultUserName -Value $DefaultUserName
+}
+
+elseif ($DUNRegVal -ne $DefaultUserName)
+{
+    Set-ItemProperty -Path $Regkey -Name DefaultUserName -Value $DefaultUserName
+}
+
+#DefaultPassword Value
+$DPRegValExist = Test-RegistryValue $Regkey DefaultPassword
+$DPRegVal = Get-RegistryValue $RegKey DefaultPassword
+
+if ($DPRegValExist -eq $null)
+{
+    New-ItemProperty -Path $Regkey -Name DefaultPassword -Value $DefaultPassword
+}
+
+elseif ($DPRegVal -ne $DefaultPassword)
+{
+    Set-ItemProperty -Path $Regkey -Name DefaultPassword -Value $DefaultPassword
+}
+
+# Import reg file for all other keys
+regedit /s c:\registryKeys.reg

@@ -29,6 +29,7 @@ touch /etc/gingertechengine/post
 if [[ $(cat /etc/vsftpd.conf) == *"anonymous_enable=NO"* ]]; then
   FTPanon='true'
   echo 'Anonymous FTP login disabled' > /etc/gingertechengine/post
+  echo '  - Anonymous FTP is generally used for Linux update mirrors as an alternative to HTTP(S). So while it does have use cases, it is generally not something that you want in a web server that only a few people should have access to.' >> /etc/gingertechengine/post
 else
   FTPanon='false'
 fi
@@ -36,6 +37,7 @@ fi
 if [[ $(cat /etc/vsftpd.conf) == *"xferlog_enable=YES"* ]]; then
   FTPlog='true'
   echo 'FTP logging enabled' >> /etc/gingertechengine/post
+  echo '  - Logging for all vital systems is always a good idea.' >> /etc/gingertechengine/post
 else
   FTPlog='false'
 fi
@@ -43,6 +45,7 @@ fi
 if [[ $(cat /etc/vsftpd.conf) == *"anon_upload_enable=NO"* ]]; then
   FTPanonup='true'
   echo 'Anonymous FTP upload disabled' >> /etc/gingertechengine/post
+  echo '  - Honestly, I have no idea if there is ever a situation in which one should this enabled.' >> /etc/gingertechengine/post
 else
   FTPanonup='false'
 fi
@@ -50,6 +53,7 @@ fi
 if [[ $(cat /etc/vsftpd.conf) == *"ssl_enable=YES"* ]]; then
   FTPssl='true'
   echo 'FTP SSL enabled' >> /etc/gingertechengine/post
+  echo '  - Essentially allows for HTTPS but FTP.' >> /etc/gingertechengine/post
 else
   FTPssl='false'
 fi
@@ -59,6 +63,7 @@ if [[ $(apt list --installed) == *"tightvncserver"* ]]; then
 else
   VNC='true'
   echo 'Unauthorized VNC server removed' >> /etc/gingertechengine/post
+  echo '  - VNC is not bad when it is there by choice and is secured, but in this system, it is not there by choice and is not needed. So it would be better to get rid of it, since it just adds an extra attack vector.' >> /etc/gingertechengine/post
 fi
 
 # Get a bit fancier for the privilege check
@@ -69,6 +74,7 @@ if [[ ${sudoUsers[*]} != *"nuzumaki"* ]] || [[ ${sudoUsers[*]} != *"jprice"* ]] 
   if [[ ${sudoUsers[*]} == *"administrator"* ]] && [[ ${sudoUsers[*]} == *"acooper"* ]] && [[ ${sudoUsers[*]} == *"bkasin"* ]]; then
     USERSpriv='true'
     echo 'User privileges fixed' >> /etc/gingertechengine/post
+    echo '  - Pretty self explanatory. Only trained and authorized users should have admin privileges, and minimize the amount of users with admin powers.' >> /etc/gingertechengine/post
   fi
   USERSpriv='false'
 else
@@ -78,6 +84,7 @@ fi
 if [[ $(cat /etc/ssh/sshd_config) == *"Protocol 2"* ]]; then
   SSHproto='true'
   echo 'SSH set to protocol 2' >> /etc/gingertechengine/post
+  echo '  - SSH protocol 2 is more secure than protocol 1. Not certain why, but theres no overhead to my knowledge, so it is best to use it.' >> /etc/gingertechengine/post
 else
   SSHproto='false'
 fi
@@ -85,6 +92,7 @@ fi
 if [[ $(cat /etc/ssh/sshd_config) == *"PermitRootLogin no"* ]]; then
   SSHroot='true'
   echo 'SSH root login disabled' >> /etc/gingertechengine/post
+  echo '  - There are specific cases in which it is okay to have this, and ways that it can be secured. But it is also fine to not have it and use a sudo account instead.' >> /etc/gingertechengine/post
 else
   SSHroot='false'
 fi
@@ -92,6 +100,7 @@ fi
 if [[ $(cat /etc/ssh/sshd_config) == *"PermitEmptyPasswords no"* ]]; then
   SSHpass='true'
   echo 'SSH login with empty passwords disabled' >> /etc/gingertechengine/post
+  echo '  - Stops logins to accounts with no passwords. Also relates to SSH keys, which are out of scope for this image.' >> /etc/gingertechengine/post
 else
   SSHpass='false'
 fi
@@ -114,6 +123,7 @@ if [[ $(cat /etc/hosts) == *"${hostCheck}"* ]]; then
 else
   HOSTS='true'
   echo 'hosts file fixed' >> /etc/gingertechengine/post
+  echo '  - The hosts file is used to route domains to IP addresses. This can be used to block websites (I use it as a way to block ads, for examples) or to setup domains in an internal network. There are better ways to do these things, but the hosts file is an option.' >> /etc/gingertechengine/post
 fi
 
 cd /etc/gingertechengine
@@ -124,6 +134,7 @@ if [[ $(cat /etc/gingertechengine/ss) == *"VULN"* ]]; then
 else
   SHELLSHOCK='true'
   echo 'Shellshock patched' >> /etc/gingertechengine/post
+  echo '  - Shellshock is a vulnerability in older versions of the Bash shell. Simple to exploit but also now simple to patch.' >> /etc/gingertechengine/post
 fi
 
 # Put results into file and then post

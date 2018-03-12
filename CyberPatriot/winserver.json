@@ -52,7 +52,9 @@
         "floppy/Win2012/00-run-all-scripts.cmd",
         "floppy/Win2012/fixnetwork.ps1",
         "floppy/Win2012/install-winrm.cmd",
-        "floppy/Win2012/zz-start-transports.cmd"
+        "floppy/Win2012/zz-start-transports.cmd",
+        "floppy/Win2012/Update-Needed.ps1",
+        "floppy/Win2012/RunPwSh.bat"
       ],
       "vboxmanage": [
         [
@@ -72,14 +74,28 @@
   ],
   "provisioners": [
     {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -force"
+    },
+    {
       "type": "file",
       "source": "scripts/winshared/InstallScoop.ps1",
       "destination": "C:\\InstallScoop.ps1"
     },
     {
+      "type": "file",
+      "source": "files/Ucma.exe",
+      "destination": "C:\\Ucma.exe"
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe Set-MpPreference -DisableRealtimeMonitoring $true"
+      ]
+    },
+    {
       "type": "powershell",
       "inline": [
-        "Set-MpPreference -DisableRealtimeMonitoring $true",
         "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
       ]
     },
@@ -94,17 +110,15 @@
     },
     {
       "type": "powershell",
-      "inline": [
-        "Write-Host 'Installing Git'",
-        "scoop install git",
-        "scoop update scoop"
-      ]
-    },
-    {
-      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "UberPassword",
       "scripts": [
         "scripts/winserver/Setup.ps1"
       ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer"
     }
   ],
   "post-processors": [
@@ -115,7 +129,7 @@
     }
   ],
   "variables": {
-    "iso_url": "https://files.gingertechnology.net/packersystems/winserver.iso",
+    "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
     "iso_checksum_type": "md5",
     "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
     "autounattend": "floppy/Win2012/Autounattend.xml",
