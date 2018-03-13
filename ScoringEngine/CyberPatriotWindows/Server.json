@@ -4,9 +4,14 @@
 
   "Checks": [
     {
-      "type": "powershell",
+      "type": "powershell-inline",
       "inline": "Write-Host 'Wow'",
       "info": "This actually works"
+    },
+    {
+      "type": "powershell",
+      "script": "winserver/test.ps1",
+      "info": "This is a script"
     }
   ]
 }
