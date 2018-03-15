@@ -1,8 +1,8 @@
 {
   "builders": [{
     "type": "qemu",
-    "iso_url": "{{user `mirror`}}/8.9.0/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_url": "{{user `mirror`}}",
+    "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "output_directory": "output-debian-8.9-amd64-{{build_type}}",
     "vm_name": "packer-debian-8.9-amd64",
@@ -17,8 +17,8 @@
       "<enter>"
     ],
     "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
+    "ssh_username": "administrator",
+    "ssh_password": "UberPassword",
     "shutdown_command": "sudo systemctl poweroff",
     "qemuargs": [
       ["-m", "{{user `memory`}}"],
@@ -27,8 +27,8 @@
   }, {
     "type": "virtualbox-iso",
     "guest_os_type": "Debian_64",
-    "iso_url": "{{user `mirror`}}/8.9.0/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_url": "{{user `mirror`}}",
+    "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "output_directory": "output-debian-8.9-amd64-{{build_type}}",
     "vm_name": "packer-debian-8.9-amd64",
@@ -43,8 +43,8 @@
       "<enter>"
     ],
     "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
+    "ssh_username": "administrator",
+    "ssh_password": "UberPassword",
     "shutdown_command": "sudo systemctl poweroff",
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
@@ -53,8 +53,8 @@
   }, {
     "type": "vmware-iso",
     "guest_os_type": "debian8-64",
-    "iso_url": "{{user `mirror`}}/8.9.0/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_url": "{{user `mirror`}}",
+    "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "output_directory": "output-debian-8.9-amd64-{{build_type}}",
     "vm_name": "packer-debian-8.9-amd64",
@@ -69,8 +69,8 @@
       "<enter>"
     ],
     "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
+    "ssh_username": "administrator",
+    "ssh_password": "UberPassword",
     "tools_upload_flavor": "linux",
     "shutdown_command": "sudo systemctl poweroff",
     "vmx_data": {
@@ -78,23 +78,30 @@
       "numvcpus": "{{user `cpus`}}"
     }
   }],
-  "provisioners": [{
-    "type": "shell",
-    "scripts": [
-      "scripts/debian/virtualbox.sh",
-      "scripts/debian/vmware.sh",
-      "scripts/debian/debian-workstation.sh",
-      "scripts/debian/cleanup.sh"
-    ]
-  }],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/pacman.conf",
+      "destination": "/home/administrator"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/debian/virtualbox.sh",
+        "scripts/debian/vmware.sh",
+        "scripts/debian/debian-workstation.sh",
+        "scripts/debian/cleanup.sh"
+      ]
+    }
+  ],
   "variables": {
     "cpus": "1",
     "disk_size": "40000",
     "headless": "false",
-    "iso_checksum": "fd11d34f8abf1663a33cc10a9ed998160866ef94072d442159bcfa1438be70d4",
+    "iso_checksum": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/SHA256SUMS",
     "iso_checksum_type": "sha256",
     "memory": "512",
-    "mirror": "http://cdimage.debian.org/cdimage/archive",
+    "mirror": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
     "ssh_timeout": "60m"
   }
 }

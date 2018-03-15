@@ -88,14 +88,9 @@
       "destination": "C:\\Ucma.exe"
     },
     {
-      "type": "windows-shell",
-      "inline": [
-        "C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe Set-MpPreference -DisableRealtimeMonitoring $true"
-      ]
-    },
-    {
       "type": "powershell",
       "inline": [
+        "powershell Set-MpPreference -DisableRealtimeMonitoring $true",
         "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
       ]
     },

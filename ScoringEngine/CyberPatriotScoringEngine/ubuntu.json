@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "type": "inline-shell",
+    "command": "$(cat /etc/vsftpd.conf) == *\"anonymous_enable=NO\"*"
+  },
+  {
+    "id": 2,
+    "type": "inline-shell",
+    "command": "$(cat /etc/vsftpd.conf) == *\"anonymous_enable=NO\"*"
+  },
+  {
+    "id": 3,
+    "type": "inline-shell",
+    "command": "$(cat /etc/vsftpd.conf) == *\"anonymous_enable=NO\"*"
+  }
+]
