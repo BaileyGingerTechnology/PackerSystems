@@ -168,8 +168,8 @@
     },
     {
       "type": "file",
-      "source": "scripts/ScoringEngine/ubuntu/post_score",
-      "destination": "/temp/other/post_score"
+      "source": "files/LinuxScoringEngine",
+      "destination": "/temp/other/LinuxScoringEngine"
     },
     {
       "type": "shell",
