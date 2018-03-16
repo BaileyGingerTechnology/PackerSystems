@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
 )
 
 func AppendStringToFile(path, text string) error {
@@ -45,10 +47,29 @@ func createFile(path string) {
 	fmt.Println("==> done creating file", path)
 }
 
+func getCommandOutput(command string, args []string) (output string) {
+	var (
+		cmdOut []byte
+		err    error
+	)
+	if cmdOut, err = exec.Command(command, args...).Output(); err != nil {
+		fmt.Fprintln(os.Stderr, "There was an error running check command: ", err)
+		os.Exit(1)
+	}
+	sha := string(cmdOut)
+
+	return sha
+}
+
 func main() {
-	// +build linux
-	os.Setenv("PATH", "/bin:/usr/bin:/sbin")
-	deleteFile("/etc/gingertechengine/post")
-	createFile("/etc/gingertechengine/post")
-	LinuxChecks()
+	if runtime.GOOS == "linux" {
+		os.Setenv("PATH", "/bin:/usr/bin:/sbin")
+		deleteFile("/etc/gingertechengine/post")
+		createFile("/etc/gingertechengine/post")
+		LinuxChecks()
+	} else if runtime.GOOS == "windows" {
+		deleteFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html")
+		createFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html")
+		WindowsCommonChecks()
+	}
 }
