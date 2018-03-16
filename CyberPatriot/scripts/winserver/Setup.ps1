@@ -45,7 +45,7 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.duckduckgo.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.startpage.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 
-# Setup a web proxy so that even if they fix the hosts file internet still ded, or vice versa
+# Setup a web proxy so that even if they fix the hosts file internet still ded
 $reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
 Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1

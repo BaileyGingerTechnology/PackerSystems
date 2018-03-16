@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
-	"os/exec"
 	"strings"
 	"time"
 )
@@ -78,20 +76,6 @@ func SSHChecks(config string) {
 		AppendStringToFile("/etc/gingertechengine/post", "SSH set to protocol 2")
 		AppendStringToFile("/etc/gingertechengine/post", "  - SSH protocol 2 is more secure than protocol 1. Not certain why, but theres no overhead to my knowledge, so it is best to use it.")
 	}
-}
-
-func getCommandOutput(command string, args []string) (output string) {
-	var (
-		cmdOut []byte
-		err    error
-	)
-	if cmdOut, err = exec.Command(command, args...).Output(); err != nil {
-		fmt.Fprintln(os.Stderr, "There was an error running check command: ", err)
-		os.Exit(1)
-	}
-	sha := string(cmdOut)
-
-	return sha
 }
 
 func stringInSlice(a string, list []string) bool {
