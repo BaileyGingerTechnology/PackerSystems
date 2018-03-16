@@ -13,6 +13,7 @@ sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakero
 
 sudo mkdir /temp/
 sudo chown -R administrator:administrator /temp
+cd /temp
 git clone https://github.com/BaileyGingerTechnology/pacman.git
 cd pacman
 ./autogen.sh
@@ -41,7 +42,7 @@ sudo mkdir /etc/pacman.d
 sudo bash -c "curl -s '$MIRRORLIST' |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist"
 sudo mv /home/administrator/pacman.conf /etc/
 
-sudo apt purge apt
+sudo apt purge --yes --force-yes apt
 sudo pacman -Syu --force
 sudo pacman -S --needed --noconfirm --force base-devel git wget yajl
 

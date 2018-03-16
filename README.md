@@ -19,8 +19,6 @@ Download the Windows 10 and Windows Server 2012r2 ISOs. The Ubuntu one will be g
 
 Clone the repo and cd into it
 
-git lfs update && git lfs pull (gets files between 100mb and 2gb)
-
 cd into the directory of the environment you are building out
 
 packer build -only=(virtualbox-iso, vmware-iso, or qemu) ./(machine).json
@@ -111,17 +109,25 @@ An Arch Database:
 
     - Most people panic when they see Arch or Gentoo because of their reputation. So of course I need at least one of them in here.
 
-A Windows workstation:
+A Windows Server:
 
-    - I'm thinking either XP or Windows 7. I want to do Vista to be mean, but honestly it's too unrealistic and uses too much of the host's resources to actually function.
+    - I'm thinking either 2008r2 or 2016. It's tempting to do a non r2, but that would mean that I'd have to use one.
 
-    - Both can be considered old at this point and have their share of vulnerablities that an automated pen testing system could make use of. It mainly depends on how difficult it is to Packer a Windows XP build.
+    - 2016 carries with it the same issues that Windows 10 has, and 2008r2 (while good) is old at this point.
+
+    - I'll probably make it a domain controller and/or Exchange server.
 
 A Linux workstation:
 
-    - Fedora is the easy choice for this. Popular, but not as popular as Ubuntu.
+    - Was gonna do Fedora, but I guess it has really bad ESXi support (or vice versa), so I'll do Debian instead.
 
-    - I've been informed that ESXi and Fedora are not friends with each other. So maybe a different workstation. One of a more GENTlemanly flavor.
+    - Or an LFS thing. Depends on if I can implement an idea I have for Debian.
+
+A Windows workstation:
+
+    - Windows 8 if I can find the ISO, Windows 7 if not.
+
+    - Pretty standard.
 
 FreeBSD BAMP server:
 
@@ -134,6 +140,12 @@ Either VyOS or pfSense router/firewall:
     - Not sure which I prefer. Depends on if I'm in a Debian or BSD mood when I get to this point.
 
 I know I should have more machines, but it gets to a point where resource requirements will become prohibitive to some users. So we shall see. Feedback on this idea can be sent to me at bailey@gingertechnology.net, and I will likely make a more in depth write-up about it at https://blog.gingertechnology.net at some point.
+
+### Scoring Engine:
+
+My goal is to have a scoring engine for the CyberPatriot machines, and then another that checks whether services are running on the CCDC environment. I'll probably host the CCDC one on the attacking system that I plan to make.
+
+The CyberPatriot one is being built in Go, because Go is basically magic. Not sure how I'll do the CCDC one.
 
 ### Support this project:
 

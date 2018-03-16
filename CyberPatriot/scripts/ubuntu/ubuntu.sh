@@ -52,7 +52,7 @@ sed -i 's/index.html/index.php/g' /etc/apache2/mods-enabled/dir.conf
 # Install KDE, best desktop. To be honest, I should use XFCE or LXDE, but KDE so good
 echo "Installing desktop"
 sudo apt -y install sddm
-sudo apt -y install kubuntu-desktop
+sudo apt -y install kubuntu-desktop golang-go
 
 # Let's start intentioally making ourselves vulnerable, that's always fun
 
@@ -100,7 +100,7 @@ sudo bash -c 'echo "34.196.155.28 google.com
 # Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
 sudo mkdir /etc/gingertechengine/
 sudo mv /temp/other/notify.sh /etc/gingertechengine/
-sudo mv /temp/other/post_score /etc/gingertechengine/
+sudo mv /temp/other/LinuxScoringEngine /etc/gingertechengine/
 sudo chmod +x /etc/gingertechengine/*
 
 (crontab -l 2>/dev/null; echo "* */1 * * * /etc/gingertechengine/notify.sh") | crontab -
@@ -120,9 +120,9 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 # Make scoring engine user
 sudo useradd -M -s /bin/bash ScoringEngine
 sudo usermod -aG sudo ScoringEngine
-sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/post_score" >> /etc/crontab'
+sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/LinuxScoringEngine" >> /etc/crontab'
 sudo chown -R ScoringEngine /etc/gingertechengine
-sudo chmod +x /etc/gingertechengine/post_score
+sudo chmod +x /etc/gingertechengine/LinuxScoringEngine
 
 # Kill temp dir
 sudo rm -rf /temp/*
