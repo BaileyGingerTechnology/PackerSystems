@@ -1,57 +1,56 @@
 {
   "builders": [
     {
-      "type": "vmware-iso",
-      "communicator": "winrm",
-      "disk_size": 61440,
+      "type": "qemu",
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
         "floppy/update-windows.ps1",
         "floppy/configure-winrm.ps1"
       ],
-      "guest_os_type": "windows8srv-64",
-      "headless": false,
+      "vm_name": "{{user `vm_name`}}",
       "iso_url": "{{user `iso_url`}}",
-      "iso_checksum_type": "sha1",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "output-windows-10-amd64-{{build_type}}",
+      "iso_checksum_type": "sha1",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "disk_size": 61440,
+      "headless": "false",
+      "communicator": "winrm",
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
+      "boot_wait":"2s",
       "shutdown_command": "{{ user `shutdown_command`}}",
-      "tools_upload_flavor": "windows",
-      "vm_name": "{{user `vm_name`}}",
-      "vmx_data": {
-        "memsize": "2048",
-        "numvcpus": "2",
-        "scsi0.virtualDev": "lsisas1068"
-      }
+      "qemuargs": [
+        ["-m", "{{user `memsize`}}"],
+        ["-smp", "{{user `numcpus`}}"]
+      ]
     },
+    
     {
       "type": "virtualbox-iso",
-      "communicator": "winrm",
-      "disk_size": 61440,
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
         "floppy/update-windows.ps1",
         "floppy/configure-winrm.ps1"
       ],
-      "guest_os_type": "Windows10_64",
-      "headless": false,
+      "vm_name": "{{user `vm_name`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "sha1",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "output-windows-10-amd64-{{build_type}}",
-      "winrm_username": "{{user `username`}}",
-      "winrm_password": "{{user `password`}}",
-      "winrm_timeout": "6h",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "disk_size": 61440,
+      "headless": "false",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "post_shutdown_delay": "30s",
       "hard_drive_interface": "sata",
       "iso_interface": "sata",
+      "communicator": "winrm",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "guest_os_type": "Windows10_64",
       "guest_additions_mode": "upload",
       "guest_additions_path": "c:/Windows/Temp/windows.iso",
-      "vm_name": "{{user `vm_name`}}",
       "vboxmanage": [
           [
             "modifyvm",
@@ -74,25 +73,31 @@
         ]
     },
     {
-      "type": "qemu",
+      "type": "vmware-iso",
+      "communicator": "winrm",
       "disk_size": 61440,
       "floppy_files": [
         "floppy/Win10/Autounattend.xml",
         "floppy/update-windows.ps1",
         "floppy/configure-winrm.ps1"
       ],
+      "guest_os_type": "windows8srv-64",
       "headless": false,
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "sha1",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "output-windows-10-amd64-{{build_type}}",
-      "shutdown_command": "{{ user `shutdown_command`}}",
-      "communicator": "winrm",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
-      "boot_wait":"2s",
-      "vm_name": "{{user `vm_name`}}"
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "tools_upload_flavor": "windows",
+      "vm_name": "{{user `vm_name`}}",
+      "vmx_data": {
+        "memsize": "{{user `memsize`}}",
+        "numvcpus": "{{user `numcpus`}}",
+        "scsi0.virtualDev": "lsisas1068"
+      }
     }
 
   ],
@@ -184,6 +189,8 @@
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
     "username": "GingerTech",
     "password": "UberPassword",
+    "memsize": "2048",
+    "numcpus": "2",
     "update": "true",
     "version": "0.1.0"
   }

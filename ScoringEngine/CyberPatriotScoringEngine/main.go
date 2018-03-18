@@ -7,6 +7,7 @@ import (
 	"runtime"
 )
 
+// AppendStringToFile - Add string to the bottom of a file
 func AppendStringToFile(path, text string) error {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {

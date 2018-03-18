@@ -5,7 +5,10 @@
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",
     "country": "US",
-    "headless": "false"
+    "headless": "false",
+    "cpus": "2",
+    "memory": "2048",
+    "lfs": "/mnt/lfs"
   },
   "builders": [
     {
@@ -13,7 +16,6 @@
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum_url": "{{ user `iso_checksum_url` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
-      "guest_os_type": "ArchLinux_64",
       "guest_additions_mode": "disable",
       "http_directory": "http",
       "boot_wait": "5s",
@@ -29,7 +31,11 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo systemctl start poweroff.timer",
-      "headless" : "{{ user `headless`}}"
+      "headless" : "{{ user `headless`}}",
+      "vboxmanage": [
+          ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+          ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+      ]
     },
     {
       "type": "vmware-iso",
@@ -39,17 +45,25 @@
       "http_directory": "http",
       "boot_wait": "5s",
       "boot_command": [
-        "<enter><wait10><wait10><wait10><wait10>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
-        "/usr/bin/bash ./enable-ssh.sh<enter>"
+        "<enter><wait10><wait10><wait10>",
+        "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
+        "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+        "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+        "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/systemctl start sshd.service<enter>",
+        "mkdir /temp && chown administrator -R /temp<enter>"
       ],
       "disk_size": 20480,
       "ssh_username": "administrator",
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo systemctl start poweroff.timer",
-      "headless" : "{{ user `headless`}}"
+      "headless" : "{{ user `headless`}}",
+      "vmx_data": {
+          "memsize": "{{user `memory`}}",
+          "numvcpus": "{{user `cpus`}}"
+      }
     },
     {
       "type": "qemu",
@@ -74,24 +88,20 @@
   ],
   "provisioners": [
     {
+      "type": "file",
+      "source": "scripts/lfs/finish-base.sh",
+      "destination": "/temp/finish-base.sh"
+    },
+    {
+      "environment_vars": [
+          "COUNTRY={{ user `country` }}",
+          "LFS={{ user `lfs` }}",
+          "CPUS={{ user `cpus` }}"
+      ],
       "type": "shell",
-      "execute_command": "{{ .Vars }} COUNTRY={{ user `country` }} sudo -E -S bash '{{ .Path }}'",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "expect_disconnect": true,
-      "script": "scripts/arch/install-base.sh"
-    },
-    {
-      "only": ["virtualbox-iso"],
-      "type": "shell",
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "script": "scripts/arch/install-virtualbox.sh"
-    },
-    {
-      "type": "shell",
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "scripts": [
-        "scripts/arch/arch-database.sh",
-        "scripts/arch/cleanup.sh"
-      ]
+      "script": "scripts/lfs/setup-base.sh"
     }
   ]
 }

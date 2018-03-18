@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// FTPChecks - Checks for best practices in vsftpd.conf
 func FTPChecks(config string) {
 	content, err := ioutil.ReadFile(config)
 	if err != nil {
@@ -64,6 +65,7 @@ func hostsCheck(config string) {
 	}
 }
 
+// SSHChecks - Checks for best practices in the sshd_config
 func SSHChecks(config string) {
 	content, err := ioutil.ReadFile(config)
 	if err != nil {
@@ -87,6 +89,7 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
+// LinuxChecks - The main function for running Linux checks
 func LinuxChecks() {
 	// Do Linux checks
 	FTPChecks("/etc/vsftpd.conf")

@@ -59,12 +59,7 @@ foreach ($User in $Users)
 {
     $Displayname = $User.'Firstname' + " " + $User.'Lastname'
     $UserFirstname = $User.'Firstname'
-    $UserLastname = $User.'Lastname'
-    $OU = $User.'OU'
-    $SAM = $User.'SAM'
-    $UPN = $User.'Firstname' + "." + $User.'Lastname' + "@" + $User.'Maildomain'
     $Description = $User.'Description'
-    $Password = $User.'Password'
     New-LocalUser $UserFirstname -NoPassword -FullName $Displayname -Description $Description
     Write-Host "User " + $UserFirstname + " has been made."
 }
