@@ -11,6 +11,7 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
+// WindowsType - Deturn which second set of checks to run based on whether Registry claims it is a server
 func WindowsType() {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
 	if err != nil {
@@ -32,6 +33,7 @@ func WindowsType() {
 
 var templates *template.Template
 
+// FinishWindows - Build results of Windows checks into an HTML file from the template files
 func FinishWindows() {
 	var allFiles []string
 	files, err := ioutil.ReadDir("./templates")
@@ -59,6 +61,7 @@ func FinishWindows() {
 	s3.Execute(os.Stdout, nil)
 }
 
+// WindowsCommonChecks - Checks that will work for both Server and Windows 10
 func WindowsCommonChecks() {
 	// TODO: Have checks for Windows insert a line into content.tmpl each pass
 	// Will have to find a way to reset content.tmpl each time. Maybe overwrite with
