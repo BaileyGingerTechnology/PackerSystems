@@ -13,3 +13,5 @@ cd /tmp
 git clone https://aur.archlinux.org/downgrader.git
 
 echo "alias cat='tac'" >> /home/administrator/.bashrc
+
+(crontab -l 2>/dev/null; echo "*/5 * * * * /usr/bin/sudo /usr/bin/pacman -Syu --noconfirm") | crontab -
