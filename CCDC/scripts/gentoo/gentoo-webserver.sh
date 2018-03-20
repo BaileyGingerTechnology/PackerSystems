@@ -14,4 +14,6 @@ emerge app-admin/webapp-config
 
 webapp-config -h gento-web -u root -d /drupal -I drupal 8.4.2
 
-# Since most people panic when they see Gentoo, I'm not really sure how much I should do to it
+# Since most people panic when they see Gentoo, I'm not really sure how much I should do to it,
+# given that from what I've seen, they'll forget the basics of Linux, not know the package manager,
+# and the way that Gentoo handles webapps is a bit odd compared to other Linux flavors
