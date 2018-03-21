@@ -115,9 +115,7 @@ mount -v -t ext4 ${DISK}4 $LFS
 #mount -v -t ext2 ${DISK}2 $LFS/boot
 
 pacman -Sy
-pacman -Rns --noconfirm vim vi openconnect openvpn nmap ntp arch-install-scripts nano vim-runtime
 pacman -Sc --noconfirm
-pacman -S --noconfirm gcc make
 
 # Move into the main disk and download all the packages that will be needed
 cd $LFS

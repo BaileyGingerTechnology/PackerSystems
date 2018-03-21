@@ -1,7 +1,7 @@
 {
   "variables": {
-      "iso_url": "http://mirrors.kernel.org/archlinux/iso/2018.03.01/archlinux-2018.03.01-x86_64.iso",
-      "iso_checksum_url": "http://mirrors.kernel.org/archlinux/iso/2018.03.01/sha1sums.txt",
+      "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.03.20-x86_64.iso",
+      "iso_checksum_url": "https://files.gingertechnology.net/packersystems/SHA1SUMS",
       "iso_checksum_type": "sha1",
       "ssh_timeout": "20m",
       "country": "USA",
