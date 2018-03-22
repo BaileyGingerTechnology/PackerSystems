@@ -62,7 +62,7 @@ func FinishWindows() {
 }
 
 // WindowsCommonChecks - Checks that will work for both Server and Windows 10
-func WindowsCommonChecks() {
+func PlatformCommon() {
 	// TODO: Have checks for Windows insert a line into content.tmpl each pass
 	// Will have to find a way to reset content.tmpl each time. Maybe overwrite with
 	// a literal string like the Linux hosts variable.

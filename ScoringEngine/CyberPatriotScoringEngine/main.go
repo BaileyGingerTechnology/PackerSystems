@@ -67,10 +67,10 @@ func main() {
 		os.Setenv("PATH", "/bin:/usr/bin:/sbin")
 		deleteFile("/etc/gingertechengine/post")
 		createFile("/etc/gingertechengine/post")
-		LinuxChecks()
+		PlatformCommon()
 	} else if runtime.GOOS == "windows" {
 		deleteFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html")
 		createFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html")
-		WindowsCommonChecks()
+		PlatformCommon()
 	}
 }
