@@ -84,11 +84,6 @@
       "destination": "C:\\InstallScoop.ps1"
     },
     {
-      "type": "file",
-      "source": "files/Ucma.exe",
-      "destination": "C:\\Ucma.exe"
-    },
-    {
       "type": "powershell",
       "inline": [
         "powershell Set-MpPreference -DisableRealtimeMonitoring $true",
@@ -114,7 +109,7 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer"
+      "restart_command": "powershell Restart-Computer -Force"
     }
   ],
   "post-processors": [

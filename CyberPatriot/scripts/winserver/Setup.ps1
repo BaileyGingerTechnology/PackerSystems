@@ -45,14 +45,6 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.duckduckgo.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.startpage.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 
-# Setup a web proxy so that even if they fix the hosts file internet still ded
-$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
-Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
-
-# Disable firewall
-Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-
 Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 
 Import-Module ADDSDeployment
@@ -71,29 +63,39 @@ Install-ADDSForest `
 -Force:$true
 
 # Mwuahahaha suffer with Exhange
-Install-WindowsFeature RSAT-ADDS
-Install-WindowsFeature AS-HTTP-Activation, Desktop-Experience, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS
+Install-WindowsFeature RSAT-Clustering-CmdInterface, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS
 
-$file = "C:\Ucma.exe"
-if (Get-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\UCMA4" -ErrorAction SilentlyContinue) {
-    Write-Host "Unified Communications Managed API 4.0 Runtime is already installed." -ForegroundColor Cyan
-}
-else {
-    if (Test-Path $file) {
-        Write-Host "The installer file exists: $file" -ForegroundColor Green
-        Write-Host "Installing Microsoft UM API" -ForegroundColor Yellow
-        $arg = "/quiet /norestart"
-        $status = (Start-Process $file -ArgumentList $arg -Wait -PassThru).ExitCode
-        if ($status -eq 0) {
-            Write-Host "Successful install" - -ForegroundColor Green
-        }
-        if ($status -ne 0) {
-            Write-Host "Failed install" -ForegroundColor Red
-        }
-    }
-    else {
-        Write-Host "$file does not exist" -ForegroundColor Red
-    }
-}
+#cd C:\
+#wget https://download.microsoft.com/download/3/7/9/3797D760-115C-4264-9280-2E255A42F164/UcmaSdkSetup.exe -OutFile Ucma.exe
+
+#$file = "C:\Ucma.exe"
+#if (Get-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\UCMA4" -ErrorAction SilentlyContinue) {
+#    Write-Host "Unified Communications Managed API 4.0 Runtime is already installed." -ForegroundColor Cyan
+#}
+#else {
+#    if (Test-Path $file) {
+#        Write-Host "The installer file exists: $file" -ForegroundColor Green
+#        Write-Host "Installing Microsoft UM API" -ForegroundColor Yellow
+#        $arg = "/quiet /norestart"
+#        $status = (Start-Process $file -ArgumentList $arg -Wait -PassThru).ExitCode
+#        if ($status -eq 0) {
+#            Write-Host "Successful install" - -ForegroundColor Green
+#        }
+#        if ($status -ne 0) {
+#            Write-Host "Failed install" -ForegroundColor Red
+#        }
+#    }
+#    else {
+#        Write-Host "$file does not exist" -ForegroundColor Red
+#    }
+#}
 
 Install-WindowsFeature ADLDS
+
+# Setup a web proxy so that even if they fix the hosts file internet still ded
+$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
+Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
+
+# Disable firewall
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False

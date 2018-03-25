@@ -64,5 +64,6 @@ scoop update scoop
 # Install FireFox because no one deserves Internet Explorer or Edge
 scoop install firefox
 scoop install go
+scoop install wget
 
 del C:\InstallScoop.ps1

@@ -62,7 +62,6 @@ function set_filesystems
 
 function make_directories
 {
-  mkdir -pv $LFS
   mkdir -pv $LFS/boot
   mkdir -pv $LFS/sources
   mkdir -pv $LFS/tools
@@ -106,13 +105,11 @@ function partition_disk
 }
 
 partition_disk
+mkdir -pv $LFS
+mount -v -t ext4 ${DISK}4 $LFS
 make_directories
 
-# Pause for a bit to let everything settle
-echo "Sleeping"
-sleep 20
-mount -v -t ext4 ${DISK}4 $LFS
-#mount -v -t ext2 ${DISK}2 $LFS/boot
+mount -v -t ext2 ${DISK}2 $LFS/boot
 
 pacman -Sy
 pacman -Sc --noconfirm
@@ -148,7 +145,7 @@ function build_binutils
                --disable-nls              \
                --disable-werror
 
-  make
+  make -j${CPUS}
 
   case $(uname -m) in
     x86_64) mkdir -v /tools/lib && ln -sv lib /tools/lib64 ;;
@@ -165,7 +162,7 @@ function build_gcc
   cd $LFS/sources
 
   tar xvf gcc-7.3.0.tar.xz
-  cd gcc7.3.0
+  cd gcc-7.3.0
 
   tar xvf ../mpfr-4.0.1.tar.xz
   mv -v mpfr-4.0.1 mpfr
@@ -175,29 +172,29 @@ function build_gcc
   mv -v mpc-1.1.0 mpc
 
   for file in gcc/config/{linux,i386/linux{,64}}.h
-  do
-    cp -uv $file{,.orig}
-    sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
-        -e 's@/usr@/tools@g' $file.orig > $file
-    echo '
-  #undef STANDARD_STARTFILE_PREFIX_1
-  #undef STANDARD_STARTFILE_PREFIX_2
-  #define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-  #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-    touch $file.orig
-  done
+do
+  cp -uv $file{,.orig}
+  sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/usr@/tools@g' $file.orig > $file
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+  touch $file.orig
+done
 
   case $(uname -m) in
-    x86_64)
-      sed -e '/m64=/s/lib64/lib/' \
-          -i.orig gcc/config/i386/t-linux64
-    ;;
-  esac
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+ ;;
+esac
 
   mkdir -v build
   cd build
 
-  ../configure                                     \
+  ../configure                                       \
     --target=$LFS_TGT                              \
     --prefix=/tools                                \
     --with-glibc-version=2.11                      \
@@ -220,7 +217,7 @@ function build_gcc
     --disable-libstdcxx                            \
     --enable-languages=c,c++
 
-  make
+  make -j${CPUS}
   make install
 
   cd $LFS/sources
@@ -235,7 +232,7 @@ function build_linux_headers
 
   make mrproper
 
-  make INSTALL_HDR_PATH=dest headers_install
+  make INSTALL_HDR_PATH=dest headers_install -j${CPUS}
   cp -rv dest/include/* /tools/include
 }
 
@@ -257,7 +254,7 @@ function build_glibc
       libc_cv_forced_unwind=yes           \
       libc_cv_c_cleanup=yes
 
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -279,7 +276,7 @@ function build_libstdc
     --disable-libstdcxx-pch         \
     --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/7.3.0
   
-  make
+  make -j${CPUS}
   make install
 
   $LFS/sources
@@ -305,7 +302,7 @@ function build_binutils_again
     --with-lib-path=/tools/lib  \
     --with-sysroot
   
-  make
+  make -j${CPUS}
   make install
 
   make -C ld clean
@@ -366,7 +363,7 @@ function build_gcc_again
     --disable-bootstrap                            \
     --disable-libgomp
 
-  make
+  make -j${CPUS}
   make install
 
   ln -sv gcc /tools/bin/cc
@@ -381,8 +378,7 @@ function build_tcl
   cd unix
   ./configure --prefix=/tools
 
-  make
-  TZ=UTC make test
+  make -j${CPUS}
 
   make install
   chmod -v u+w /tools/lib/libctl8.6.so
@@ -405,7 +401,7 @@ function build_expect
               --with-tcl=/tools/lib \
               --with-tclinclude=/tools/include
 
-  make
+  make -j${CPUS}
   make SCRIPTS="" install
 }
 
@@ -427,7 +423,7 @@ function build_m4
   cd m4-1.4.18
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -445,7 +441,7 @@ function build_ncurses
               --enable-widec  \
               --enable-overwrite
   
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -458,7 +454,7 @@ function build_bash
   ./configure --prefix=/tools \
               --without-bash-malloc
   
-  make
+  make -j${CPUS}
   make install
 
   ln -sv bash /tools/bin/sh
@@ -472,7 +468,7 @@ function build_bison
 
   ./configure --prefix=/tools
 
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -482,7 +478,7 @@ function build_bzip
   tar xvf bzip2-1.0.6.tar.gz
   cd bzip2-1.0.6
   
-  make
+  make -j${CPUS}
   make PREFIX=/tools install
 }
 
@@ -494,7 +490,7 @@ function build_coreutils
 
   ./configure --prefix=/tools --enable-install-program=hostname
 
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -505,7 +501,7 @@ function build_diffutils
   cd diffutils-3.6
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -516,7 +512,7 @@ function build_file
   cd file-5.32
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -527,7 +523,7 @@ function build_findutils
   cd findutils-4.6.0
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -538,7 +534,7 @@ function build_gawk
   cd gawk-4.2.0
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -567,7 +563,7 @@ function build_grep
   cd grep-3.1
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -578,7 +574,7 @@ function build_gzip
   cd gzip-1.9
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -592,7 +588,7 @@ function build_make
   ./configure --prefix=/tools \
               --without-guile
 
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -603,7 +599,7 @@ function build_patch
   cd patch-2.7.6
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -614,7 +610,7 @@ function build_perl
   cd perl-5.26.1
 
   sh Configure -des -Dprefix=/tools -Dlibs=-lm
-  make
+  make -j${CPUS}
 
   cp -v perl cpan/podlators/scripts/pod2man /tools/bin
   mkdir -pv /tools/lib/perl5/5.26.1
@@ -628,7 +624,7 @@ function build_sed
   cd sed-4.4
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -639,7 +635,7 @@ function build_tar
   cd tar-1.30
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -650,7 +646,7 @@ function build_texinfo
   cd texinfo-6.5
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -667,7 +663,7 @@ function build_util_linux
               --without-ncurses              \
               PKG_CONFIG=""
   
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -678,7 +674,7 @@ function build_xz
   cd xz-5.2.3
 
   ./configure --prefix=/tools
-  make
+  make -j${CPUS}
   make install
 }
 
