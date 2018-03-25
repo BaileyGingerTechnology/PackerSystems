@@ -89,7 +89,7 @@ func stringInSlice(a string, list []string) bool {
 	return false
 }
 
-// LinuxChecks - The main function for running Linux checks
+// PlatformCommon - The main function for running Linux checks
 func PlatformCommon() {
 	// Do Linux checks
 	FTPChecks("/etc/vsftpd.conf")
