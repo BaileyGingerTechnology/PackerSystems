@@ -7,7 +7,7 @@ pacman -Syu --noconfirm
 # Install but don't configure the packages that I want
 pacman -S --noconfirm --needed mariadb postgresql git base-devel tac
 # I plan to give the player a SQL file or two, probably one per database, and force them to figure out how to make it work
-# PSQL isn't too bad, but MySQL/MariaDB can be painful
+# PSQL isn't too bad, but MySQL/MariaDB can be painful on Arch, since the documentation is mostly but completely correct
 
 cd /tmp
 git clone https://aur.archlinux.org/downgrader.git
