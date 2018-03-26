@@ -279,7 +279,7 @@ function build_libstdc
   make -j${CPUS}
   make install
 
-  $LFS/sources
+  cd $LFS/sources
   rm -rf gcc-7.3.0
 }
 
@@ -373,7 +373,7 @@ function build_tcl
 {
   cd $LFS/sources
   tar xvf tcl8.6.8-src.tar.gz
-  cd tcl8.6.8-src
+  cd tcl8.6.8
 
   cd unix
   ./configure --prefix=/tools
@@ -381,7 +381,7 @@ function build_tcl
   make -j${CPUS}
 
   make install
-  chmod -v u+w /tools/lib/libctl8.6.so
+  chmod -v u+w /tools/lib/libtcl8.6.so
 
   make install-private-headers
 
@@ -394,7 +394,7 @@ function build_expect
   tar xvf expect5.45.4.tar.gz
   cd expect5.45.4
 
-  cp -v configure{,orig}
+  cp -v configure{,.orig}
   sed 's:/usr/local/bin:/bin:' configure.orig > configure
 
   ./configure --prefix=/tools       \
@@ -488,7 +488,7 @@ function build_coreutils
   tar xvf coreutils-8.29.tar.xz
   cd coreutils-8.29
 
-  ./configure --prefix=/tools --enable-install-program=hostname
+  FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/tools --enable-install-program=hostname
 
   make -j${CPUS}
   make install
@@ -507,7 +507,7 @@ function build_diffutils
 
 function build_file
 {
-  cd $FLS/sources
+  cd $LFS/sources
   tar xvf file-5.32.tar.gz
   cd file-5.32
 
@@ -619,7 +619,7 @@ function build_perl
 
 function build_sed
 {
-  cd $FLS/sources
+  cd $LFS/sources
   tar xvf sed-4.4.tar.xz
   cd sed-4.4
 
@@ -634,7 +634,7 @@ function build_tar
   tar xvf tar-1.30.tar.xz
   cd tar-1.30
 
-  ./configure --prefix=/tools
+  FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/tools
   make -j${CPUS}
   make install
 }
@@ -712,16 +712,13 @@ build_texinfo
 build_util_linux
 build_xz
 
-strip --strip-debug /tools/lib/*
-/usr/bin/strip --strip-unneeded /tools/{,s}bin/*
-
 chown -R root:root $LFS/tools
 
 mkdir -pv $LFS/{dev,proc,sys,run}
-mknod -m 600 $FLS/dev/console c 5 1
+mknod -m 600 $LFS/dev/console c 5 1
 mknod -m 666 $LFS/dev/null c 1 3
 mount -v --bind /dev $LFS/dev
-mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
+#mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
 mount -vt proc proc $LFS/proc
 mount -vt sysfs sysfs $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
