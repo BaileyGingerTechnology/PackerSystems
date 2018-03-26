@@ -71,7 +71,7 @@ func PlatformCommon() {
 	var shares = getCommandOutput("powershell.exe", args)
 	if !strings.Contains(shares, "FullDrive") {
 		AppendStringToFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html", "Unauthorized VNC server removed")
-		AppendStringToFile("/etc/gingertechengine/post", "  - VNC is not bad when it is there by choice and is secured, but in this system, it is not there by choice and is not needed. So it would be better to get rid of it, since it just adds an extra attack vector.")
+		AppendStringToFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html", "  - VNC is not bad when it is there by choice and is secured, but in this system, it is not there by choice and is not needed. So it would be better to get rid of it, since it just adds an extra attack vector.")
 	}
 
 	WindowsType()
