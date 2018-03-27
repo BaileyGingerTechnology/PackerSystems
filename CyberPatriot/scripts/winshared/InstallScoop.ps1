@@ -66,4 +66,6 @@ scoop install firefox
 scoop install go
 scoop install wget
 
+Set-MpPreference -DisableRealtimeMonitoring $true
+
 del C:\InstallScoop.ps1

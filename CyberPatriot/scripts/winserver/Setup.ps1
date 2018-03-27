@@ -62,35 +62,17 @@ Install-ADDSForest `
 -SysvolPath "C:\Windows\SYSVOL" `
 -Force:$true
 
-# Mwuahahaha suffer with Exhange
+# Going to use hMail instead of Exchange, but am leaving this here for now
 Install-WindowsFeature RSAT-Clustering-CmdInterface, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS
 
-#cd C:\
-#wget https://download.microsoft.com/download/3/7/9/3797D760-115C-4264-9280-2E255A42F164/UcmaSdkSetup.exe -OutFile Ucma.exe
-
-#$file = "C:\Ucma.exe"
-#if (Get-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\UCMA4" -ErrorAction SilentlyContinue) {
-#    Write-Host "Unified Communications Managed API 4.0 Runtime is already installed." -ForegroundColor Cyan
-#}
-#else {
-#    if (Test-Path $file) {
-#        Write-Host "The installer file exists: $file" -ForegroundColor Green
-#        Write-Host "Installing Microsoft UM API" -ForegroundColor Yellow
-#        $arg = "/quiet /norestart"
-#        $status = (Start-Process $file -ArgumentList $arg -Wait -PassThru).ExitCode
-#        if ($status -eq 0) {
-#            Write-Host "Successful install" - -ForegroundColor Green
-#        }
-#        if ($status -ne 0) {
-#            Write-Host "Failed install" -ForegroundColor Red
-#        }
-#    }
-#    else {
-#        Write-Host "$file does not exist" -ForegroundColor Red
-#    }
-#}
-
 Install-WindowsFeature ADLDS
+
+Import-Module ActiveDirectory
+Import-Csv -Delimiter : -Path "C:\userlist.csv" | foreach-object {
+    $userprinicpalname = $_.SamAccountName + "@gingertech.com"
+    New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprinicpalname -Name $_.Firstname -DisplayName $_.Firstname -GivenName $_.Firstname -SurName $_.Lastname -Department $_.Department -Path "CN=Users,DC=gingertech,DC=com" -AccountPassword (ConvertTo-SecureString "password321" -AsPlainText -force) -Enabled $True -PasswordNeverExpires $True -PassThru
+}
+
 
 # Setup a web proxy so that even if they fix the hosts file internet still ded
 $reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
