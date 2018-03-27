@@ -86,9 +86,13 @@
     {
       "type": "powershell",
       "inline": [
-        "powershell Set-MpPreference -DisableRealtimeMonitoring $true",
         "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
       ]
+    },
+    {
+      "type": "file",
+      "source": "files/userlist-win.csv",
+      "destination": "C:\\userlist.csv"
     },
     {
       "type": "file",

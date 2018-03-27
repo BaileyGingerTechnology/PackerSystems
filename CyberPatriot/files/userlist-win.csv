@@ -1,7 +1,7 @@
-Firstname:Lastname:SAM:OU:Maildomain:Password:Description
-Naruto:Uzumaki:Naruto:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Uzumaki Naruto
-John:Price:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Steele John
-Andrea:Cooper:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Cooper Andrea
-Bailey:Kasin:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Kasin Bailey
-Luis:Pena:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Pena Luis
-Ryan:Parker:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Ryan Parker
+Firstname:Lastname:SamAccountName:OU:Maildomain:Password:Description:Department
+Naruto:Uzumaki:Naruto:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Uzumaki Naruto:Ninja
+John:Price:John:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Price John:Customer Service
+Andrea:Cooper:Andrea:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Cooper Andrea:Content Writing
+Bailey:Kasin:Bailey:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Kasin Bailey:Owner
+Luis:Pena:Luis:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Pena Luis:Linux Admin
+Ryan:Parker:Ryan:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password321:Ryan Parker:Windows Admin

@@ -60,6 +60,7 @@ sudo apt -y install kubuntu-desktop golang-go
 sudo bash -c 'echo "deb http://us.archive.ubuntu.com/ubuntu trusty main" >> /etc/apt/sources.list'
 sudo apt update
 sudo apt -y --allow-downgrades install bash=4.3-6ubuntu1
+sudo sed -i '/trusty/d' /etc/apt/sources.list
 
 # Now we need ourselves some vsftpd. Uber secure
 sudo apt -y install vsftpd

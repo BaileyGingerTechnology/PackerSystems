@@ -227,3 +227,18 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 grep "/lib.*/libc.so.6 " dummy.log
 grep found dummy.log
 rm -v dummy.c a.out dummy.log
+
+function build_zlib
+{
+  cd $LFS/sources
+  tar xvf zlib-1.2.11.tar.xz
+  cd zlib-1.2.11
+
+  ./configure --prefix=/usr
+
+  make -j${CPUS}
+  make install
+
+  mv -v /usr/lib/libz.so.* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
+}
