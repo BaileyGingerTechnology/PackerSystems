@@ -51,8 +51,9 @@ sed -i 's/index.html/index.php/g' /etc/apache2/mods-enabled/dir.conf
 
 # Install KDE, best desktop. To be honest, I should use XFCE or LXDE, but KDE so good
 echo "Installing desktop"
+sudo apt update
 sudo apt -y install sddm
-sudo apt -y install kubuntu-desktop golang-go
+sudo apt -y install kubuntu-desktop
 
 # Let's start intentioally making ourselves vulnerable, that's always fun
 
@@ -104,7 +105,7 @@ sudo mv /temp/other/notify.sh /etc/gingertechengine/
 sudo mv /temp/other/LinuxScoringEngine /etc/gingertechengine/
 sudo chmod +x /etc/gingertechengine/*
 
-(crontab -l 2>/dev/null; echo "* */1 * * * /etc/gingertechengine/notify.sh") | crontab -
+(crontab -l 2>/dev/null; echo "*/45 * * * * /etc/gingertechengine/notify.sh") | crontab -
 
 # Set Apache2 and MySQL to start at boot
 echo "sudo /etc/init.d/apache2 start" >> /home/administrator/.bash_profile
@@ -119,6 +120,7 @@ chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
 # Make scoring engine user
+sudo apt install -y golang-go
 sudo useradd -M -s /bin/bash ScoringEngine
 sudo usermod -aG sudo ScoringEngine
 sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/LinuxScoringEngine" >> /etc/crontab'
