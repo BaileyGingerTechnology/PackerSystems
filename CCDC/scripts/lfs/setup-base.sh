@@ -50,14 +50,6 @@ function set_filesystems
 	swapon $13
 
 	echo "Filesystems set. Mounting partition where system will be built."
-
-	echo "Making an fstab file now, which will be used later."
-	# This file is used by both the system and genkernel. Easier to make it now than later
-	touch /tmp/fstab
-	echo "$12			/boot		ext2	defaults,noatime	0 2" >> /tmp/fstab
-	echo "$13			none		swap	sw					0 0" >> /tmp/fstab
-	echo "$14			/			ext4	noatime				0 1" >> /tmp/fstab
-	echo "/dev/cdrom	/mnt/cdrom	auto	noauto,user			0 0" >> /tmp/fstab
 }
 
 function make_directories
@@ -727,8 +719,10 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
+mv /temp/build_to_bash.sh $LFS/build_to_bash.sh
 mv /temp/finish-base.sh $LFS/finish-base.sh
 cd $LFS
+chmod +x build_to_bash.sh
 chmod +x finish-base.sh
 
 chroot "$LFS" /tools/bin/env -i \
@@ -737,4 +731,4 @@ chroot "$LFS" /tools/bin/env -i \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
     /tools/bin/bash --login +h \
-    ./finish-base.sh
+    ./build_to_bash.sh
