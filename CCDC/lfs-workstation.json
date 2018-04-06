@@ -92,8 +92,18 @@
   "provisioners": [
     {
       "type": "file",
+      "source": "scripts/lfs/build_to_bash.sh",
+      "destination": "/temp/build_to_bash.sh"
+    },
+    {
+      "type": "file",
       "source": "scripts/lfs/finish-base.sh",
       "destination": "/temp/finish-base.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/lfs/wget-1.19.4.tar.gz",
+      "destination": "/temp/wget-1.19.4.tar.gz"
     },
     {
       "environment_vars": [
@@ -104,7 +114,11 @@
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "expect_disconnect": true,
-      "scripts": "scripts/lfs/setup-base.sh"
+      "scripts": [
+        "scripts/lfs/setup-base.sh",
+        "scripts/lfs/lfs-workstation",
+        "scripts/lfs/reboot.sh"
+      ]
     }
   ]
 }
