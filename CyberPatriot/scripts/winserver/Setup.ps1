@@ -63,7 +63,7 @@ Install-ADDSForest `
 -Force:$true
 
 # Going to use hMail instead of Exchange, but am leaving this here for now
-Install-WindowsFeature RSAT-Clustering-CmdInterface, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS
+Install-WindowsFeature NET-Framework-45-Features
 
 Install-WindowsFeature ADLDS
 
@@ -78,6 +78,11 @@ Import-Csv -Delimiter : -Path "C:\userlist.csv" | foreach-object {
 $reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
 Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
+
+# Disable autologon
+$Regkey= "HKLM:\Software\Microsoft\Windows NT\Currentversion\WinLogon"
+$DefaultUserName = ''
+$DefaultPassword = ''
 
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False

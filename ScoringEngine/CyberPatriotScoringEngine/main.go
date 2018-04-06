@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -49,15 +50,12 @@ func createFile(path string) {
 }
 
 func getCommandOutput(command string, args []string) (output string) {
-	var (
-		cmdOut []byte
-		err    error
-	)
-	if cmdOut, err = exec.Command(command, args...).Output(); err != nil {
-		fmt.Fprintln(os.Stderr, "There was an error running check command: ", err)
-		os.Exit(1)
+	cmd := exec.Command(command, args...)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-	sha := string(cmdOut)
+	sha := string(out)
 
 	return sha
 }

@@ -12,7 +12,7 @@ emerge www-servers/apache dev-lang/php
 emerge drupal
 emerge app-admin/webapp-config
 
-webapp-config -h gento-web -u root -d /drupal -I drupal 8.4.2
+webapp-config -h gentoo-web -u root -d /drupal -I drupal 8.4.2
 
 # Since most people panic when they see Gentoo, I'm not really sure how much I should do to it,
 # given that from what I've seen, they'll forget the basics of Linux, not know the package manager,
