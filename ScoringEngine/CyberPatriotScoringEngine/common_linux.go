@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
+	"os/exec"
 	"strings"
 	"time"
 )
@@ -76,7 +76,7 @@ func SSHChecks(config string) {
 	// Check Protocol
 	if strings.Contains(checkString, "Protocol 2") {
 		AppendStringToFile("/etc/gingertechengine/post", "SSH set to protocol 2")
-		AppendStringToFile("/etc/gingertechengine/post", "  - SSH protocol 2 is more secure than protocol 1. Not certain why, but theres no overhead to my knowledge, so it is best to use it.")
+		AppendStringToFile("/etc/gingertechengine/post", "  - SSH protocol 2 is more secure than protocol 1. Not certain why, but theres no overhead as far as I know, so it is best to use it.")
 	}
 }
 
@@ -128,6 +128,5 @@ func PlatformCommon() {
 	// Make post
 	t := time.Now()
 	args = []string{"/var/www/html", "&&", "wp", "post", "create", "/etc/gingertechengine/post", "--post_title=" + t.Format("20060102150405") + " Checks", "--post_type=post", "--post_status=publish", "--post_author=2"}
-	var post = getCommandOutput("cd", args)
-	fmt.Println(post)
+	exec.Command("cd", args...)
 }

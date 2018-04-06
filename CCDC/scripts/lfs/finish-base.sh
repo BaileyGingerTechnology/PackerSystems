@@ -242,3 +242,272 @@ function build_zlib
   mv -v /usr/lib/libz.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 }
+
+function build_file
+{
+  cd $LFS/sources
+  tar xvf file-5.32.tar.gz
+  cd file-5.32
+
+  ./configure --prefix=/usr
+
+  make -j${CPUS}
+  make install 
+}
+
+function build_readline
+{
+  sed -i '/MV.*old/d' Makefile.in
+  sed -i '/{OLDSUFF}/c:' support/shlib-install
+
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --docdir=/usr/share/doc/readline-7.0
+
+  make -j${CPUS} SHLIB_LIBS="-L/tools/lib -lncursesw"
+  make SHLIB_LIBS="-L/tools/lib -lncurses" install
+
+  mv -v /usr/lib/lib{readline,history}.so.* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
+  ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so
+}
+
+function build_m4
+{
+  cd $LFS/sources
+  tar xvf m4-1.4.18.tar.xz
+  cd m4-1.4.18
+
+  ./configure --prefix=/usr
+  make -j${CPUS}
+  make install
+}
+
+function build_bc
+{
+  ln -sv /tools/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6
+  ln -sfv libncurses.so.6 /usr/lib/libncurses.so
+  sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
+
+  ./configure --prefix=/usr           \
+              --with-readline         \
+              --mandir=/usr/share/man \
+              --infodir=/usr/share/info
+  
+  make -j${CPUS}
+  make install
+}
+
+function build_binutils
+{
+  expect -c "spawn ls"
+
+  cd $LFS/sources
+  tar xvf binutils-2.30.tar.xz
+  cd binutils-2.30
+
+  mkdir -v build
+  cd build
+
+  ../configure --prefix=/usr       \
+              --enable-gold       \
+              --enable-ld=default \
+              --enable-plugins    \
+              --enable-shared     \
+              --disable-werror    \
+              --enable-64-bit-bfd \
+              --with-system-zlib
+  
+  make -j${CPUS} tooldir=/usr
+  make tooldir=/usr install
+}
+
+function build_gmp
+{
+  cd $LFS/sources
+  tar xvf gmp-6.1.2.tar.xz
+  cd gmp-6.1.2
+
+  cp -v configfsf.guess config.guess
+  cp -v configfsf.sub   config.sub
+
+  ./configure --prefix=/usr    \
+              --enable-cxx     \
+              --disable-static \
+              --docdir=/usr/share/doc/gmp-6.1.2
+
+  make -j${CPUS}
+  make html
+
+  make install
+  make install-html
+}
+
+function build_mpfr
+{
+  cd $LFS/sources
+  tar xvf mpfr-4.0.1.tar.xz
+  cd mpfr-4.0.1
+
+  ./configure --prefix=/usr        \
+              --disable-static     \
+              --enable-thread-safe \
+              --docdir=/usr/share/doc/mpfr-4.0.1
+  
+  make -j${CPUS}
+  make html
+
+  make install
+  make install-html
+}
+
+function build_mpc
+{
+  cd $LFS/sources
+  tar xvf mpc-1.1.0.tar.gz
+  cd mpc-1.1.0
+
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --docdir=/usr/share/doc/mpc-1.1.0
+
+  make -j${CPUS}
+  make html
+
+  make install
+  make install-html
+}
+
+function build_gcc
+{
+  cd $LFS/sources
+  tar xvf gcc-7.3.0.tar.xz
+  cd gcc-7.3.0
+  mkdir -v build
+  cd build
+
+  case $(uname -m) in
+    x86_64)
+      sed -e '/m64=/s/lib64/lib/' \
+          -i.orig gcc/config/i386/t-linux64
+    ;;
+  esac
+  rm -f /usr/lib/gcc
+
+  SED=sed                               \
+  ../configure --prefix=/usr            \
+               --enable-languages=c,c++ \
+               --disable-multilib       \
+               --disable-bootstrap      \
+               --with-system-zlib
+  
+  make -j${CPUS}
+  ulimit -s 32768
+  make -k check
+
+  make install
+  ln -sv ../usr/bin/cpp /lib
+  ln -sv gcc /usr/bin/cc
+  install -v -dm755 /usr/lib/bfd-plugins
+  ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/7.3.0/liblto_plugin.so \
+          /usr/lib/bfd-plugins/
+
+  mkdir -pv /usr/share/gdb/auto-load/usr/lib
+  mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+}
+
+cat > bc/fix-libmath_h << "EOF"
+#! /bin/bash
+sed -e '1   s/^/{"/' \
+    -e     's/$/",/' \
+    -e '2,$ s/^/"/'  \
+    -e   '$ d'       \
+    -i libmath.h
+
+sed -e '$ s/$/0}/' \
+    -i libmath.h
+EOF
+
+build_zlib
+build_file
+build_readline
+build_m4
+build_bc
+build_binutils
+build_gmp
+build_mpfr
+build_mpc
+build_gcc
+
+function build_bzip2
+{
+  cd $LFS/sources
+  tar xvf bzip2-1.0.6.tar.gz
+  cd bzip2-1.0.6
+
+  patch -Np1 -i ../bzip2-1.0.6-install_docs-1.patch
+  sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+  sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+  make -f Makefile-libbz2_so
+  make clean
+
+  make -j${CPUS}
+  make PREFIX=/usr install
+
+  cp -v bzip2-shared /bin/bzip2
+  cp -av libbz2.so* /lib
+  ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+  rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+  ln -sv bzip2 /bin/bunzip2
+  ln -sv bzip2 /bin/bzcat
+}
+
+function build_pkgconfig
+{
+  cd $LFS/sources
+  tar xvf pkg-config-0.29.2.tar.gz
+  cd pkg-config-0.29.2
+
+  ./configure --prefix=/usr              \
+              --with-internal-glib       \
+              --disable-host-tool        \
+              --docdir=/usr/share/doc/pkg-config-0.29.2
+  
+  make -j${CPUS}
+  make install
+}
+
+function build_ncurses
+{
+  cd $LFS/sources
+  tar xvf ncurses-6.1.tar.gz
+  cd ncurses-6.1
+
+  sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+  ./configure --prefix=/usr           \
+              --mandir=/usr/share/man \
+              --with-shared           \
+              --without-debug         \
+              --without-normal        \
+              --enable-pc-files       \
+              --enable-widec
+  
+  make -j${CPUS}
+  make install
+
+  mv -v /usr/lib/libncursesw.so.6* /lib
+  ln -sfv ../../lib/$(readlink /usr/lib/libncursesw.so) /usr/lib/libncursesw.so
+
+  for lib in ncurses form panel menu ; do
+    rm -vf                    /usr/lib/lib${lib}.so
+    echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+    ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
+  done
+
+  rm -vf                     /usr/lib/libcursesw.so
+  echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
+  ln -sfv libncurses.so      /usr/lib/libcurses.so
+  mkdir -v       /usr/share/doc/ncurses-6.1
+  cp -v -R doc/* /usr/share/doc/ncurses-6.1
+}
