@@ -2,7 +2,7 @@
 
 function workstation
 {
-  cd -v $LFS/sources
+  cd $LFS/sources
   tar xvf wget-1.19.4.tar.gz
   cd wget-1.19.4
 
@@ -74,9 +74,8 @@ function workstation
   ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0
   PASSWORD=$(openssl passwd -crypt 'password')
   useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
-  echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator
-  echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
-  chmod 0440 /etc/sudoers.d/10_administrator
+  echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers
+  echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 }
 
 workstation
