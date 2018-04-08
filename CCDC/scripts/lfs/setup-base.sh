@@ -721,9 +721,11 @@ fi
 
 mv /temp/build_to_bash.sh $LFS/build_to_bash.sh
 mv /temp/finish-base.sh $LFS/finish-base.sh
+mv /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
 cd $LFS
 chmod +x build_to_bash.sh
 chmod +x finish-base.sh
+chmod +X lfs-workstation.sh
 
 chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \
