@@ -121,7 +121,7 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 
 # Make scoring engine user
 sudo apt install -y golang-go
-sudo useradd -v -M -s /bin/bash ScoringEngine
+sudo useradd -M -s /bin/bash ScoringEngine
 sudo usermod -v -aG sudo ScoringEngine
 sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/LinuxScoringEngine" >> /etc/crontab'
 sudo chown -v -R ScoringEngine /etc/gingertechengine
