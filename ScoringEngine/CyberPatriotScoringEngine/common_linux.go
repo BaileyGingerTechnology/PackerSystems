@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os/exec"
@@ -101,7 +102,7 @@ func PlatformCommon() {
 	// Check VNC is dead
 	var args = []string{"list", "--installed"}
 	var installedList = getCommandOutput("apt", args)
-	if strings.Contains(installedList, "tightvnc") {
+	if !strings.Contains(installedList, "tightvnc") {
 		AppendStringToFile("/etc/gingertechengine/post", "Unauthorized VNC server removed")
 		AppendStringToFile("/etc/gingertechengine/post", "  - VNC is not bad when it is there by choice and is secured, but in this system, it is not there by choice and is not needed. So it would be better to get rid of it, since it just adds an extra attack vector.")
 	}
@@ -109,14 +110,14 @@ func PlatformCommon() {
 	// Check Shellshock
 	args = []string{"-c", "/etc/gingertechengine/notify.sh", "check"}
 	var shellshock = getCommandOutput("bash", args)
-	if strings.Contains(shellshock, "VULN") {
+	if !strings.Contains(shellshock, "VULN") {
 		AppendStringToFile("/etc/gingertechengine/post", "Shellshock patched")
 		AppendStringToFile("/etc/gingertechengine/post", "  - Shellshock is a vulnerability in older versions of the Bash shell. Simple to exploit but also now simple to patch.")
 	}
 
 	// Check user privileges
-	args = []string{"/etc/group", "|", "grep", "sudo"}
-	var sudoers = getCommandOutput("cat", args)
+	args = []string{"-c", "cat /etc/group | grep wheel"}
+	var sudoers = getCommandOutput("bash", args)
 	splitSudoers := strings.Fields(sudoers)
 	if stringInSlice("nuzumaki", splitSudoers) || stringInSlice("jprice", splitSudoers) || stringInSlice("lpena", splitSudoers) || stringInSlice("rparker", splitSudoers) {
 		if stringInSlice("bkasin", splitSudoers) && stringInSlice("acooper", splitSudoers) && stringInSlice("administrator", splitSudoers) {
@@ -125,6 +126,7 @@ func PlatformCommon() {
 		}
 	}
 
+	fmt.Println("Post")
 	// Make post
 	t := time.Now()
 	args = []string{"/var/www/html", "&&", "wp", "post", "create", "/etc/gingertechengine/post", "--post_title=" + t.Format("20060102150405") + " Checks", "--post_type=post", "--post_status=publish", "--post_author=2"}

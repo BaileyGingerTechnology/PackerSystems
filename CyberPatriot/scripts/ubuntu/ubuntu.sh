@@ -17,7 +17,7 @@ sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache
 echo "Making database"
 sudo mysql -u root -ppassword -e 'create database wordpress;'
 # Move into and take ownership of temporary folder
-sudo chown -R administrator /temp/wp
+sudo chown -v -R administrator /temp/wp
 cd /temp/wp
 # Import database
 sudo mysql -u root -ppassword wordpress < /temp/wp/wordpress.sql
@@ -41,8 +41,8 @@ sed -i 's/password_here/password/g' wp-config.php
 # Move files to the correct folder. Right now I'm leaving /temp existing for debugging
 # reasons, but by version 1.0, I'll be deleting the /temp folder after moving contents
 echo "Moving site files to web root"
-sudo rm /var/www/html/index.html
-sudo mv * /var/www/html
+sudo rm -v /var/www/html/index.html
+sudo mv -v * /var/www/html
 
 # Make sure that index.php is the first file loaded for the website
 echo "Doing Apache2 config"
@@ -77,8 +77,8 @@ sudo apt -y install tightvncserver
 # Gonna add a couple of users with weak passwords
 cd /temp/other/
 sudo newusers < userlist.csv
-sudo usermod -aG sudo bkasin
-sudo usermod -aG sudo rparker
+sudo usermod -v -aG sudo bkasin
+sudo usermod -v -aG sudo rparker
 
 # Let's have some fun with SSH settings.
 sudo sed -i 's/Protocol\ 2/Protocol\ 1/g' /etc/ssh/sshd_config
@@ -100,10 +100,10 @@ sudo bash -c 'echo "34.196.155.28 google.com
 0.0.0.0 www.aol.com" >> /etc/hosts'
 
 # Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
-sudo mkdir /etc/gingertechengine/
-sudo mv /temp/other/notify.sh /etc/gingertechengine/
-sudo mv /temp/other/LinuxScoringEngine /etc/gingertechengine/
-sudo chmod +x /etc/gingertechengine/*
+sudo mkdir -v /etc/gingertechengine/
+sudo mv -v /temp/other/notify.sh /etc/gingertechengine/
+sudo mv -v /temp/other/LinuxScoringEngine /etc/gingertechengine/
+sudo chmod -v +x /etc/gingertechengine/*
 
 (crontab -l 2>/dev/null; echo "*/45 * * * * /etc/gingertechengine/notify.sh") | crontab -
 
@@ -116,16 +116,16 @@ mysql -u root -ppassword -e "grant all privileges on wordpress.* to 'ScoringEngi
 mysql -u root -ppassword -e "use wordpress; insert into wp_users(ID,user_login,user_pass,user_nicename,user_email,user_url,user_registered,user_status,display_name) values (2,'ScoringEngine','\$1\$tcm9IzQV\$GjrEqkpJ9.cPsScdYvD991','ScoringEngine','bailey@gingertechnology.net','https://blog.gingertechnology.net',NOW(),0,'ScoringEngine');"
 cd /temp/other
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-chmod +x wp-cli.phar
+chmod -v +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
 # Make scoring engine user
 sudo apt install -y golang-go
-sudo useradd -M -s /bin/bash ScoringEngine
-sudo usermod -aG sudo ScoringEngine
+sudo useradd -v -M -s /bin/bash ScoringEngine
+sudo usermod -v -aG sudo ScoringEngine
 sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/LinuxScoringEngine" >> /etc/crontab'
-sudo chown -R ScoringEngine /etc/gingertechengine
-sudo chmod +x /etc/gingertechengine/LinuxScoringEngine
+sudo chown -v -R ScoringEngine /etc/gingertechengine
+sudo chmod -v +x /etc/gingertechengine/LinuxScoringEngine
 
 # Kill temp dir
-sudo rm -rf /temp/*
+sudo rm -rfv /temp/*
