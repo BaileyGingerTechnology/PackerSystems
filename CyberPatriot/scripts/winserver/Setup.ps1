@@ -62,7 +62,6 @@ Install-ADDSForest `
 -SysvolPath "C:\Windows\SYSVOL" `
 -Force:$true
 
-# Going to use hMail instead of Exchange, but am leaving this here for now
 Install-WindowsFeature NET-Framework-45-Features
 
 Install-WindowsFeature ADLDS
