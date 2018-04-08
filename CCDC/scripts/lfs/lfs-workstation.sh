@@ -2,8 +2,7 @@
 
 function workstation
 {
-  cd $LFS/sources
-  mv /temp/wget-1.19.4.tar.gz .
+  cd -v $LFS/sources
   tar xvf wget-1.19.4.tar.gz
   cd wget-1.19.4
 
