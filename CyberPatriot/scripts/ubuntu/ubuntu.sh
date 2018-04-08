@@ -13,7 +13,7 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again p
 sudo apt -y install mysql-server
 
 echo "Installing MariaDB Client, Apache, and PHP 7"
-sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache2-mod-php7.0 php7.0-mcrypt
+sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache2-mod-php7.0 php7.0-mcrypt vim
 echo "Making database"
 sudo mysql -u root -ppassword -e 'create database wordpress;'
 # Move into and take ownership of temporary folder
