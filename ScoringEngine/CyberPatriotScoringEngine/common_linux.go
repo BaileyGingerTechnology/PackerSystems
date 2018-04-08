@@ -107,7 +107,7 @@ func PlatformCommon() {
 	}
 
 	// Check Shellshock
-	args = []string{"-c", "x='() { :;}; echo VULN' bash -c :"}
+	args = []string{"-c", "/etc/gingertechengine/notify.sh", "check"}
 	var shellshock = getCommandOutput("bash", args)
 	if strings.Contains(shellshock, "VULN") {
 		AppendStringToFile("/etc/gingertechengine/post", "Shellshock patched")

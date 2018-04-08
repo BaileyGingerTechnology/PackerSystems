@@ -7,4 +7,4 @@ chroot "$LFS" /usr/bin/env -i          \
     PS1='(lfs chroot) \u:\w\$ '        \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin \
     /bin/bash --login                  \
-    $LFS/lfs-workstation.sh
+    ./lfs-workstation.sh
