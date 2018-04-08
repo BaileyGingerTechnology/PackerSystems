@@ -717,4 +717,4 @@ build_grep
 build_bash
 
 cd $LFS
-exec /bin/bash --login +h ./finish-base.sh
+exec /bin/bash --login +h $LFS/finish-base.sh
