@@ -27,7 +27,7 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
       "boot_wait": "5s",
@@ -68,7 +68,7 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
       "boot_wait": "5s",
@@ -112,7 +112,7 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
       "tools_upload_flavor": "linux",
