@@ -119,13 +119,24 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod -v +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
+#####################
+# OLD WAY OF DOING IT
+#####################
+
 # Make scoring engine user
-sudo apt install -y golang-go
-sudo useradd -M -s /bin/bash ScoringEngine
-sudo usermod -v -aG sudo ScoringEngine
-sudo bash -c 'echo "*/15 * * * * ScoringEngine /etc/gingertechengine/LinuxScoringEngine" >> /etc/crontab'
-sudo chown -v -R ScoringEngine /etc/gingertechengine
-sudo chmod -v +x /etc/gingertechengine/LinuxScoringEngine
+#sudo apt install -y golang-go
+#sudo useradd -M -s /bin/bash ScoringEngine
+#sudo usermod -v -aG sudo ScoringEngine
+sudo bash -c 'echo "*/15 * * * * root /usr/local/bin/checkscore" >> /etc/crontab'
+#sudo chown -v -R ScoringEngine /etc/gingertechengine
+#sudo chmod -v +x /etc/gingertechengine/LinuxScoringEngine
+
+#####################
+# NEW WAY OF DOING IT
+#####################
+
+cd /temp/other
+sudo dpkg -i CheckScore_1.0.deb
 
 # Kill temp dir
 sudo rm -rfv /temp/*

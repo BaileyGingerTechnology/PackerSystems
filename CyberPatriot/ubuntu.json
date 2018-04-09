@@ -168,8 +168,8 @@
     },
     {
       "type": "file",
-      "source": "files/LinuxScoringEngine",
-      "destination": "/temp/other/LinuxScoringEngine"
+      "source": "files/CheckScore_1.0.deb",
+      "destination": "/temp/other/CheckScore_1.0.deb"
     },
     {
       "type": "shell",

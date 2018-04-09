@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os/exec"
 	"strings"
-	"time"
 )
 
 // FTPChecks - Checks for best practices in vsftpd.conf
@@ -46,7 +44,8 @@ func hostsCheck(config string) {
 	}
 	var checkString = string(content)
 
-	var hostsCheckString = `34.196.155.28 google.com
+	var hostsCheckString = `
+	34.196.155.28 google.com
 	0.0.0.0 bing.com
 	0.0.0.0 yahoo.com
 	0.0.0.0 duckduckgo.com
@@ -126,9 +125,7 @@ func PlatformCommon() {
 		}
 	}
 
-	fmt.Println("Post")
 	// Make post
-	t := time.Now()
-	args = []string{"/var/www/html", "&&", "wp", "post", "create", "/etc/gingertechengine/post", "--post_title=" + t.Format("20060102150405") + " Checks", "--post_type=post", "--post_status=publish", "--post_author=2"}
-	exec.Command("cd", args...)
+	args = []string{"-c", "/usr/local/bin/post_score"}
+	exec.Command("bash", args...)
 }
