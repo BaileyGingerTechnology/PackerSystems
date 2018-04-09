@@ -132,7 +132,7 @@ func PlatformCommon() {
 	args = []string{"-c", "cat /etc/group | grep sudo"}
 	var sudoers = getCommandOutput("bash", args)
 	splitSudoers := strings.Fields(sudoers)
-	if !stringInSlice("nuzumaki", splitSudoers) || !stringInSlice("jprice", splitSudoers) || !stringInSlice("lpena", splitSudoers) || !stringInSlice("rparker", splitSudoers) {
+	if !stringInSlice("nuzumaki", splitSudoers) && !stringInSlice("jprice", splitSudoers) && !stringInSlice("lpena", splitSudoers) && !stringInSlice("rparker", splitSudoers) {
 		if stringInSlice("bkasin", splitSudoers) && stringInSlice("acooper", splitSudoers) && stringInSlice("administrator", splitSudoers) {
 			AppendStringToFile("/etc/gingertechengine/post", "User privileges fixed (10/10)")
 			AppendStringToFile("/etc/gingertechengine/post", "  - Pretty self explanatory. Only trained and authorized users should have admin privileges, and minimize the amount of users with admin powers.")
