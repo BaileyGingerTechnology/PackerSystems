@@ -77,8 +77,6 @@ sudo apt -y install tightvncserver
 # Gonna add a couple of users with weak passwords
 cd /temp/other/
 sudo newusers < userlist.csv
-sudo usermod -v -aG sudo bkasin
-sudo usermod -v -aG sudo rparker
 
 # Let's have some fun with SSH settings.
 sudo sed -i 's/Protocol\ 2/Protocol\ 1/g' /etc/ssh/sshd_config
@@ -127,7 +125,7 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 #sudo apt install -y golang-go
 #sudo useradd -M -s /bin/bash ScoringEngine
 #sudo usermod -v -aG sudo ScoringEngine
-sudo bash -c 'echo "*/15 * * * * root /usr/local/bin/checkscore" >> /etc/crontab'
+#sudo bash -c 'echo "*/15 * * * * ScoringEngine /usr/local/bin/checkscore" >> /etc/crontab'
 #sudo chown -v -R ScoringEngine /etc/gingertechengine
 #sudo chmod -v +x /etc/gingertechengine/LinuxScoringEngine
 
@@ -135,8 +133,18 @@ sudo bash -c 'echo "*/15 * * * * root /usr/local/bin/checkscore" >> /etc/crontab
 # NEW WAY OF DOING IT
 #####################
 
+sudo chown -v -R administrator /etc/gingertechengine
+sudo chown -v root /etc/gingertechengine/notify.sh
+(crontab -l 2>/dev/null; echo "*/15 * * * * /usr/local/bin/checkscore") | crontab -
+
 cd /temp/other
 sudo dpkg -i CheckScore_1.0.deb
+
+# User priv stuff
+sudo usermod -aG sudo nuzumaki
+sudo usermod -aG sudo jprice
+sudo usermod -aG sudo lpena
+sudo usermod -aG sudo rparker
 
 # Kill temp dir
 sudo rm -rfv /temp/*
