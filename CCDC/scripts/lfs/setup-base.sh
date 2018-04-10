@@ -722,7 +722,6 @@ fi
 mv /temp/build_to_bash.sh $LFS/build_to_bash.sh
 mv /temp/finish-base.sh $LFS/finish-base.sh
 mv /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
-mv /temp/wget-1.19.4.tar.gz $LFS/sources/wget-1.19.4.tar.gz
 cd $LFS
 chmod +x build_to_bash.sh
 chmod +x finish-base.sh

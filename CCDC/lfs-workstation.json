@@ -102,11 +102,6 @@
     },
     {
       "type": "file",
-      "source": "files/lfs/wget-1.19.4.tar.gz",
-      "destination": "/temp/wget-1.19.4.tar.gz"
-    },
-    {
-      "type": "file",
       "source": "scripts/lfs/lfs-workstation.sh",
       "destination": "/temp/lfs-workstation.sh"
     },
@@ -121,7 +116,6 @@
       "expect_disconnect": true,
       "scripts": [
         "scripts/lfs/setup-base.sh",
-        "scripts/lfs/call-station.sh",
         "scripts/lfs/reboot.sh"
       ]
     }
