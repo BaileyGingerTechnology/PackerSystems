@@ -432,6 +432,21 @@ build_zlib
 build_file
 build_readline
 build_m4
+
+cd $LFS/sources
+tar xvf bc-1.07.1.tar.gz
+cd bc-1.07.1
+cat > bc/fix-libmath_h << "EOF"
+#! /bin/bash
+sed -e '1   s/^/{"/' \
+    -e     's/$/",/' \
+    -e '2,$ s/^/"/'  \
+    -e   '$ d'       \
+    -i libmath.h
+
+sed -e '$ s/$/0}/' \
+    -i libmath.h
+EOF
 build_bc
 build_binutils
 build_gmp

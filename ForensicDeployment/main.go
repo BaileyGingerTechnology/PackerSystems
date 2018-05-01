@@ -47,12 +47,11 @@ func getQuestions() []Question {
 
 	for i := 0; i < len(c); i++ {
 		if c[i].OS != runtime.GOOS && c[i].OS != "either" {
-			c = append(c[:i])
+			c = append(c[:i], c[i+1:]...)
 		}
 	}
 
 	p := rand.Perm(len(c))
-
 	var questionPicked = []Question{
 		c[p[1]],
 		c[p[2]],

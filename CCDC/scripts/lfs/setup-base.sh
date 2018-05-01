@@ -42,7 +42,7 @@ echo "==> Destroying magic strings and signatures on ${DISK}"
 function set_filesystems
 {
 	# Make the boot partition ext2
-	mkfs.ext2 $12
+	mkfs.vfat -F32 $12
 	# Make the file partition ext4
 	mkfs.ext4 $14
 	# Make the third partition swap
@@ -101,7 +101,7 @@ mkdir -pv $LFS
 mount -v -t ext4 ${DISK}4 $LFS
 make_directories
 
-mount -v -t ext2 ${DISK}2 $LFS/boot
+mount -v -t vfat ${DISK}2 $LFS/boot
 
 pacman -Sy
 pacman -Sc --noconfirm
@@ -219,7 +219,7 @@ esac
 function build_linux_headers
 {
   cd $LFS/sources
-  tar xvf linux-4.15.3.tar.xz
+  tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
   make mrproper
