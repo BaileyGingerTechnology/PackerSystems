@@ -1,2 +1,4 @@
 {
+  "editor.tabSize": 2,
+  "go.autocompleteUnimportedPackages": true
 }

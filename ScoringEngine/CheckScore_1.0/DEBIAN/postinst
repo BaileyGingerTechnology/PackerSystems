@@ -1,0 +1,4 @@
+#!/bin/bash
+# Author: Bailey Kasin
+
+sudo chmod 0744 /usr/local/bin/checkscore && chmod 0744 /usr/local/bin/post_score

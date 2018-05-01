@@ -25,7 +25,6 @@
         ["-smp", "{{user `numcpus`}}"]
       ]
     },
-    
     {
       "type": "virtualbox-iso",
       "floppy_files": [
@@ -99,7 +98,6 @@
         "scsi0.virtualDev": "lsisas1068"
       }
     }
-
   ],
   "post-processors": [
     {
@@ -164,7 +162,6 @@
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\disable-windows-defender.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\fix-privacy-settings.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\optimize-user-interface.ps1",
-        "powershell -NoLogo -ExecutionPolicy Unrestricted .\\optimize-windows-update.ps1",
         "powershell -NoLogo -ExecutionPolicy Unrestricted .\\remove-default-apps.ps1",
         "del C:\\Users\\GingerTech\\Desktop\\Debloat-Windows-10"
       ]

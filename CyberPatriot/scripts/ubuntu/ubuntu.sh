@@ -6,6 +6,9 @@ echo "Updating"
 sudo apt update
 sudo apt -y upgrade
 
+# Installing dependencies for the rest of the build
+sudo apt -y install vim jq
+
 # Setting up LAMP stack
 echo "Installing MariaDB Server"
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password password'
@@ -13,7 +16,7 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again p
 sudo apt -y install mysql-server
 
 echo "Installing MariaDB Client, Apache, and PHP 7"
-sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache2-mod-php7.0 php7.0-mcrypt vim
+sudo apt -y install mysql-client apache2 php7.0 php7.0-gd php7.0-mysql libapache2-mod-php7.0 php7.0-mcrypt
 echo "Making database"
 sudo mysql -u root -ppassword -e 'create database wordpress;'
 # Move into and take ownership of temporary folder
@@ -84,24 +87,18 @@ sudo sed -i 's/prohibit-password/yes/g' /etc/ssh/sshd_config
 sudo sed -i 's/PermitEmptyPasswords\ no/PermitEmptyPasswords\ yes/g' /etc/ssh/sshd_config
 
 # Back in my day, we had to work if we wanted Google!
-sudo bash -c 'echo "34.196.155.28 google.com
+sudo bash -c 'echo "104.81.48.202 google.com
 0.0.0.0 bing.com
 0.0.0.0 yahoo.com
 0.0.0.0 duckduckgo.com
 0.0.0.0 startpage.com
 0.0.0.0 aol.com
-34.196.155.28 www.google.com
+104.81.48.202 www.google.com
 0.0.0.0 www.bing.com
 0.0.0.0 www.yahoo.com
 0.0.0.0 www.duckduckgo.com
 0.0.0.0 www.startpage.com
 0.0.0.0 www.aol.com" >> /etc/hosts'
-
-# Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
-sudo mkdir -v /etc/gingertechengine/
-sudo mv -v /temp/other/notify.sh /etc/gingertechengine/
-sudo mv -v /temp/other/LinuxScoringEngine /etc/gingertechengine/
-sudo chmod -v +x /etc/gingertechengine/*
 
 (crontab -l 2>/dev/null; echo "*/45 * * * * /etc/gingertechengine/notify.sh") | crontab -
 
@@ -117,28 +114,19 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod -v +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
-#####################
-# OLD WAY OF DOING IT
-#####################
-
-# Make scoring engine user
-#sudo apt install -y golang-go
-#sudo useradd -M -s /bin/bash ScoringEngine
-#sudo usermod -v -aG sudo ScoringEngine
-#sudo bash -c 'echo "*/15 * * * * ScoringEngine /usr/local/bin/checkscore" >> /etc/crontab'
-#sudo chown -v -R ScoringEngine /etc/gingertechengine
-#sudo chmod -v +x /etc/gingertechengine/LinuxScoringEngine
-
-#####################
-# NEW WAY OF DOING IT
-#####################
-
-sudo chown -v -R administrator /etc/gingertechengine
-sudo chown -v root /etc/gingertechengine/notify.sh
-(crontab -l 2>/dev/null; echo "*/15 * * * * /usr/local/bin/checkscore") | crontab -
-
-cd /temp/other
 sudo dpkg -i CheckScore_1.0.deb
+mkdir -p /home/administrator/Desktop
+sudo ./ForensicDeployment
+sudo chown administrator /home/administrator/Desktop/Forensic\ One.txt
+sudo chown administrator /home/administrator/Desktop/Forensic\ Two.txt
+sudo mv /temp/other/scoring.service /etc/systemd/system/scoring.service
+sudo systemctl enable scoring
+
+# Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
+sudo mv -v /temp/other/notify.sh /etc/gingertechengine/
+sudo chmod -v +x /etc/gingertechengine/*
+#sudo chown -v -R administrator /etc/gingertechengine
+sudo chown -v root /etc/gingertechengine/notify.sh
 
 # User priv stuff
 sudo usermod -aG sudo nuzumaki

@@ -1,0 +1,30 @@
+[
+  {
+    "id": 0,
+    "os": "either",
+    "question": "Decode the following text: 7DF550F49D4CD166FFF7AB5B94DAD82E1B172B2485E41DC286C95CF484A129A0. Hint: the key is \"key\"",
+    "answer": "Ginger Technology is best",
+    "deployment": "none"
+  },
+  {
+    "id": 1,
+    "os": "linux",
+    "question": "What is the current minimum password length? Answer in numeric form (1, 2, etc. rather than one, two).",
+    "answer": "8",
+    "deployment": "none"
+  },
+  {
+    "id": 2,
+    "os": "linux",
+    "question": "What is the current URL of the mirror that the system is trying to update from? Example: http://linux.example.com/mirror",
+    "answer": "https://mirror.gingertechnology.net/ubuntu",
+    "deployment": "none"
+  },
+  {
+    "id": 3,
+    "os": "windows",
+    "question": "What is the name of the package manager used on this system?",
+    "answer": "Scoop",
+    "deployment": "none"
+  }
+]
