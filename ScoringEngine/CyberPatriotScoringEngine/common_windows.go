@@ -2,16 +2,21 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 	"strings"
-	"text/template"
 
+	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/pixelgl"
+	"github.com/faiface/pixel/text"
+	"golang.org/x/image/colornames"
+	"golang.org/x/image/font/basicfont"
 	"golang.org/x/sys/windows/registry"
 )
 
-// WindowsType - Deturn which second set of checks to run based on whether Registry claims it is a server
+var basicAtlas = text.NewAtlas(basicfont.Face7x13, text.ASCII)
+var basicTxt = text.New(pixel.V(20, 748), basicAtlas)
+
+// WindowsType - Determine which second set of checks to run based on whether Registry claims it is a server
 func WindowsType() {
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
 	if err != nil {
@@ -31,48 +36,48 @@ func WindowsType() {
 	}
 }
 
-var templates *template.Template
+func run() {
+	cfg := pixelgl.WindowConfig{
+		Title:  "Scoring Engine",
+		Bounds: pixel.R(0, 0, 1024, 768),
+		VSync:  true,
+	}
 
-// FinishWindows - Build results of Windows checks into an HTML file from the template files
-func FinishWindows() {
-	var allFiles []string
-	files, err := ioutil.ReadDir("./templates")
+	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
-		fmt.Println(err)
-	}
-	for _, file := range files {
-		filename := file.Name()
-		if strings.HasSuffix(filename, ".tmpl") {
-			allFiles = append(allFiles, "./templates/"+filename)
-		}
+		panic(err)
 	}
 
-	templates, err = template.ParseFiles(allFiles...) //parses all .tmpl files in the 'templates' folder
+	fmt.Fprintln(basicTxt, "Current Score:")
 
-	s1 := templates.Lookup("header.tmpl")
-	s1.ExecuteTemplate(os.Stdout, "header", nil)
-	fmt.Println()
-	s2 := templates.Lookup("content.tmpl")
-	s2.ExecuteTemplate(os.Stdout, "content", nil)
-	fmt.Println()
-	s3 := templates.Lookup("footer.tmpl")
-	s3.ExecuteTemplate(os.Stdout, "footer", nil)
-	fmt.Println()
-	s3.Execute(os.Stdout, nil)
-}
-
-// PlatformCommon - Checks that will work for both Server and Windows 10
-func PlatformCommon() {
-	// TODO: Have checks for Windows insert a line into content.tmpl each pass
-	// Will have to find a way to reset content.tmpl each time. Maybe overwrite with
-	// a literal string like the Linux hosts variable.
 	// Check shares
 	var args = []string{"get-WmiObject", "-class", "Win32_Share"}
 	var shares = getCommandOutput("powershell.exe", args)
 	if !strings.Contains(shares, "FullDrive") {
-		AppendStringToFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html", "Unauthorized VNC server removed")
-		AppendStringToFile("C:\\Users\\GingerTech\\Destop\\CurrentScore.html", "  - VNC is not bad when it is there by choice and is secured, but in this system, it is not there by choice and is not needed. So it would be better to get rid of it, since it just adds an extra attack vector.")
+		fmt.Fprintln(basicTxt, "Full Drive Share Removed")
+		fmt.Fprintln(basicTxt, "  - Generally, it is a really bad idea to share your Entire C drive across the network you are on.")
 	}
 
 	WindowsType()
+
+	for !win.Closed() {
+		win.Clear(colornames.Black)
+		basicTxt.Draw(win, pixel.IM)
+		win.Update()
+	}
+}
+
+// PlatformCommon - Checks that will work for both Server and Windows 10
+func PlatformCommon() {
+	pixelgl.Run(run)
+}
+
+// WindowsServerChecks - Checks for just server
+func WindowsServerChecks() {
+
+}
+
+// WindowsWorkstationChecks - Checks for just the workstation
+func WindowsWorkstationChecks() {
+
 }

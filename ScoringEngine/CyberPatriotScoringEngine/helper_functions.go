@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // AppendStringToFile - Add string to the bottom of a file
@@ -112,4 +113,11 @@ func decrypt(key []byte, cryptoText string) string {
 	stream.XORKeyStream(ciphertext, ciphertext)
 
 	return fmt.Sprintf("%s", ciphertext)
+}
+
+// doEvery - Run function f every d length of time
+func doEvery(d time.Duration, f func(time.Time)) {
+	for x := range time.Tick(d) {
+		f(x)
+	}
 }

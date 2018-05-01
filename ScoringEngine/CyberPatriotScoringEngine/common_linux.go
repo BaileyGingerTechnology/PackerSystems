@@ -103,6 +103,9 @@ func stringInSlice(a string, list []string) bool {
 
 // PlatformCommon - The main function for running Linux checks
 func PlatformCommon() {
+	deleteFile("/etc/gingertechengine/post")
+	createFile("/etc/gingertechengine/post")
+
 	// Do Linux checks
 	FTPChecks("/etc/vsftpd.conf")
 	// Do hosts check

@@ -939,8 +939,8 @@ cat > /etc/fstab << "EOF"
 #                                                              order
 
 /dev/sda4      /            ext4     defaults            1     1
+/dev/sda2      /boot    		vfat     defaults,noatime    0     2
 /dev/sad3      swap         swap     pri=1               0     0
-/dev/sda2      /boot    		ext2     defaults,noatime    0     2
 proc           /proc        proc     nosuid,noexec,nodev 0     0
 sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
 tmpfs          /run         tmpfs    defaults            0     0
@@ -951,30 +951,30 @@ EOF
 
 function build_kernel
 {
+  echo "Starting kernel"
   cd $LFS/sources
-  tar xvf linux-4.15.3.tar.xz
+  tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
   make mrproper
   # Let's see if this works
   make defconfig
 
-  make -j${CPUS}
-  make -j${CPUS} modules_install
+  make
+  make modules_install
+
+  # Make system bootable
+  cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.15.3-gt-1.0
+  cp -iv System.map /boot/System.map-4.15.3
+  cp -iv .config /boot/config-4.15.3
+  install -d /usr/share/doc/linux-4.15.3
+  cp -r Documentation/* /usr/share/doc/linux-4.15.3
+
+  install -v -m755 -d /etc/modprobe.d
+  echo "Finished kernel"
 }
 
 build_kernel
-
-mount --bind /boot /mnt/lfs/boot
-
-# Make system bootable
-cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.15.3-gt-8.2
-cp -iv System.map /boot/System.map-4.15.3
-cp -iv .config /boot/config-4.15.3
-install -d /usr/share/doc/linux-4.15.3
-cp -r Documentation/* /usr/share/doc/linux-4.15.3
-
-install -v -m755 -d /etc/modprobe.d
 cat > /etc/modprobe.d/usb.conf << "EOF"
 # Begin /etc/modprobe.d/usb.conf
 
@@ -984,9 +984,7 @@ install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 # End /etc/modprobe.d/usb.conf
 EOF
 
-cd /tmp 
-grub-mkrescue --output=grub-img.iso 
-xorriso -as cdrecord -v dev=/dev/cdrw blank=as_needed grub-img.iso
+cd /tmp
 grub-install /dev/sda
 
 cat > /boot/grub/grub.cfg << "EOF"

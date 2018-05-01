@@ -7,7 +7,7 @@
     "country": "US",
     "headless": "false",
     "cpus": "8",
-    "memory": "2048",
+    "memory": "4096",
     "lfs": "/mnt/lfs"
   },
   "builders": [
