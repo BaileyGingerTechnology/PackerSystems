@@ -33,7 +33,7 @@ Ubuntu and Windows 10 are both functional and build the base of what I want. But
 
 For Ubuntu:
 
-    - Installs VMware/Vbox tools
+    - Installs VMware tools. Vbox tools currently not working for some reason
 
     - Has KDE for the desktop, since I'm nice. That can be changed in the ubuntu.sh script
 

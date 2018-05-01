@@ -48,13 +48,13 @@ func hostsCheck(config string) {
 	var checkString = string(content)
 
 	var hostsCheckString = `
-34.196.155.28 google.com
+104.81.48.202 google.com
 0.0.0.0 bing.com
 0.0.0.0 yahoo.com
 0.0.0.0 duckduckgo.com
 0.0.0.0 startpage.com
 0.0.0.0 aol.com
-34.196.155.28 www.google.com
+104.81.48.202 www.google.com
 0.0.0.0 www.bing.com
 0.0.0.0 www.yahoo.com
 0.0.0.0 www.duckduckgo.com
@@ -158,7 +158,41 @@ func PlatformCommon() {
 		AppendStringToFile("/etc/gingertechengine/post", "")
 	}
 
+	ForensicQuestion()
+
 	// Make post
 	args = []string{"-c", "/usr/local/bin/post_score"}
 	getCommandOutput("bash", args)
+}
+
+// ForensicQuestion - Checks for if forensic questions have been completed
+func ForensicQuestion() {
+	key := []byte("WjNJKFcSZejKNzPP")
+	var args = []string{"bash", "-c", "head -n1 /etc/gingertechengine/key"}
+	var questionOne = getCommandOutput("sudo", args)
+	args = []string{"bash", "-c", "tail -n1 /etc/gingertechengine/key"}
+	var questionTwo = getCommandOutput("sudo", args)
+
+	var answerOne = decrypt(key, questionOne)
+	var answerTwo = decrypt(key, questionTwo)
+
+	content, err := ioutil.ReadFile("/home/administrator/Desktop/Forensic One.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	questionOne = string(content)
+	content1, err := ioutil.ReadFile("/home/administrator/Desktop/Forensic Two.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	questionTwo = string(content1)
+
+	if strings.Contains(questionOne, answerOne) {
+		AppendStringToFile("/etc/gingertechengine/post", "Forensic Question One Complete (1/2)")
+		AppendStringToFile("/etc/gingertechengine/post", "")
+	}
+	if strings.Contains(questionTwo, answerTwo) {
+		AppendStringToFile("/etc/gingertechengine/post", "Forensic Question Two Complete (2/2)")
+		AppendStringToFile("/etc/gingertechengine/post", "")
+	}
 }

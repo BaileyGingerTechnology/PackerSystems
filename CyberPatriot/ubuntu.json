@@ -130,12 +130,6 @@
     {
       "execute_command": "sudo -E -S bash '{{.Path}}'",
       "type": "shell",
-      "scripts": "scripts/ubuntu/virtualbox-tools.sh",
-      "only": ["virtualbox"]
-    },
-    {
-      "execute_command": "sudo -E -S bash '{{.Path}}'",
-      "type": "shell",
       "scripts": "scripts/ubuntu/vmware-tools.sh",
       "only": ["vmware"]
     },
@@ -170,6 +164,21 @@
       "type": "file",
       "source": "files/CheckScore_1.0.deb",
       "destination": "/temp/other/CheckScore_1.0.deb"
+    },
+    {
+      "type": "file",
+      "source": "files/scoring.service",
+      "destination": "/temp/other/scoring.service"
+    },
+    {
+      "type": "file",
+      "source": "files/ForensicDeployment",
+      "destination": "/temp/other/ForensicDeployment"
+    },
+    {
+      "type": "file",
+      "source": "files/questions.json",
+      "destination": "/temp/other/questions.json"
     },
     {
       "type": "shell",
