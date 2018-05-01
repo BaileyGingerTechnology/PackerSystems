@@ -108,7 +108,7 @@ pacman -Sc --noconfirm
 
 # Move into the main disk and download all the packages that will be needed
 cd $LFS
-wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
+wget https://files.gingertechnology.net/packersystems/lfs/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 
 #exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
