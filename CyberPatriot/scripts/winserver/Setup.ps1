@@ -85,3 +85,6 @@ $DefaultPassword = ''
 
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
+# Setup for Scoring Engine
+mkdir C:\ProgramData\gingertechengine

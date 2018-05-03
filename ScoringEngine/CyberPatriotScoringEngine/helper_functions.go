@@ -121,3 +121,12 @@ func doEvery(d time.Duration, f func(time.Time)) {
 		f(x)
 	}
 }
+
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}

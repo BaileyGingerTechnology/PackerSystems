@@ -54,8 +54,14 @@ func run() {
 	var args = []string{"get-WmiObject", "-class", "Win32_Share"}
 	var shares = getCommandOutput("powershell.exe", args)
 	if !strings.Contains(shares, "FullDrive") {
-		fmt.Fprintln(basicTxt, "Full Drive Share Removed")
+		fmt.Fprintln(basicTxt, "Full Drive Share Removed (1/")
 		fmt.Fprintln(basicTxt, "  - Generally, it is a really bad idea to share your Entire C drive across the network you are on.")
+	}
+	args = []string{"Get-ADDefaultDomainPasswordPolicy", "-Current", "LocalComputer"}
+	var passwordPolicy = getCommandOutput("powershell.exe", args)
+	if !strings.Contains(passwordPolicy, "Min") {
+		fmt.Fprintln(basicTxt, "Minimum Password Length Fixed (2/")
+		fmt.Fprintln(basicTxt, "  - It's a good idea to have a minimum password length of at least 8, but 12 is better if it can be reasonably expected.")
 	}
 
 	WindowsType()

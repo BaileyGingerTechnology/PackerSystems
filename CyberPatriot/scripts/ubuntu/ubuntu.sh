@@ -49,8 +49,8 @@ sudo mv -v * /var/www/html
 
 # Make sure that index.php is the first file loaded for the website
 echo "Doing Apache2 config"
-sed -i 's/index.php\ //g' /etc/apache2/mods-enabled/dir.conf
-sed -i 's/index.html/index.php/g' /etc/apache2/mods-enabled/dir.conf
+sudo sed -i 's/index.php\ //g' /etc/apache2/mods-enabled/dir.conf
+sudo sed -i 's/index.html/index.php/g' /etc/apache2/mods-enabled/dir.conf
 
 # Install KDE, best desktop. To be honest, I should use XFCE or LXDE, but KDE so good
 echo "Installing desktop"
@@ -102,7 +102,7 @@ sudo bash -c 'echo "104.81.48.202 google.com
 
 (crontab -l 2>/dev/null; echo "*/45 * * * * /etc/gingertechengine/notify.sh") | crontab -
 
-# Set Apache2 and MySQL to start at boot
+# Jankily set Apache2 and MySQL to start at boot
 echo "sudo /etc/init.d/apache2 start" >> /home/administrator/.bash_profile
 echo "sudo /etc/init.d/mysql start" >> /home/administrator/.bash_profile
 
