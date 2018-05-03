@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"os/exec"
 	"strings"
 )
 
@@ -92,19 +93,14 @@ func SSHChecks(config string) {
 	}
 }
 
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}
-
 // PlatformCommon - The main function for running Linux checks
 func PlatformCommon() {
+	var args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
+	exec.Command("sudo", args...)
 	deleteFile("/etc/gingertechengine/post")
 	createFile("/etc/gingertechengine/post")
+	args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
+	exec.Command("sudo", args...)
 
 	// Do Linux checks
 	FTPChecks("/etc/vsftpd.conf")
@@ -114,7 +110,7 @@ func PlatformCommon() {
 	SSHChecks("/etc/ssh/sshd_config")
 
 	// Check VNC is dead
-	var args = []string{"list", "--installed"}
+	args = []string{"list", "--installed"}
 	var installedList = getCommandOutput("apt", args)
 	if !strings.Contains(installedList, "tightvnc") {
 		AppendStringToFile("/etc/gingertechengine/post", "Unauthorized VNC server removed (8/12)")
@@ -143,11 +139,11 @@ func PlatformCommon() {
 		}
 	}
 
-	// Check for Wordfence being active
+	// Check for Wordpress being up to date
 	args = []string{"-c", "cd /var/www/html && wp core check-update"}
 	var wordpressVersion = getCommandOutput("bash", args)
 	if strings.Contains(wordpressVersion, "Success") {
-		AppendStringToFile("/etc/gingertechengine/post", "Wordfence update (11/12)")
+		AppendStringToFile("/etc/gingertechengine/post", "Wordpress updated (11/12)")
 		AppendStringToFile("/etc/gingertechengine/post", "  -  Keeping everything up to date is a very important part of staying secure. You should also have needed to fix permissions to complete this check, which is an important thing to know how to do.")
 		AppendStringToFile("/etc/gingertechengine/post", "")
 	}

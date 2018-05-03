@@ -24,12 +24,13 @@ func Deploy(toDeploy Question) {
 		AppendStringToFile("C:\\Users\\administrator\\Desktop\\Forensic Two.txt", strconv.Itoa(toDeploy.ID)+"\n"+toDeploy.Question)
 	}
 
-	//key := []byte("WjNJKFcSZejKNzPP")
-	//var answer = encrypt(key, toDeploy.Answer)
+	key := []byte("WjNJKFcSZejKNzPP")
+	var answer = encrypt(key, toDeploy.Answer)
 
 	if _, err := os.Stat("C:\\Users\\administrator\\Desktop\\Forensic Two.txt"); err == nil {
-		//AppendKeyToFile("/etc/gingertechengine/key", "\n"+answer)
+		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\n"+answer)
 	} else {
-		//AppendKeyToFile("/etc/gingertechengine/key", answer)
+		createFile("C:\\ProgramData\\gingertechengine\\key")
+		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", answer)
 	}
 }

@@ -26,5 +26,12 @@
     "question": "What is the name of the package manager used on this system?",
     "answer": "Scoop",
     "deployment": "none"
+  },
+  {
+    "id": 4,
+    "os": "windows",
+    "question": "What is the current minimum password length? Answer in numeric form (1, 2, etc. rather than one, two).",
+    "answer": "0",
+    "deployment": "none"
   }
 ]
