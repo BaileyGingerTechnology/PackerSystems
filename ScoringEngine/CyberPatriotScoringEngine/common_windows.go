@@ -55,15 +55,39 @@ func run() {
 	var shares = getCommandOutput("powershell.exe", args)
 	if !strings.Contains(shares, "FullDrive") {
 		fmt.Fprintln(basicTxt, "Full Drive Share Removed (1/")
-		fmt.Fprintln(basicTxt, "  - Generally, it is a really bad idea to share your Entire C drive across the network you are on.")
+		fmt.Fprintln(basicTxt, "  - Generally, it is a really bad idea to share your entire C drive across the network you are on.")
 	}
-	args = []string{"Get-ADDefaultDomainPasswordPolicy", "-Current", "LocalComputer"}
+	// Check password policy
+	args = []string{"-command", "Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | grep MinPasswordLength"}
 	var passwordPolicy = getCommandOutput("powershell.exe", args)
-	if !strings.Contains(passwordPolicy, "Min") {
+	var i int
+	if _, err := fmt.Sscanf(passwordPolicy, "MinPasswordLength           : %1d", &i); err == nil {
+		fmt.Println(i)
+	}
+	if i >= 8 {
 		fmt.Fprintln(basicTxt, "Minimum Password Length Fixed (2/")
 		fmt.Fprintln(basicTxt, "  - It's a good idea to have a minimum password length of at least 8, but 12 is better if it can be reasonably expected.")
 	}
-
+	var hostsCheckString = `
+34.196.155.28 google.com
+0.0.0.0 bing.com
+0.0.0.0 yahoo.com
+0.0.0.0 duckduckgo.com
+0.0.0.0 startpage.com
+0.0.0.0 aol.com
+34.196.155.28 www.google.com
+0.0.0.0 www.bing.com
+0.0.0.0 www.yahoo.com
+0.0.0.0 www.duckduckgo.com
+0.0.0.0 www.startpage.com
+0.0.0.0 www.aol.com`
+	// Check hosts file
+	args = []string{"cat", "C:\\Windows\\System32\\drivers\\etc\\hosts"}
+	var hosts = getCommandOutput("powershell.exe", args)
+	if !strings.Contains(hosts, hostsCheckString) {
+		fmt.Fprintln(basicTxt, "hosts File Fixed (3/")
+		fmt.Fprintln(basicTxt, "  - The hosts file can be used to route traffic to a different IP than would normally be associated with that hostname.")
+	}
 	WindowsType()
 
 	for !win.Closed() {
