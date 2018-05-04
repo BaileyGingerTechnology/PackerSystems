@@ -131,10 +131,10 @@ IF($MachineOS -like "*Microsoft Windows Server*") {
 }
 IF ($ENV:PROCESSOR_ARCHITECTURE -eq "AMD64"){
     Write-host "x64 Detected" -foregroundcolor yellow
-    $Link=(($web.AllElements |where class -eq "multifile-failover-url").innerhtml[0].split(" ")|select-string href).tostring().replace("href=","").trim('"')
+    $Link=(($web.AllElements |Where-Object class -eq "multifile-failover-url").innerhtml[0].split(" ")|select-string href).tostring().replace("href=","").trim('"')
 } ELSE {
     Write-host "x86 Detected" -forgroundcolor yellow
-    $Link=(($web.AllElements |where class -eq "multifile-failover-url").innerhtml[1].split(" ")|select-string href).tostring().replace("href=","").trim('"')
+    $Link=(($web.AllElements |Where-Object class -eq "multifile-failover-url").innerhtml[1].split(" ")|select-string href).tostring().replace("href=","").trim('"')
 }
 $DLPath= ($ENV:USERPROFILE) + "\Downloads\" + ($link.split("/")[8])
 Write-Host "Downloading RSAT MSU file" -foregroundcolor yellow
@@ -154,4 +154,5 @@ Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
 regedit /s c:\registryKeys.reg
 
 # Setup for Scoring Engine
+scoop install grep --global
 mkdir C:\ProgramData\gingertechengine

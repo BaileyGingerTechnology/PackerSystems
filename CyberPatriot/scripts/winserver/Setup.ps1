@@ -87,4 +87,5 @@ $DefaultPassword = ''
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
 # Setup for Scoring Engine
+scoop install grep --global
 mkdir C:\ProgramData\gingertechengine

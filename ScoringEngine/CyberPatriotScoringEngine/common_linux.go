@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os/exec"
@@ -95,12 +96,11 @@ func SSHChecks(config string) {
 
 // PlatformCommon - The main function for running Linux checks
 func PlatformCommon() {
-	var args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
-	exec.Command("sudo", args...)
 	deleteFile("/etc/gingertechengine/post")
 	createFile("/etc/gingertechengine/post")
 	args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
 	exec.Command("sudo", args...)
+	fmt.Println("Own post")
 
 	// Do Linux checks
 	FTPChecks("/etc/vsftpd.conf")
@@ -157,6 +157,7 @@ func PlatformCommon() {
 		AppendStringToFile("/etc/gingertechengine/post", "")
 	}
 
+	fmt.Println("Forensics")
 	ForensicQuestion()
 
 	// Make post
@@ -167,8 +168,10 @@ func PlatformCommon() {
 // ForensicQuestion - Checks for if forensic questions have been completed
 func ForensicQuestion() {
 	key := []byte("WjNJKFcSZejKNzPP")
+	fmt.Println("Head file")
 	var args = []string{"bash", "-c", "head -n1 /etc/gingertechengine/key"}
 	var questionOne = getCommandOutput("sudo", args)
+	fmt.Println("Tail file")
 	args = []string{"bash", "-c", "tail -n1 /etc/gingertechengine/key"}
 	var questionTwo = getCommandOutput("sudo", args)
 
