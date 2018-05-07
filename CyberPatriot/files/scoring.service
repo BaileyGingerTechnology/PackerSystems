@@ -3,6 +3,7 @@ Description=Controls scoring engine service
 After=network.target
 [Service]
 Type=simple
+User=administrator
 ExecStart=/usr/local/bin/checkscore
 [Install]
 WantedBy=multi-user.target

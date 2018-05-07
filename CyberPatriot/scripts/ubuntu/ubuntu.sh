@@ -134,5 +134,8 @@ sudo usermod -aG sudo jprice
 sudo usermod -aG sudo lpena
 sudo usermod -aG sudo rparker
 
+# Change update mirror
+sudo sed -i 's/us.archive.ubuntu.com/mirror.gingertechnology.net/g' /etc/apt/sources.list
+
 # Kill temp dir
 sudo rm -rfv /temp/*
