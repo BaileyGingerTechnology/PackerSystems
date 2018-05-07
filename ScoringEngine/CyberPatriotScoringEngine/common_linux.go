@@ -98,7 +98,7 @@ func SSHChecks(config string) {
 func PlatformCommon() {
 	deleteFile("/etc/gingertechengine/post")
 	createFile("/etc/gingertechengine/post")
-	args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
+	var args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/post"}
 	exec.Command("sudo", args...)
 	fmt.Println("Own post")
 
@@ -175,8 +175,8 @@ func ForensicQuestion() {
 	args = []string{"bash", "-c", "tail -n1 /etc/gingertechengine/key"}
 	var questionTwo = getCommandOutput("sudo", args)
 
-	var answerOne = decrypt(key, questionOne)
-	var answerTwo = decrypt(key, questionTwo)
+	answerOne, _ := decrypt(key, questionOne)
+	answerTwo, _ := decrypt(key, questionTwo)
 
 	content, err := ioutil.ReadFile("/home/administrator/Desktop/Forensic One.txt")
 	if err != nil {
