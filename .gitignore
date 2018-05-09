@@ -8,7 +8,6 @@ packer_cache/
 
 ISO/win10.iso
 ISO/Win2012R2.iso
-
 CyberPatriot/manifest.json
 CyberPatriot/Builds
 
@@ -41,3 +40,6 @@ ehthumbs.db
 Thumbs.db
 *.bak
 *.swp
+
+# Ignored ignores
+!CyberPatriot/files/ForensicDeployment.exe
