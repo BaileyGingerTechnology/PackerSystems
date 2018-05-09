@@ -25,7 +25,7 @@ func Deploy(toDeploy Question) {
 	}
 
 	key := []byte("WjNJKFcSZejKNzPP")
-	var answer = encrypt(key, toDeploy.Answer)
+	answer, _ := encrypt(key, toDeploy.Answer)
 
 	if _, err := os.Stat("C:\\Users\\administrator\\Desktop\\Forensic Two.txt"); err == nil {
 		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\n"+answer)

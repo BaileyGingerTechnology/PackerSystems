@@ -33,13 +33,7 @@ func toJSON(p interface{}) string {
 	return string(bytes)
 }
 
-func getQuestions() []Question {
-	raw, err := ioutil.ReadFile("/etc/gingertechengine/questions.json")
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
+func getQuestions(raw []byte) []Question {
 	var c []Question
 	var e []Question
 	json.Unmarshal(raw, &c)
@@ -62,7 +56,22 @@ func getQuestions() []Question {
 }
 
 func main() {
-	questions := getQuestions()
+	questions := []Question{}
+	if runtime.GOOS == "linux" {
+		raw, err := ioutil.ReadFile("/etc/gingertechengine/questions.json")
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+		questions = getQuestions(raw)
+	} else if runtime.GOOS == "windows" {
+		raw, err := ioutil.ReadFile(".\\questions.json")
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+		questions = getQuestions(raw)
+	}
 
 	Deploy(questions[0])
 	Deploy(questions[1])
