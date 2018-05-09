@@ -956,9 +956,9 @@ function build_kernel
   tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
-  make mrproper
+  #make mrproper
   # Let's see if this works
-  make defconfig
+  #make defconfig
 
   make
   make modules_install
