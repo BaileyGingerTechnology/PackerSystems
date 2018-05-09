@@ -116,9 +116,6 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 
 sudo dpkg -i CheckScore_1.0.deb
 mkdir -p /home/administrator/Desktop
-sudo ./ForensicDeployment
-sudo chown administrator /home/administrator/Desktop/Forensic\ One.txt
-sudo chown administrator /home/administrator/Desktop/Forensic\ Two.txt
 sudo mv /temp/other/scoring.service /etc/systemd/system/scoring.service
 sudo systemctl enable scoring
 

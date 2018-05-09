@@ -81,12 +81,14 @@ func removeBase64Padding(value string) string {
 	return strings.Replace(value, "=", "", -1)
 }
 
+// Pad -
 func Pad(src []byte) []byte {
 	padding := aes.BlockSize - len(src)%aes.BlockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(src, padtext...)
 }
 
+// Unpad -
 func Unpad(src []byte) ([]byte, error) {
 	length := len(src)
 	unpadding := int(src[length-1])

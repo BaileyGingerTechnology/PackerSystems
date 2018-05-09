@@ -34,27 +34,28 @@ func toJSON(p interface{}) string {
 }
 
 func getQuestions() []Question {
-	raw, err := ioutil.ReadFile("./questions.json")
+	raw, err := ioutil.ReadFile("/etc/gingertechengine/questions.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
 	var c []Question
+	var e []Question
 	json.Unmarshal(raw, &c)
 
 	rand.Seed(time.Now().UnixNano())
 
 	for i := 0; i < len(c); i++ {
-		if c[i].OS != runtime.GOOS && c[i].OS != "either" {
-			c = append(c[:i], c[i+1:]...)
+		if c[i].OS == runtime.GOOS || c[i].OS == "either" {
+			e = append(e, c[i])
 		}
 	}
 
-	p := rand.Perm(len(c))
+	p := rand.Perm(len(e))
 	var questionPicked = []Question{
-		c[p[1]],
-		c[p[2]],
+		e[p[1]],
+		e[p[2]],
 	}
 
 	return questionPicked
