@@ -15,8 +15,8 @@ func main() {
 	if runtime.GOOS == "linux" {
 		os.Setenv("PATH", "/bin:/usr/bin:/sbin:/usr/local/bin")
 		if _, err := os.Stat("/usr/local/bin/ForensicDeployment"); err == nil {
-			exec.Command("sudo", "/usr/local/bin/ForensicDeployment && rm /usr/local/bin/ForensicDeployment")
-			deleteFile("/usr/local/bin/ForensicDeployment")
+			exec.Command("sudo", "/usr/local/bin/ForensicDeployment")
+			exec.Command("sudo", "rm", "/usr/local/bin/ForensicDeployment")
 			deleteFile("/etc/gingertechengine/questions.json")
 		}
 		var args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/key"}
