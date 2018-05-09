@@ -9,8 +9,8 @@
   {
     "id": 1,
     "os": "linux",
-    "question": "What is the current minimum password length? Answer in numeric form (1, 2, etc. rather than one, two).",
-    "answer": "8",
+    "question": "What is the current minimum password length? Answer in alphabetic form (One, Two, etc. rather than 1, 2).",
+    "answer": "Eight",
     "deployment": "none"
   },
   {

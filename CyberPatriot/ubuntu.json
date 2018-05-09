@@ -171,16 +171,6 @@
       "destination": "/temp/other/scoring.service"
     },
     {
-      "type": "file",
-      "source": "files/ForensicDeployment",
-      "destination": "/temp/other/ForensicDeployment"
-    },
-    {
-      "type": "file",
-      "source": "files/questions.json",
-      "destination": "/temp/other/questions.json"
-    },
-    {
       "type": "shell",
       "scripts": [
         "scripts/ubuntu/ubuntu.sh"
