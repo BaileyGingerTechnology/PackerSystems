@@ -168,12 +168,13 @@ func PlatformCommon() {
 // ForensicQuestion - Checks for if forensic questions have been completed
 func ForensicQuestion() {
 	key := []byte("WjNJKFcSZejKNzPP")
+
 	fmt.Println("Head file")
-	var args = []string{"bash", "-c", "head -n1 /etc/gingertechengine/key"}
-	var questionOne = getCommandOutput("sudo", args)
+	var args = []string{"-n1", "/etc/gingertechengine/key"}
+	var questionOne = getCommandOutput("head", args)
 	fmt.Println("Tail file")
-	args = []string{"bash", "-c", "tail -n1 /etc/gingertechengine/key"}
-	var questionTwo = getCommandOutput("sudo", args)
+	args = []string{"-n1", "/etc/gingertechengine/key"}
+	var questionTwo = getCommandOutput("tail", args)
 
 	answerOne, _ := decrypt(key, questionOne)
 	answerTwo, _ := decrypt(key, questionTwo)
@@ -182,11 +183,11 @@ func ForensicQuestion() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	questionOne = string(content)
 	content1, err := ioutil.ReadFile("/home/administrator/Desktop/Forensic Two.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
+	questionOne = string(content)
 	questionTwo = string(content1)
 
 	if strings.Contains(questionOne, answerOne) {

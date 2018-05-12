@@ -58,6 +58,7 @@ func getQuestions(raw []byte) []Question {
 func main() {
 	questions := []Question{}
 	if runtime.GOOS == "linux" {
+		os.Setenv("PATH", "/bin:/usr/bin:/sbin:/usr/local/bin")
 		raw, err := ioutil.ReadFile("/etc/gingertechengine/questions.json")
 		if err != nil {
 			fmt.Println(err.Error())

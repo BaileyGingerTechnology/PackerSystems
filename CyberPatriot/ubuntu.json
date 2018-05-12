@@ -130,6 +130,12 @@
     {
       "execute_command": "sudo -E -S bash '{{.Path}}'",
       "type": "shell",
+      "scripts": "scripts/ubuntu/virtualbox-tools.sh",
+      "only": ["virtualbox"]
+    },
+    {
+      "execute_command": "sudo -E -S bash '{{.Path}}'",
+      "type": "shell",
       "scripts": "scripts/ubuntu/vmware-tools.sh",
       "only": ["vmware"]
     },
