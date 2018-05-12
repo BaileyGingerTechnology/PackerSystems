@@ -956,13 +956,13 @@ function build_kernel
   tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
-  #make mrproper
+  make mrproper
   # Let's see if this works
-  #make defconfig
+  make defconfig
 
   make
   make modules_install
-
+  
   # Make system bootable
   cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.15.3-gt-1.0
   cp -iv System.map /boot/System.map-4.15.3
@@ -996,7 +996,7 @@ insmod ext2
 set root=(hd0,2)
 
 menuentry "GNU/Linux, Linux 4.15.3-gt-1.0" {
-        linux   /boot/vmlinuz-4.15.3-gt-1.0 root=/dev/sda2 ro
+        linux   /vmlinuz-4.15.3-gt-1.0 root=/dev/sda4 ro
 }
 EOF
 
@@ -1020,40 +1020,10 @@ cd wget-1.19.4
 make
 make install
 
-# OpenSSH Server to connect post-reboot
-cd $LFS/sources
-tar xvf openssh-7.6p1.tar.gz
-cd openssh-7.6p1
-
-install  -v -m700 -d /var/lib/sshd &&
-chown    -v root:sys /var/lib/sshd &&
-
-groupadd -g 50 sshd        &&
-useradd  -c 'sshd PrivSep' \
-         -d /var/lib/sshd  \
-         -g sshd           \
-         -s /bin/false     \
-         -u 50 sshd
-patch -Np1 -i ../openssh-7.6p1-openssl-1.1.0-1.patch &&
-
-./configure --prefix=/usr                     \
-            --sysconfdir=/etc/ssh             \
-            --with-md5-passwords              \
-            --with-privsep-path=/var/lib/sshd &&
-make
-make install &&
-install -v -m755    contrib/ssh-copy-id /usr/bin     &&
-install -v -m644    contrib/ssh-copy-id.1 \
-                    /usr/share/man/man1              &&
-install -v -m755 -d /usr/share/doc/openssh-7.6p1     &&
-install -v -m644    INSTALL LICENCE OVERVIEW README* \
-                    /usr/share/doc/openssh-7.6p1
-
 # Bootscripts
 cd $LFS/sources
 tar xvf blfs-bootscripts-20180105.tar.xz
 cd blfs-bootscripts-20180105
-make install-sshd
 
 # DHCP
 cd $LFS/sources
@@ -1084,3 +1054,6 @@ PASSWORD=$(openssl passwd -crypt 'password')
 useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+cd $LFS
+$LFS/package-manager.sh

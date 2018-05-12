@@ -7,7 +7,10 @@
     "country": "US",
     "headless": "false",
     "cpus": "8",
+    "cpus_after": "1",
     "memory": "4096",
+    "memory_after": "1024",
+    "disk_size": "20480",
     "lfs": "/mnt/lfs"
   },
   "builders": [
@@ -27,7 +30,7 @@
         "/usr/bin/bash ./enable-ssh.sh<enter>",
         "mkdir /temp && chown administrator -R /temp<enter>"
       ],
-      "disk_size": 20480,
+      "disk_size": "{{user `disk_size`}}",
       "hard_drive_interface": "sata",
       "ssh_username": "administrator",
       "ssh_password": "password",
@@ -56,15 +59,20 @@
         "/usr/bin/systemctl start sshd.service<enter>",
         "mkdir /temp && chown administrator -R /temp<enter>"
       ],
-      "disk_size": 20480,
+      "disk_size": "{{user `disk_size`}}",
+      "disk_adapter_type": "sata",
       "ssh_username": "administrator",
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
       "headless" : "{{ user `headless`}}",
       "vmx_data": {
-          "memsize": "{{user `memory`}}",
-          "numvcpus": "{{user `cpus`}}"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      },
+      "vmx_data_post": {
+        "memsize": "{{user `memory_after`}}",
+        "numvcpus": "{{user `cpus_after`}}"
       }
     },
     {
@@ -81,7 +89,7 @@
         "/usr/bin/bash ./enable-ssh.sh<enter>",
         "mkdir /temp && chown administrator -R /temp<enter>"
       ],
-      "disk_size": 20480,
+      "disk_size": "{{user `disk_size`}}",
       "ssh_username": "administrator",
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
@@ -106,6 +114,16 @@
       "destination": "/temp/lfs-workstation.sh"
     },
     {
+      "type": "file",
+      "source": "scripts/lfs/package-manager.sh",
+      "destination": "/temp/package-manager.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/system.spec",
+      "destination": "/temp/system.spec"
+    },
+    {
       "environment_vars": [
           "COUNTRY={{ user `country` }}",
           "LFS={{ user `lfs` }}",
@@ -115,8 +133,7 @@
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "expect_disconnect": true,
       "scripts": [
-        "scripts/lfs/setup-base.sh",
-        "scripts/lfs/reboot.sh"
+        "scripts/lfs/setup-base.sh"
       ]
     }
   ]
