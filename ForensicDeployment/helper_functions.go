@@ -9,7 +9,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -145,4 +147,15 @@ func decrypt(key []byte, text string) (string, error) {
 	}
 
 	return string(unpadMsg), nil
+}
+
+func getCommandOutput(command string, args []string) (output string) {
+	cmd := exec.Command(command, args...)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+	sha := string(out)
+
+	return sha
 }
