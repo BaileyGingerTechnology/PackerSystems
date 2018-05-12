@@ -100,8 +100,8 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "scripts/lfs/build_to_bash.sh",
-      "destination": "/temp/build_to_bash.sh"
+      "source": "scripts/lfs/build-to-bash.sh",
+      "destination": "/temp/build-to-bash.sh"
     },
     {
       "type": "file",
@@ -117,6 +117,11 @@
       "type": "file",
       "source": "scripts/lfs/package-manager.sh",
       "destination": "/temp/package-manager.sh"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/user-group-setup.sh",
+      "destination": "/temp/user-group-setup.sh" 
     },
     {
       "type": "file",

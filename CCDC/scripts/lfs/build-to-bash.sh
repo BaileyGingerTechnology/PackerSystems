@@ -1,67 +1,7 @@
 #!/tools/bin/bash
 # Author: Bailey Kasin
 
-echo "In chroot"
-
-mkdir -pv /{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
-mkdir -pv /{media/{floppy,cdrom},sbin,srv,var}
-install -dv -m 0750 /root
-install -dv -m 1777 /tmp /var/tmp
-mkdir -pv /usr/{,local/}{bin,include,lib,sbin,src}
-mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
-mkdir -v /usr/{,local/}share/{misc,terminfo,zoneinfo}
-mkdir -v /usr/libexec
-mkdir -pv /usr/{,local/}share/man/man{1..8}
-
-case $(uname -m) in
-  x86_64) mkdir -v /lib64 ;;
-esac
-
-mkdir -v /var/{log,mail,spool}
-ln -sv /run /var/run
-ln -sv /run/lock /var/lock
-mkdir -pv /var/{opt,cache,lib/{color,misc,locate},local}
-
-ln -sv /tools/bin/{bash,cat,dd,echo,ln,pwd,rm,stty} /bin
-ln -sv /tools/bin/{install,perl} /usr/bin
-ln -sv /tools/lib/libgcc_s.so{,.1} /usr/lib
-ln -sv /tools/lib/libstdc++.{a,so{,.6}} /usr/lib
-ln -sv bash /bin/sh
-ln -sv /proc/self/mounts /etc/mtab
-
-cat > /etc/passwd << "EOF"
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/dev/null:/bin/false
-daemon:x:6:6:Daemon User:/dev/null:/bin/false
-messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
-nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
-EOF
-
-cat > /etc/group << "EOF"
-root:x:0:
-bin:x:1:daemon
-sys:x:2:
-kmem:x:3:
-tape:x:4:
-tty:x:5:
-daemon:x:6:
-floppy:x:7:
-disk:x:8:
-lp:x:9:
-dialout:x:10:
-audio:x:11:
-video:x:12:
-utmp:x:13:
-usb:x:14:
-cdrom:x:15:
-adm:x:16:
-messagebus:x:18:
-systemd-journal:x:23:
-input:x:24:
-mail:x:34:
-nogroup:x:99:
-users:x:999:
-EOF
+echo "root user and groups setup"
 
 touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp -v utmp /var/log/lastlog
@@ -71,6 +11,7 @@ chmod -v 600  /var/log/btmp
 function build_linux_headers
 {
   cd $LFS/sources
+  tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
   make mrproper
@@ -92,10 +33,9 @@ function build_man_pages
 function build_glibc
 {
   cd $LFS/sources
-  rm -rf glibc-2.27
   tar xvf glibc-2.27.tar.xz
-
   cd glibc-2.27
+
   patch -Np1 -i ../glibc-2.27-fhs-1.patch
   ln -sfv /tools/lib/gcc /usr/lib
 
@@ -257,6 +197,10 @@ function build_file
 
 function build_readline
 {
+  cd $LFS/sources
+  tar xvf readline-7.0.tar.gz
+  cd readline-7.0
+
   sed -i '/MV.*old/d' Makefile.in
   sed -i '/{OLDSUFF}/c:' support/shlib-install
 
@@ -300,12 +244,11 @@ function build_bc
 
 function build_binutils
 {
-  expect -c "spawn ls"
-
   cd $LFS/sources
   tar xvf binutils-2.30.tar.xz
   cd binutils-2.30
-
+  
+  expect -c "spawn ls"
   mkdir -v build
   cd build
 
@@ -403,7 +346,6 @@ function build_gcc
   
   make -j${CPUS}
   ulimit -s 32768
-  make -k check
 
   make install
   ln -sv ../usr/bin/cpp /lib
@@ -415,18 +357,6 @@ function build_gcc
   mkdir -pv /usr/share/gdb/auto-load/usr/lib
   mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 }
-
-cat > bc/fix-libmath_h << "EOF"
-#! /bin/bash
-sed -e '1   s/^/{"/' \
-    -e     's/$/",/' \
-    -e '2,$ s/^/"/'  \
-    -e   '$ d'       \
-    -i libmath.h
-
-sed -e '$ s/$/0}/' \
-    -i libmath.h
-EOF
 
 build_zlib
 build_file
@@ -730,6 +660,9 @@ build_bison
 build_flex
 build_grep
 build_bash
+
+cd $LFS/sources
+rm -R -- */
 
 cd $LFS
 exec /bin/bash --login +h $LFS/finish-base.sh

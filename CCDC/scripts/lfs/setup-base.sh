@@ -20,10 +20,6 @@ TIMEZONE='UTC'
 
 TARGET_DIR='/mnt'
 COUNTRY=${COUNTRY:-US}
-MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
-
-echo "==> Setting local mirror"
-curl -s "$MIRRORLIST" |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist
 
 echo "==> Clearing partition table on ${DISK}"
 /usr/bin/sgdisk --zap ${DISK}
@@ -186,7 +182,7 @@ esac
   mkdir -v build
   cd build
 
-  ../configure                                       \
+  ../configure                                     \
     --target=$LFS_TGT                              \
     --prefix=/tools                                \
     --with-glibc-version=2.11                      \
@@ -707,10 +703,12 @@ build_xz
 chown -R root:root $LFS/tools
 
 mkdir -pv $LFS/{dev,proc,sys,run}
+
 mknod -m 600 $LFS/dev/console c 5 1
 mknod -m 666 $LFS/dev/null c 1 3
+
 mount -v --bind /dev $LFS/dev
-#mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
+mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
 mount -vt proc proc $LFS/proc
 mount -vt sysfs sysfs $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
@@ -719,16 +717,21 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
-mv -v /temp/build_to_bash.sh $LFS/build_to_bash.sh
+mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
 mv -v /temp/finish-base.sh $LFS/finish-base.sh
 mv -v /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
 mv -v /temp/package-manager.sh $LFS/package-manager.sh
+mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
 cd $LFS
-chmod -v +x build_to_bash.sh
+chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
 chmod -v +X lfs-workstation.sh
 chmod -v +x package-manager.sh
+chmod -v +x user-group-setup.sh
+
+cd $LFS/sources
+rm -R -- */
 
 chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \
@@ -736,4 +739,4 @@ chroot "$LFS" /tools/bin/env -i \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
     /tools/bin/bash --login +h \
-    ./build_to_bash.sh
+    ./user-group-setup.sh
