@@ -103,8 +103,8 @@ make_directories
 
 mount -v -t vfat ${DISK}2 $LFS/boot
 
-pacman -Sy
-pacman -Sc --noconfirm
+#pacman -Sy
+#pacman -Sc --noconfirm
 
 # Move into the main disk and download all the packages that will be needed
 cd $LFS
@@ -719,13 +719,16 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
-mv /temp/build_to_bash.sh $LFS/build_to_bash.sh
-mv /temp/finish-base.sh $LFS/finish-base.sh
-mv /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
+mv -v /temp/build_to_bash.sh $LFS/build_to_bash.sh
+mv -v /temp/finish-base.sh $LFS/finish-base.sh
+mv -v /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
+mv -v /temp/package-manager.sh $LFS/package-manager.sh
+mv -v /temp/system.spec $LFS/system.spec
 cd $LFS
-chmod +x build_to_bash.sh
-chmod +x finish-base.sh
-chmod +X lfs-workstation.sh
+chmod -v +x build_to_bash.sh
+chmod -v +x finish-base.sh
+chmod -v +X lfs-workstation.sh
+chmod -v +x package-manager.sh
 
 chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \

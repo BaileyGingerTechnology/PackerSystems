@@ -10,7 +10,7 @@
       "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180315T214502Z.tar.xz",
       "cpus": "2",
       "cpus_after": "2",
-      "memory": "2048",
+      "memory": "1024",
       "disk_size": "20480"
   },
   "builders": [
@@ -63,6 +63,7 @@
             "mkdir /temp && chown administrator -R /temp<enter>"
           ],
           "disk_size": "{{user `disk_size`}}",
+          "disk_adapter_type": "sata",
           "ssh_username": "administrator",
           "ssh_password": "3dG5^hwo",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
