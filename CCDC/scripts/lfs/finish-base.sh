@@ -1055,5 +1055,8 @@ useradd --password ${PASSWORD} --comment 'administrator User' --create-home --us
 echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
+cd $LFS/sources
+rm -R -- */
+
 cd $LFS
 $LFS/package-manager.sh
