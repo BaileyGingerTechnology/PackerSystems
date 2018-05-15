@@ -1,0 +1,117 @@
+{
+  "variables": {
+      "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.03.20-x86_64.iso",
+      "iso_checksum_url": "https://files.gingertechnology.net/packersystems/SHA1SUMS",
+      "iso_checksum_type": "sha1",
+      "ssh_timeout": "20m",
+      "country": "USA",
+      "arch_country": "US",
+      "headless": "false",
+      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180315T214502Z.tar.xz",
+      "cpus": "2",
+      "cpus_after": "2",
+      "memory": "1024",
+      "disk_size": "20480"
+  },
+  "builders": [
+      {
+          "type": "virtualbox-iso",
+          "iso_url": "{{ user `iso_url` }}",
+          "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+          "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+          "guest_os_type": "Gentoo_64",
+          "guest_additions_mode": "disable",
+          "http_directory": "http",
+          "boot_wait": "5s",
+          "boot_command": [
+            "<enter><wait10><wait10><wait10>",
+            "PASSWORD=$(/usr/bin/openssl passwd -crypt '3dG5^hwo')<enter><wait5>",
+            "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+            "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+            "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+            "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+            "/usr/bin/systemctl start sshd.service<enter>",
+            "mkdir /temp && chown administrator -R /temp<enter>"
+          ],
+          "disk_size": "{{user `disk_size`}}",
+          "hard_drive_interface": "sata",
+          "ssh_username": "administrator",
+          "ssh_password": "3dG5^hwo",
+          "ssh_timeout": "{{ user `ssh_timeout` }}",
+          "shutdown_command": "poweroff",
+          "headless" : "{{ user `headless`}}",
+          "vboxmanage": [
+              ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+              ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+          ]
+      },
+      {
+          "type": "vmware-iso",
+          "iso_url": "{{ user `iso_url` }}",
+          "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+          "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+          "http_directory": "http",
+          "boot_wait": "5s",
+          "boot_command": [
+            "<enter><wait10><wait10><wait10>",
+            "PASSWORD=$(/usr/bin/openssl passwd -crypt '3dG5^hwo')<enter><wait5>",
+            "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+            "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+            "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+            "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+            "/usr/bin/systemctl start sshd.service<enter>",
+            "mkdir /temp && chown administrator -R /temp<enter>"
+          ],
+          "disk_size": "{{user `disk_size`}}",
+          "disk_adapter_type": "sata",
+          "ssh_username": "administrator",
+          "ssh_password": "3dG5^hwo",
+          "ssh_timeout": "{{ user `ssh_timeout` }}",
+          "shutdown_command": "poweroff",
+          "headless" : "{{ user `headless`}}",
+          "vmx_data": {
+              "memsize": "{{user `memory`}}",
+              "numvcpus": "{{user `cpus`}}"
+          },
+          "vmx_data_post": {
+              "numvcpus": "{{user `cpus_after`}}"
+          }
+      }
+  ],
+  "provisioners": [
+      {
+          "type": "file",
+          "source": "http/GentooInstall.tar.gz",
+          "destination": "/temp/GentooInstall.tar.gz"
+      },
+      {
+        "environment_vars": [
+            "TARBALL={{user `TARBALL`}}",
+            "COUNTRY={{ user `country` }}",
+            "ACOUNTRY={{ user `arch_country` }}"
+        ],
+        "execute_command": "echo '3dG5^hwo' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "inline": [
+          "cd /temp",
+          "tar xvf GentooInstall.tar.gz && rm GentooInstall.tar.gz",
+          "cd /temp/GentooInstall",
+          "./main.sh",
+          "cd /temp/GentooInstall",
+          "./cleanup.sh"
+        ],
+        "type": "shell",
+        "expect_disconnect": "true"
+      },
+      {
+        "pause_before": "1m",
+        "environment_vars": [
+            "COUNTRY={{ user `country` }}"
+        ],
+        "execute_command": "echo '3dG5^hwo' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "scripts": [
+          "scripts/gentoo/gentoo-workstation.sh"
+        ],
+        "type": "shell"
+      }
+  ]
+}

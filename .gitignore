@@ -8,5 +8,38 @@ packer_cache/
 
 ISO/win10.iso
 ISO/Win2012R2.iso
-
 CyberPatriot/manifest.json
+CyberPatriot/Builds
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.bak
+*.swp
+
+# Ignored ignores
+!CyberPatriot/files/ForensicDeployment.exe

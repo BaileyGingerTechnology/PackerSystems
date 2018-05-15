@@ -1,0 +1,145 @@
+{
+  "variables": {
+    "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.03.20-x86_64.iso",
+    "iso_checksum_url": "https://files.gingertechnology.net/packersystems/SHA1SUMS",
+    "iso_checksum_type": "sha1",
+    "ssh_timeout": "20m",
+    "country": "US",
+    "headless": "false",
+    "cpus": "2",
+    "cpus_after": "1",
+    "memory": "4096",
+    "memory_after": "1024",
+    "disk_size": "20480",
+    "lfs": "/mnt/lfs"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "Linux_64",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "guest_additions_mode": "disable",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><wait10><wait10><wait10><wait10>",
+        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
+        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
+        "/usr/bin/bash ./enable-ssh.sh<enter>",
+        "mkdir /temp && chown administrator -R /temp<enter>"
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "hard_drive_interface": "sata",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "ssh_timeout": "{{ user `ssh_timeout` }}",
+      "shutdown_command": "sudo poweroff",
+      "headless" : "{{ user `headless`}}",
+      "vboxmanage": [
+          ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+          ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+      ]
+    },
+    {
+      "type": "vmware-iso",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><wait10><wait10><wait10>",
+        "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
+        "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+        "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+        "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/systemctl start sshd.service<enter>",
+        "mkdir /temp && chown administrator -R /temp<enter>"
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "disk_adapter_type": "sata",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "ssh_timeout": "{{ user `ssh_timeout` }}",
+      "shutdown_command": "sudo poweroff",
+      "headless" : "{{ user `headless`}}",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      },
+      "vmx_data_post": {
+        "memsize": "{{user `memory_after`}}",
+        "numvcpus": "{{user `cpus_after`}}"
+      }
+    },
+    {
+      "type": "qemu",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><wait10><wait10><wait10><wait10>",
+        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
+        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
+        "/usr/bin/bash ./enable-ssh.sh<enter>",
+        "mkdir /temp && chown administrator -R /temp<enter>"
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "ssh_timeout": "{{ user `ssh_timeout` }}",
+      "shutdown_command": "sudo poweroff",
+      "headless" : "{{ user `headless`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "scripts/lfs/build-to-bash.sh",
+      "destination": "/temp/build-to-bash.sh"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/finish-base.sh",
+      "destination": "/temp/finish-base.sh"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/lfs-webserver.sh",
+      "destination": "/temp/lfs-webserver.sh"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/package-manager.sh",
+      "destination": "/temp/package-manager.sh"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/user-group-setup.sh",
+      "destination": "/temp/user-group-setup.sh" 
+    },
+    {
+      "type": "file",
+      "source": "files/system.spec",
+      "destination": "/temp/system.spec"
+    },
+    {
+      "environment_vars": [
+          "COUNTRY={{ user `country` }}",
+          "LFS={{ user `lfs` }}",
+          "CPUS={{ user `cpus` }}"
+      ],
+      "type": "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
+      "scripts": [
+        "scripts/lfs/setup-base.sh"
+      ]
+    }
+  ]
+}

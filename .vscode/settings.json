@@ -1,2 +1,5 @@
 {
+  "editor.tabSize": 2,
+  "go.autocompleteUnimportedPackages": true,
+  "files.eol": "\n"
 }

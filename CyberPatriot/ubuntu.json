@@ -2,15 +2,14 @@
   "builders": [
     {
       "type": "qemu",
+      "http_directory": "http",
       "vm_name": "{{user `vm_name`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
-      "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
       "disk_size": 15000,
       "headless": "false",
-      "http_directory": "http",
-      "boot_wait": "5s",
       "boot_command": [
         "<enter><wait>",
         "<f6><esc>",
@@ -28,9 +27,10 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
+      "boot_wait": "5s",
       "ssh_timeout": "60m",
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
@@ -43,16 +43,14 @@
     {
       "name": "virtualbox",
       "type": "virtualbox-iso",
-      "guest_os_type": "Ubuntu_64",
+      "http_directory": "http",
       "vm_name": "{{user `vm_name`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
-      "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
       "disk_size": 15000,
       "headless": "false",
-      "http_directory": "http",
-      "boot_wait": "5s",
       "boot_command": [
         "<enter><wait>",
         "<f6><esc>",
@@ -70,13 +68,15 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
+      "boot_wait": "5s",
       "ssh_timeout": "60m",
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
       "shutdown_command": "{{user `shutdown_command`}}",
+      "guest_os_type": "Ubuntu_64",
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memsize`}}"],
         ["modifyvm", "{{.Name}}", "--cpus", "{{user `numcpus`}}"]
@@ -90,7 +90,7 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
-      "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
       "disk_size": 15000,
       "headless": "false",
       "http_directory": "http",
@@ -112,7 +112,7 @@
         "net.ifnames=0 ",
         "auto-install/enable=true ",
         "debconf/priority=critical ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg",
         "<enter>"
       ],
       "tools_upload_flavor": "linux",
@@ -168,8 +168,13 @@
     },
     {
       "type": "file",
-      "source": "scripts/ScoringEngine/ubuntu/post_score",
-      "destination": "/temp/other/post_score"
+      "source": "files/CheckScore_1.0.deb",
+      "destination": "/temp/other/CheckScore_1.0.deb"
+    },
+    {
+      "type": "file",
+      "source": "files/scoring.service",
+      "destination": "/temp/other/scoring.service"
     },
     {
       "type": "shell",
@@ -187,6 +192,6 @@
     "password": "UberPassword",
     "memsize": "2048",
     "numcpus": "2",
-    "version": "0.1.0"
+    "version": "1.0"
   }
 }

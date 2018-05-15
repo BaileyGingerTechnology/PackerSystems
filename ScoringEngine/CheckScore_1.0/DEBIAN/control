@@ -1,0 +1,9 @@
+Package: checkscore
+Version: 1.0
+Section: base
+Priority: optional
+Architecture: amd64
+Maintainer: Bailey Kasin <bailey@gingertechnology.net>
+Description: Checks current score
+ Runs a series of checks to see if tasks
+ have been completed.

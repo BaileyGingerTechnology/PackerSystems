@@ -1,0 +1,10 @@
+#!/bin/bash
+# Author: Bailey Kasin
+
+# Get current date and time
+TITLE=`date '+%Y-%m-%d %H:%M:%S'`
+
+# Template command for inserting a post with current status
+# Will make post body the current score, and the title a time code
+cd /var/www/html
+wp post create /etc/gingertechengine/post --post_title="${TITLE} Checks" --post_type=post --post_status=publish --post_author=2

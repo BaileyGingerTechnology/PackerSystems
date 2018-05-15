@@ -45,28 +45,47 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.duckduckgo.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.startpage.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 
-# Setup a web proxy so that even if they fix the hosts file internet still ded, or vice versa
+Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
+
+Import-Module ADDSDeployment
+Install-ADDSForest `
+-CreateDnsDelegation:$false `
+-DatabasePath "C:\Windows\NTDS" `
+-DomainMode "Win2012R2" `
+-DomainName "gingertech.com" `
+-SafeModeAdministratorPassword:(ConvertTo-SecureString -String UberPassword -AsPlainText -Force) `
+-DomainNetbiosName "GINGERTECH" `
+-ForestMode "Win2012R2" `
+-InstallDns:$true `
+-LogPath "C:\Windows\NTDS" `
+-NoRebootOnCompletion:$true `
+-SysvolPath "C:\Windows\SYSVOL" `
+-Force:$true
+
+Install-WindowsFeature NET-Framework-45-Features
+
+Install-WindowsFeature ADLDS
+
+Import-Module ActiveDirectory
+Import-Csv -Delimiter : -Path "C:\userlist.csv" | foreach-object {
+    $userprinicpalname = $_.SamAccountName + "@gingertech.com"
+    New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprinicpalname -Name $_.Firstname -DisplayName $_.Firstname -GivenName $_.Firstname -SurName $_.Lastname -Department $_.Department -Path "CN=Users,DC=gingertech,DC=com" -AccountPassword (ConvertTo-SecureString "password321" -AsPlainText -force) -Enabled $True -PasswordNeverExpires $True -PassThru
+}
+
+
+# Setup a web proxy so that even if they fix the hosts file internet still ded
 $reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
 Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
 
+# Disable autologon
+$Regkey= "HKLM:\Software\Microsoft\Windows NT\Currentversion\WinLogon"
+$DefaultUserName = ''
+$DefaultPassword = ''
+
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
-# User creation
-'''
-$Users = Import-Csv -Delimiter : -Path "C:\userlist.csv"
-foreach ($User in $Users)
-{
-    $Displayname = $User.'Firstname' + " " + $User.'Lastname'
-    $UserFirstname = $User.'Firstname'
-    $UserLastname = $User.'Lastname'
-    $OU = $User.'OU'
-    $SAM = $User.'SAM'
-    $UPN = $User.'Firstname' + "." + $User.'Lastname' + "@" + $User.'Maildomain'
-    $Description = $User.'Description'
-    $Password = $User.'Password'
-    New-LocalUser $UserFirstname -NoPassword -FullName $Displayname -Description $Description
-    Write-Host "User " + $UserFirstname + " has been made."
-}
-'''
+# Setup for Scoring Engine
+scoop install grep --global
+mkdir C:\ProgramData\gingertechengine
