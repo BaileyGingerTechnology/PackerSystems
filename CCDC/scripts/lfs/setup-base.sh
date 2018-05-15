@@ -708,7 +708,7 @@ mknod -m 600 $LFS/dev/console c 5 1
 mknod -m 666 $LFS/dev/null c 1 3
 
 mount -v --bind /dev $LFS/dev
-mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
+#mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
 mount -vt proc proc $LFS/proc
 mount -vt sysfs sysfs $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
@@ -726,6 +726,7 @@ mv -v /temp/system.spec $LFS/system.spec
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
+chmod -v 777 lfs-webserver.sh
 chmod -v +X lfs-webserver.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh

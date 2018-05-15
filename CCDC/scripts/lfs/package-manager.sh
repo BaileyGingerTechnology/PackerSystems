@@ -13,24 +13,24 @@ function build_ssh
   install  -v -m700 -d /var/lib/sshd &&
   chown    -v root:sys /var/lib/sshd &&
 
-  groupadd -g 50 sshd        &&
+  groupadd -g 75 sshd
   useradd  -c 'sshd PrivSep' \
            -d /var/lib/sshd  \
            -g sshd           \
            -s /bin/false     \
-           -u 50 sshd
-  patch -Np1 -i ../openssh-7.6p1-openssl-1.1.0-1.patch &&
+           -u 75 sshd
+  patch -Np1 -i ../openssh-7.6p1-openssl-1.1.0-1.patch
 
   ./configure --prefix=/usr                     \
               --sysconfdir=/etc/ssh             \
               --with-md5-passwords              \
-              --with-privsep-path=/var/lib/sshd &&
+              --with-privsep-path=/var/lib/sshd
   make
-  make install &&
-  install -v -m755    contrib/ssh-copy-id /usr/bin     &&
+  make install
+  install -v -m755    contrib/ssh-copy-id /usr/bin
   install -v -m644    contrib/ssh-copy-id.1 \
-                      /usr/share/man/man1              &&
-  install -v -m755 -d /usr/share/doc/openssh-7.6p1     &&
+                      /usr/share/man/man1
+  install -v -m755 -d /usr/share/doc/openssh-7.6p
   install -v -m644    INSTALL LICENCE OVERVIEW README* \
                       /usr/share/doc/openssh-7.6p1
 
@@ -205,28 +205,34 @@ function build_neon
 }
 
 build_popt
-build_libarchive
+#build_libarchive
 build_neon
 
-echo "Building RPM" && sleep 10
+function build_rpm
+{
+  cd $LFS/sources
+  tar xvf rpm-4.14.1.tar.bz2
+  cd rpm-4.14.1
+  
+  ./configure --prefix=/usr           \
+			        --enable-posixmutexes   \
+              --with-crypto=openssl   \
+			        --without-selinux       \
+        	    --without-python        \
+      	      --without-javaglue &&
+  make &&
+  make install
+  
+  rpm --initdb --root=/
+  cd scripts
+  #./vpkg-provides.sh --spec_header $LFS/system.spec
+  rpm --version
+}
 
-cd $LFS/sources
-tar xvf rpm-4.14.1.tar.bz2
-cd rpm-4.14.1
+#build_rpm
+#cd $LFS/sources
+#rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
 
-./configure --prefix=/usr           \
-			      --enable-posixmutexes   \
-            --with-crypto=openssl   \
-			      --without-selinux       \
-        	  --without-python        \
-      	    --without-javaglue &&
-make &&
-make install
+build_ssh
 
-rpm --initdb --root=/
-cd scripts
-#./vpkg-provides.sh --spec_header $LFS/system.spec
-rpm --version
-
-cd $LFS/sources
-rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
+$LFS/lfs-webserver.sh
