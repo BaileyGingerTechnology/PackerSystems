@@ -26,5 +26,12 @@
     "question": "What is the current minimum password length? Answer in alphabetic form (One, Two, etc. rather than 1, 2).",
     "answer": "Zero",
     "deployment": "none"
+  },
+  {
+    "id": 4,
+    "os": "linux",
+    "question": "We have reason to believe that one of our employees is planning to sell company info to a competitor. We don't know who it is,\nbut we would prefer to be on the safe side. Please check through user folders and see if you can find anything.\nIf you find any relevant text, put it below.",
+    "answer": "This is your first test",
+    "deployment": "mv /etc/gingertechengine/files/hideme.jpg /home/jprice/Pictures/"
   }
 ]

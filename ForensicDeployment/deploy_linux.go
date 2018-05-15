@@ -10,7 +10,9 @@ func Deploy(toDeploy Question) {
 	if toDeploy.Deployment == "none" {
 		fmt.Println("Done")
 	} else if toDeploy.Deployment != "none" {
-		fmt.Println("Not yet implemented")
+		var args = []string{"bash", "-c", toDeploy.Deployment}
+		var deploy = getCommandOutput("sudo", args)
+		fmt.Println(deploy)
 	}
 
 	if _, err := os.Stat("/home/administrator/Desktop/Forensic One.txt"); err == nil {
@@ -23,10 +25,12 @@ func Deploy(toDeploy Question) {
 
 	key := []byte("WjNJKFcSZejKNzPP")
 	answer, _ := encrypt(key, toDeploy.Answer)
+	pad, _ := encrypt(key, "Padding because stupid")
 
 	if _, err := os.Stat("/home/administrator/Desktop/Forensic Two.txt"); err == nil {
 		AppendKeyToFile("/etc/gingertechengine/key", "\n"+answer)
 	} else {
-		AppendKeyToFile("/etc/gingertechengine/key", answer)
+		AppendKeyToFile("/etc/gingertechengine/key", pad)
+		AppendKeyToFile("/etc/gingertechengine/key", "\n"+answer)
 	}
 }

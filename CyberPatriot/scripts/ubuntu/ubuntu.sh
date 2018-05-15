@@ -134,5 +134,7 @@ sudo usermod -aG sudo rparker
 # Change update mirror
 sudo sed -i 's/us.archive.ubuntu.com/mirror.gingertechnology.net/g' /etc/apt/sources.list
 
+sudo mkdir /home/jprice/Pictures && sudo chown jprice:jprice /home/jprice/Pictures
+
 # Kill temp dir
 sudo rm -rfv /temp/*

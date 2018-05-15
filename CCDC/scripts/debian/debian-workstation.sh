@@ -8,12 +8,14 @@ sudo tee -a /etc/ssh/sshd_config <<EOF
 UseDNS no
 EOF
 
-
-sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git
-
 sudo mkdir /temp/
 sudo chown -R administrator:administrator /temp
 cd /temp
+sudo apt-get install netselect-apt
+sudo netselect-apt -n jessie && sudo mv sources.list /etc/apt/sources.list
+
+sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git
+
 git clone https://github.com/BaileyGingerTechnology/pacman.git
 cd pacman
 ./autogen.sh
@@ -40,10 +42,14 @@ MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=ht
 echo "==> Setting local mirror"
 sudo mkdir /etc/pacman.d
 sudo bash -c "curl -s '$MIRRORLIST' |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist"
-sudo mv /home/administrator/pacman.conf /etc/
+sudo cp /home/administrator/pacman.conf /etc/
+sudo cp /home/administrator/pacman.conf /usr/local/etc/
 
-sudo apt purge --yes --force-yes apt
-sudo pacman -Syu --force
+cd /temp && mkdir debian
+sudo mv /home/administrator/debianPKGBUILD debian/PKGBUILD
+cd debian makepkg -si --noconfirm
+
+sudo pacman -Sy --force
 sudo pacman -S --needed --noconfirm --force base-devel git wget yajl
 
 cd /temp
@@ -56,7 +62,4 @@ git clone https://aur.archlinux.org/yaourt.git
 cd yaourt
 makepkg -si --noconfirm
 
-cd /temp
-sudo rm -dR yaourt/ package-query/
-
-sudo yaourt -Syu
+yaourt -Syu

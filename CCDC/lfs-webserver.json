@@ -6,7 +6,7 @@
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
-    "cpus": "8",
+    "cpus": "2",
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
@@ -110,8 +110,8 @@
     },
     {
       "type": "file",
-      "source": "scripts/lfs/lfs-workstation.sh",
-      "destination": "/temp/lfs-workstation.sh"
+      "source": "scripts/lfs/lfs-webserver.sh",
+      "destination": "/temp/lfs-webserver.sh"
     },
     {
       "type": "file",

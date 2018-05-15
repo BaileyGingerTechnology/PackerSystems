@@ -4,4 +4,4 @@ set -e
 set -x
 
 sudo apt-get clean
-sudo rm /etc/discover-pkginstall.conf
+sudo rm -rf /temp
