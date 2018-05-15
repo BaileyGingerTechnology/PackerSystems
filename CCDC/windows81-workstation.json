@@ -1,0 +1,160 @@
+{
+  "builders": [
+    {
+      "type": "qemu",
+      "floppy_files": [
+        "floppy/81/Autounattend.xml",
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
+      ],
+      "vm_name": "{{user `vm_name`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "md5",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "disk_size": 61440,
+      "headless": "false",
+      "communicator": "winrm",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "boot_wait":"2s",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "qemuargs": [
+        ["-m", "{{user `memsize`}}"],
+        ["-smp", "{{user `numcpus`}}"]
+      ]
+    },
+    {
+      "type": "virtualbox-iso",
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
+      ],
+      "vm_name": "{{user `vm_name`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "disk_size": 61440,
+      "headless": "false",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "post_shutdown_delay": "30s",
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "communicator": "winrm",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "guest_os_type": "Windows81_64",
+      "guest_additions_mode": "upload",
+      "guest_additions_path": "c:/Windows/Temp/windows.iso",
+      "vboxmanage": [
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--memory",
+            "2048"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--cpus",
+            "2"
+          ],
+          [
+            "modifyvm",
+            "{{.Name}}",
+            "--vram", 
+            "32"
+          ]	
+        ]
+    },
+    {
+      "type": "vmware-iso",
+      "communicator": "winrm",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
+      ],
+      "guest_os_type": "windows8srv-64",
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "tools_upload_flavor": "windows",
+      "vm_name": "{{user `vm_name`}}",
+      "vmx_data": {
+        "memsize": "{{user `memsize`}}",
+        "numvcpus": "{{user `numcpus`}}",
+        "scsi0.virtualDev": "lsisas1068"
+      }
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+    },
+    {
+      "type": "file",
+      "source": "scripts/winshared/InstallScoop.ps1",
+      "destination": "C:\\InstallScoop.ps1"
+    },
+    {
+      "type": "file",
+      "source": "files/userlist-win.csv",
+      "destination": "C:\\userlist.csv"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "powershell",
+      "scripts": [
+        "scripts/winshared/Setup81.ps1"
+      ]
+    },
+    { 
+      "type": "windows-shell",
+      "inline": [
+        "cd C:\\Windows\\system32\\",
+        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"password\""]
+    }
+  ],
+  "variables": {
+    "vm_name": "Windows 81",
+    "iso_checksum": "5e4ecb86fd8619641f1d58f96e8561ec",
+    "iso_url": "http://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_ENTERPRISE_EVAL_EN-US-IRM_CENA_X64FREE_EN-US_DV5.ISO",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "username": "GingerTech",
+    "password": "password",
+    "memsize": "2048",
+    "numcpus": "2",
+    "update": "true",
+    "version": "0.1.0"
+  }
+}

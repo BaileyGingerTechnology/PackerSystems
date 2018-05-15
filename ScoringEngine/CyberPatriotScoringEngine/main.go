@@ -25,6 +25,8 @@ func main() {
 			fmt.Println(del)
 
 			deleteFile("/etc/gingertechengine/questions.json")
+			args = []string{"bash", "-c", "rm -rf /etc/gingertechengine/files"}
+			exec.Command("sudo", args...)
 		}
 		var args = []string{"bash", "-c", "chown $(whoami) /etc/gingertechengine/key && chown $(whoami) /home/administrator/Desktop/*"}
 		exec.Command("sudo", args...)

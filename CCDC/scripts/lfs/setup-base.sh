@@ -719,14 +719,14 @@ fi
 
 mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
 mv -v /temp/finish-base.sh $LFS/finish-base.sh
-mv -v /temp/lfs-workstation.sh $LFS/lfs-workstation.sh
+mv -v /temp/lfs-webserver.sh $LFS/lfs-webserver.sh
 mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
-chmod -v +X lfs-workstation.sh
+chmod -v +X lfs-webserver.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 

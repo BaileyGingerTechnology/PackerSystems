@@ -1,0 +1,83 @@
+{
+  "variables": {
+    "cpus": "1",
+    "disk_size": "8192",
+    "headless": "false",
+    "iso_checksum": "c40a889469e0eea43d92c73149f1058e3650863b",
+    "iso_checksum_type": "sha1",
+    "memory": "512",
+    "ssh_timeout": "60m",
+    "build_num": "1.0",
+    "vmname": "Router"
+  },
+  "builders": [
+    {
+    "type": "vmware-iso",
+    "guest_os_type": "debian6-64",
+    "iso_url": "https://downloads.vyos.io/release/1.1.7/vyos-1.1.7-amd64.iso",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+    "disk_size": "{{user `disk_size`}}",
+    "headless": "{{user `headless`}}",
+    "boot_wait": "10s",
+    "boot_command": [
+      "<enter><wait10><wait10><wait10>",
+      "vyos<enter><wait>",
+      "vyos<enter><wait10>",
+      "install system<enter><wait>",
+      "<enter><wait>",
+      "<enter><wait>",
+      "<enter><wait>",
+      "Yes<enter><wait>",
+      "<enter><wait10><wait10><wait10><wait10><wait10>",
+      "<enter><wait><wait10><wait10><wait10><wait10>",
+      "password<enter><wait>",
+      "password<enter><wait>",
+      "<enter><wait5>",
+      "reboot<enter><wait>",
+      "Yes<enter><wait10><wait10><wait10><wait10>",
+      "vyos<enter><wait>",
+      "password<enter><wait>",
+      "sudo useradd -m -U administrator<enter><wait>",
+      "configure<enter><wait>",
+      "set interfaces ethernet eth0 address dhcp<enter><wait>",
+      "set system login user administrator authentication plaintext-password password<enter><wait>",
+      "set system login user administrator level admin<enter><wait>",
+      "set service ssh<enter><wait>",
+      "commit<enter><wait>",
+      "save<enter><wait>",
+      "exit<enter><wait>",
+      "exit<enter><wait5>",
+      "administrator<enter><wait>",
+      "password<enter><wait>",
+      "configure<enter><wait>",
+      "delete system login user vyos<enter><wait>",
+      "delete interfaces ethernet eth0 address<enter><wait>",
+      "set interfaces ethernet eth0 address 'dhcp'<enter><wait>",
+      "commit<enter><wait>",
+      "save<enter><wait>",
+      "exit<enter><wait><wait5>",
+      "ping 8.8.8.8 count 5<enter><wait>",
+      "sudo shutdown -r now<enter><wait10><wait10>"
+    ],
+    "ssh_timeout": "{{user `ssh_timeout`}}",
+    "ssh_username": "administrator",
+    "ssh_password": "password",
+    "tools_upload_flavor": "linux",
+    "shutdown_command": "sudo poweroff",
+    "vmx_data": {
+      "memsize": "{{user `memory`}}",
+      "numvcpus": "{{user `cpus`}}",
+      "ethernet0.present": "TRUE",
+      "ethernet0.virtualDev": "e1000"
+    }
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "scripts": [
+      "scripts/vyos/router.sh"
+    ]
+  }]
+}

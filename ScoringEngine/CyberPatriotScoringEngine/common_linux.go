@@ -169,13 +169,16 @@ func PlatformCommon() {
 func ForensicQuestion() {
 	key := []byte("WjNJKFcSZejKNzPP")
 
-	fmt.Println("Head file")
 	var args = []string{"-n1", "/etc/gingertechengine/key"}
-	var questionOne = getCommandOutput("head", args)
-	fmt.Println("Tail file")
+	var padding = getCommandOutput("head", args)
+
+	args = []string{"c", "cat /etc/gingertechengine/key | sed -n 2p"}
+	var questionOne = getCommandOutput("bash", args)
+
 	args = []string{"-n1", "/etc/gingertechengine/key"}
 	var questionTwo = getCommandOutput("tail", args)
 
+	pad, _ := decrypt(key, padding)
 	answerOne, _ := decrypt(key, questionOne)
 	answerTwo, _ := decrypt(key, questionTwo)
 
@@ -197,5 +200,9 @@ func ForensicQuestion() {
 	if strings.Contains(questionTwo, answerTwo) {
 		AppendStringToFile("/etc/gingertechengine/post", "Forensic Question Two Complete (2/2)")
 		AppendStringToFile("/etc/gingertechengine/post", "")
+	}
+	if strings.Contains(questionOne, pad) {
+		AppendStringToFile("/et/gingertechengine/post", "Thank you for using my practice images")
+		AppendStringToFile("/etc/gingertechengine/post", "	- Bailey Kasin || Ginger Technology (https://gingertechnology.net)")
 	}
 }
