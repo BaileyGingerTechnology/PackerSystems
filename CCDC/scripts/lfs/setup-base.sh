@@ -731,7 +731,6 @@ chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 
 cd $LFS/sources
-rm -R -- */
 
 chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \
