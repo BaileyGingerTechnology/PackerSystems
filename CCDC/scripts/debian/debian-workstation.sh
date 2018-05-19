@@ -24,9 +24,8 @@ sudo mkdir /temp/
 sudo chown -R administrator:administrator /temp
 cd /temp
 mkdir debian
-#sudo apt-get -y install netselect-apt
-#sudo netselect-apt -n jessie && sudo mv sources.list /etc/apt/sources.list
 
+sudo mv /home/administrator/sources.list /etc/apt/sources.list
 sudo apt update
 sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted
 
@@ -50,8 +49,8 @@ sudo make install
 sudo make -C contrib install
 
 cd /temp
-#wget http://dl.fedoraproject.org/pub/fedora/linux/releases/27/Everything/x86_64/os/Packages/l/libalpm-5.0.2-3.fc27.x86_64.rpm
-#sudo alien -i libalpm-5.0.2-3.fc27.x86_64.rpm
+wget http://dl.fedoraproject.org/pub/fedora/linux/releases/27/Everything/x86_64/os/Packages/l/libalpm-5.0.2-3.fc27.x86_64.rpm
+sudo alien -i libalpm-5.0.2-3.fc27.x86_64.rpm
 sudo pacman-db-upgrade
 
 echo "==> Setting local mirror"

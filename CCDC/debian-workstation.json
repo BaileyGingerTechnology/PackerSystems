@@ -96,6 +96,11 @@
     },
     {
       "type": "file",
+      "source": "files/sources.list",
+      "destination": "/home/administrator/"
+    },
+    {
+      "type": "file",
       "source": "files/debianPKGBUILD",
       "destination": "/home/administrator/"
     },
