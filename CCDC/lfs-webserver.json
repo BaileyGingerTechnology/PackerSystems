@@ -6,7 +6,7 @@
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
-    "cpus": "2",
+    "cpus": "8",
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
@@ -127,6 +127,11 @@
       "type": "file",
       "source": "files/system.spec",
       "destination": "/temp/system.spec"
+    },
+    {
+      "type": "file",
+      "source": "scripts/lfs/vpkg-provides.sh",
+      "destination": "/temp/vpkg-provides.sh"
     },
     {
       "environment_vars": [

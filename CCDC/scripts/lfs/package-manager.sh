@@ -205,7 +205,7 @@ function build_neon
 }
 
 build_popt
-#build_libarchive
+build_libarchive
 build_neon
 
 function build_rpm
@@ -219,20 +219,21 @@ function build_rpm
               --with-crypto=openssl   \
 			        --without-selinux       \
         	    --without-python        \
+              --without-lua           \
       	      --without-javaglue &&
   make &&
   make install
   
   rpm --initdb --root=/
-  cd scripts
-  #./vpkg-provides.sh --spec_header $LFS/system.spec
+  cd $LFS
+  $LFS/vpkg-provides.sh --spec_header $LFS/system.spec
   rpm --version
 }
 
-#build_rpm
-#cd $LFS/sources
-#rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
+build_rpm
+cd $LFS/sources
+rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
 
-build_ssh
+#build_ssh
 
 $LFS/lfs-webserver.sh

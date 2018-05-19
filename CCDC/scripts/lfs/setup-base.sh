@@ -301,6 +301,7 @@ function build_binutils_again
 function build_gcc_again
 {
   cd $LFS/sources
+  rm -rf gcc-7.3.0
   tar xvf gcc-7.3.0.tar.xz
   cd gcc-7.3.0
 
@@ -723,6 +724,7 @@ mv -v /temp/lfs-webserver.sh $LFS/lfs-webserver.sh
 mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
+mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
@@ -730,8 +732,7 @@ chmod -v 777 lfs-webserver.sh
 chmod -v +X lfs-webserver.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
-
-cd $LFS/sources
+chmod -v +x vpkg-provides.sh
 
 chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \

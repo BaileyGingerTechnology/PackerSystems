@@ -7,3 +7,7 @@ Group:          System Environment/Base
 Copyright:      2018
 URL:            https://gingertechnology.net
 Source:         https://files.gingertechnology.net/%{name}-%{version}.tar.gz
+
+%description
+CUT MY LIFE INTO PIECES
+PUT A BULLET IN MY BRAIN

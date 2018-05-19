@@ -239,6 +239,7 @@ function build_openssl
            --openssldir=/etc/ssl \
            --libdir=lib          \
            shared                \
+           enable-md2            \
            zlib-dynamic
   make -j${CPUS}
   sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
@@ -737,7 +738,7 @@ function build_vim
 {
   cd $LFS/sources
   tar xvf vim-8.0.586.tar.bz2
-  cd vim-8.0.586
+  cd vim80
 
   echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
   sed -i '/call/{s/split/xsplit/;s/303/492/}' src/testdir/test_recover.vim
@@ -940,7 +941,7 @@ cat > /etc/fstab << "EOF"
 
 /dev/sda4      /            ext4     defaults            1     1
 /dev/sda2      /boot    		vfat     defaults,noatime    0     2
-/dev/sad3      swap         swap     pri=1               0     0
+/dev/sda3      swap         swap     pri=1               0     0
 proc           /proc        proc     nosuid,noexec,nodev 0     0
 sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
 tmpfs          /run         tmpfs    defaults            0     0
