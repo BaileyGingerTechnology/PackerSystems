@@ -117,8 +117,6 @@ Debian workstation:
 
     - Was gonna do Fedora, but I guess it has really bad ESXi support (or vice versa), so I'll do Debian instead.
 
-    - Or an LFS thing. Depends on if I can implement an idea I have for Debian.
-
 Windows 8.1 workstation:
 
     - Pretty standard.

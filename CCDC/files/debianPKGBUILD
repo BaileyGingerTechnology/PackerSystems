@@ -4,18 +4,17 @@ pkgrel=1
 pkgdesc='Packages included in Debian 8.9'
 arch=('x86_64')
 license=('')
-url=''
-groups=('base')
+url='https://gingertechnology.net'
+groups=('base'
+        'base-devel'
+        'community'
+        'extra'
+        'multilib')
 
-provides=('gcc=4.9'
-          'ncurses=5.7'
-          'readline=6.0'
-          'curl=7.38.0'
-          'python2'
-          'bzip2=1.0.6'
-          'awk'
-          'libldap'
-          'ruby'
-          'bash=4.3.30'
+provides=('python2'
           'filesystem'
-          'ncurses=5.9')
+          'pacman'
+          'bash'
+          'coreutils'
+          'util-linux')
+          

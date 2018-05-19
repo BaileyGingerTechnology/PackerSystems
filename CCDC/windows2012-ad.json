@@ -95,20 +95,11 @@
       "destination": "C:\\userlist.csv"
     },
     {
-      "type": "file",
-      "source": "files/eicar.com",
-      "destination": "C:\\eicar.com"
-    },
-    {
-      "type": "windows-shell",
-      "inline": "MOVE /Y C:\\eicar.com C:\\Windows\\system32\\eicar.com"
-    },
-    {
       "type": "powershell",
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "scripts": [
-        "scripts/winserver/Setup.ps1"
+        "scripts/winshared/SetupServ.ps1"
       ]
     },
     {
