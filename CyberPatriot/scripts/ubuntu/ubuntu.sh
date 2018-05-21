@@ -116,7 +116,6 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 
 sudo dpkg -i CheckScore_1.0.deb
 mkdir -p /home/administrator/Desktop
-sudo mv /temp/other/scoring.service /etc/systemd/system/scoring.service
 sudo systemctl enable scoring
 
 # Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob

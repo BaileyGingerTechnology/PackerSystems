@@ -19,16 +19,16 @@ func Deploy(toDeploy Question) {
 		createFile("C:\\Users\\administrator\\Desktop\\Forensic Two.txt")
 	}
 
-	AppendStringToFile("C:\\Users\\administrator\\Desktop\\Forensic One.txt", strconv.Itoa(toDeploy.ID)+"\n"+toDeploy.Question)
+	AppendStringToFile("C:\\Users\\administrator\\Desktop\\Forensic One.txt", strconv.Itoa(toDeploy.ID)+"\r\n"+toDeploy.Question)
 	if _, err := os.Stat("C:\\Users\\administrator\\Desktop\\Forensic Two.txt"); err == nil {
-		AppendStringToFile("C:\\Users\\administrator\\Desktop\\Forensic Two.txt", strconv.Itoa(toDeploy.ID)+"\n"+toDeploy.Question)
+		AppendStringToFile("C:\\Users\\administrator\\Desktop\\Forensic Two.txt", strconv.Itoa(toDeploy.ID)+"\r\n"+toDeploy.Question)
 	}
 
 	key := []byte("WjNJKFcSZejKNzPP")
 	answer, _ := encrypt(key, toDeploy.Answer)
 
 	if _, err := os.Stat("C:\\Users\\administrator\\Desktop\\Forensic Two.txt"); err == nil {
-		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\n"+answer)
+		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\r\n"+answer)
 	} else {
 		createFile("C:\\ProgramData\\gingertechengine\\key")
 		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", answer)

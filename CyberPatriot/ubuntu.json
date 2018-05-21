@@ -172,11 +172,6 @@
       "destination": "/temp/other/CheckScore_1.0.deb"
     },
     {
-      "type": "file",
-      "source": "files/scoring.service",
-      "destination": "/temp/other/scoring.service"
-    },
-    {
       "type": "shell",
       "scripts": [
         "scripts/ubuntu/ubuntu.sh"

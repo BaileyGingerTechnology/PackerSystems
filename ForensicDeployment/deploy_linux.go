@@ -25,12 +25,10 @@ func Deploy(toDeploy Question) {
 
 	key := []byte("WjNJKFcSZejKNzPP")
 	answer, _ := encrypt(key, toDeploy.Answer)
-	pad, _ := encrypt(key, "Padding because stupid")
 
 	if _, err := os.Stat("/home/administrator/Desktop/Forensic Two.txt"); err == nil {
-		AppendKeyToFile("/etc/gingertechengine/key", "\n"+answer)
+		AppendKeyToFile("/etc/gingertechengine/key1", "\n"+answer)
 	} else {
-		AppendKeyToFile("/etc/gingertechengine/key", pad)
 		AppendKeyToFile("/etc/gingertechengine/key", "\n"+answer)
 	}
 }
