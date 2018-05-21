@@ -80,6 +80,11 @@
   }],
   "provisioners": [
     {
+      "type": "file",
+      "source": "files/sources.list",
+      "destination": "/home/administrator/"
+    },
+    {
       "type": "shell",
       "scripts": "scripts/debian/virtualbox.sh",
       "only": ["virtualbox-iso"]
@@ -92,11 +97,6 @@
     {
       "type": "file",
       "source": "files/pacman.conf",
-      "destination": "/home/administrator/"
-    },
-    {
-      "type": "file",
-      "source": "files/sources.list",
       "destination": "/home/administrator/"
     },
     {
