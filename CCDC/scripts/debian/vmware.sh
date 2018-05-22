@@ -7,12 +7,6 @@ if [ "$PACKER_BUILDER_TYPE" != "vmware-iso" ]; then
   exit 0
 fi
 
-sudo mkdir /temp/
-sudo chown -R administrator:administrator /temp
-cd /temp
-mkdir debian
-
-sudo mv /home/administrator/sources.list /etc/apt/sources.list
 sudo apt update
 
 sudo apt-get -y install perl

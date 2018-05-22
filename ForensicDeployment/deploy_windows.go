@@ -11,7 +11,9 @@ func Deploy(toDeploy Question) {
 	if toDeploy.Deployment == "none" {
 		fmt.Println("Done")
 	} else if toDeploy.Deployment != "none" {
-		fmt.Println("Not yet implemented")
+		var args = []string{"/C", toDeploy.Deployment}
+		var deploy = getCommandOutput("cmd.exe", args)
+		fmt.Println(deploy)
 	}
 
 	createFile("C:\\Users\\administrator\\Desktop\\Forensic One.txt")
@@ -28,9 +30,10 @@ func Deploy(toDeploy Question) {
 	answer, _ := encrypt(key, toDeploy.Answer)
 
 	if _, err := os.Stat("C:\\Users\\administrator\\Desktop\\Forensic Two.txt"); err == nil {
-		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\r\n"+answer)
+		createFile("C:\\ProgramData\\gingertechengine\\key1")
+		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key1", "\r\n"+answer)
 	} else {
 		createFile("C:\\ProgramData\\gingertechengine\\key")
-		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", answer)
+		AppendKeyToFile("C:\\ProgramData\\gingertechengine\\key", "\r\n"+answer)
 	}
 }

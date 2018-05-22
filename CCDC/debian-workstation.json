@@ -1,11 +1,23 @@
 {
+  "variables": {
+    "cpus": "1",
+    "disk_size": "40000",
+    "headless": "false",
+    "iso_checksum": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/SHA256SUMS",
+    "iso_checksum_type": "sha256",
+    "memory": "1024",
+    "mirror": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
+    "ssh_timeout": "60m",
+    "build_num": "1.0",
+    "vmname": "Tuna"
+  },
   "builders": [{
     "type": "qemu",
     "iso_url": "{{user `mirror`}}",
     "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "output-debian-8.9-amd64-{{build_type}}",
-    "vm_name": "packer-debian-8.9-amd64",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
     "disk_size": "{{user `disk_size`}}",
     "headless": "{{user `headless`}}",
     "http_directory": "http",
@@ -30,8 +42,8 @@
     "iso_url": "{{user `mirror`}}",
     "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "output-debian-8.9-amd64-{{build_type}}",
-    "vm_name": "packer-debian-8.9-amd64",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
     "disk_size": "{{user `disk_size`}}",
     "headless": "{{user `headless`}}",
     "http_directory": "http",
@@ -56,8 +68,8 @@
     "iso_url": "{{user `mirror`}}",
     "iso_checksum_url": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "output-debian-8.9-amd64-{{build_type}}",
-    "vm_name": "packer-debian-8.9-amd64",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
     "disk_size": "{{user `disk_size`}}",
     "headless": "{{user `headless`}}",
     "http_directory": "http",
@@ -80,11 +92,6 @@
   }],
   "provisioners": [
     {
-      "type": "file",
-      "source": "files/sources.list",
-      "destination": "/home/administrator/"
-    },
-    {
       "type": "shell",
       "scripts": "scripts/debian/virtualbox.sh",
       "only": ["virtualbox-iso"]
@@ -93,6 +100,11 @@
       "type": "shell",
       "scripts": "scripts/debian/vmware.sh",
       "only": ["vmware-iso"]
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "inline": "sudo reboot"
     },
     {
       "type": "file",
@@ -105,21 +117,16 @@
       "destination": "/home/administrator/"
     },
     {
+      "type": "file",
+      "source": "files/tuna.png",
+      "destination": "/home/administrator/Pictures/"
+    },
+    {
       "type": "shell",
       "scripts": [
         "scripts/debian/debian-workstation.sh",
         "scripts/debian/cleanup.sh"
       ]
     }
-  ],
-  "variables": {
-    "cpus": "1",
-    "disk_size": "40000",
-    "headless": "false",
-    "iso_checksum": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/SHA256SUMS",
-    "iso_checksum_type": "sha256",
-    "memory": "512",
-    "mirror": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
-    "ssh_timeout": "60m"
-  }
+  ]
 }

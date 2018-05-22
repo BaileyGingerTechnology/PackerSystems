@@ -1,4 +1,15 @@
 {
+  "variables": {
+    "vm_name": "UbuntuWeb",
+    "iso_checksum": "http://releases.ubuntu.com/16.04/SHA256SUMS",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso",
+    "shutdown_command": "sudo systemctl poweroff",
+    "username": "administrator",
+    "password": "UberPassword",
+    "memsize": "2048",
+    "numcpus": "2",
+    "version": "1.0"
+  },
   "builders": [
     {
       "type": "qemu",
@@ -177,16 +188,5 @@
         "scripts/ubuntu/ubuntu.sh"
       ]
     }
-  ],
-  "variables": {
-    "vm_name": "UbuntuWeb",
-    "iso_checksum": "http://releases.ubuntu.com/16.04/SHA256SUMS",
-    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso",
-    "shutdown_command": "sudo systemctl poweroff",
-    "username": "administrator",
-    "password": "UberPassword",
-    "memsize": "2048",
-    "numcpus": "2",
-    "version": "1.0"
-  }
+  ]
 }

@@ -7,20 +7,9 @@ if [ "$PACKER_BUILDER_TYPE" != "virtualbox-iso" ]; then
   exit 0
 fi
 
-sudo mkdir /temp/
-sudo chown -R administrator:administrator /temp
-cd /temp
-mkdir debian
-
-sudo mv /home/administrator/sources.list /etc/apt/sources.list
 sudo apt update
 
-sudo apt-get -y install bzip2
-sudo apt-get -y install dkms
-sudo apt-get -y install make
-
-# Uncomment this if you want to install Guest Additions with support for X
-sudo apt-get -y install xserver-xorg
+sudo apt -y install bzip2 dkms make xserver-xorg linux-headers-amd64
 
 sudo mount -o loop,ro ~/VBoxGuestAdditions.iso /mnt/
 sudo /mnt/VBoxLinuxAdditions.run || :
