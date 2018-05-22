@@ -2,6 +2,7 @@
 
 # stop on errors
 set -eu
+set -x
 
 #
 # This section is from an Arch setup script, since I am using Arch's live CD for the creation of the LFS partitions
@@ -34,6 +35,14 @@ sudo /usr/bin/wipefs --all ${DISK}
 #
 # Start LFS setup functions
 #
+
+set +h
+umask 022
+LFS=/mnt/lfs
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+PATH=/tools/bin:/bin:/usr/bin
+export LFS LC_ALL LFS_TGT PATH
 
 function set_filesystems
 {
@@ -95,6 +104,7 @@ function partition_disk
 partition_disk
 sudo mkdir -pv $LFS
 sudo mount -v -t ext4 ${DISK}4 $LFS
+sudo chown -v administrator $LFS
 make_directories
 
 sudo mount -v -t vfat ${DISK}2 $LFS/boot

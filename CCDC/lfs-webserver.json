@@ -10,7 +10,9 @@
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
-    "disk_size": "20480"
+    "disk_size": "20480",
+    "build_num": "1.0",
+    "vmname": "GingerTechWeb"
   },
   "builders": [
     {
@@ -36,6 +38,8 @@
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
       "headless" : "{{ user `headless`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "vboxmanage": [
           ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
           ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
@@ -51,7 +55,6 @@
       "boot_command": [
         "<enter><wait10><wait10><wait10>",
         "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
-        "/usr/bin/groupadd administrator<enter><wait5>",
         "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
         "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
         "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
@@ -66,6 +69,8 @@
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
       "headless" : "{{ user `headless`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "vmx_data": {
         "memsize": "{{user `memory`}}",
         "numvcpus": "{{user `cpus`}}"
@@ -94,14 +99,12 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "headless" : "{{ user `headless`}}"
     }
   ],
   "provisioners": [
-    {
-      "type": "shell",
-      "script": "scripts/lfs/set-profile.sh"
-    },
     {
       "type": "file",
       "source": "scripts/lfs/build-to-bash.sh",
@@ -143,7 +146,7 @@
           "CPUS={{ user `cpus` }}"
       ],
       "type": "shell",
-      "execute_command": "{{ .Vars }} bash '{{ .Path }}'",
+      "execute_command": "{{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,
       "scripts": [
         "scripts/lfs/setup-base.sh"
