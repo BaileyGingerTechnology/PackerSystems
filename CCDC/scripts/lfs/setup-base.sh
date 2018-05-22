@@ -22,11 +22,11 @@ TARGET_DIR='/mnt'
 COUNTRY=${COUNTRY:-US}
 
 echo "==> Clearing partition table on ${DISK}"
-/usr/bin/sgdisk --zap ${DISK}
+sudo /usr/bin/sgdisk --zap ${DISK}
 
 echo "==> Destroying magic strings and signatures on ${DISK}"
-/usr/bin/dd if=/dev/zero of=${DISK} bs=512 count=2048
-/usr/bin/wipefs --all ${DISK}
+sudo /usr/bin/dd if=/dev/zero of=${DISK} bs=512 count=2048
+sudo /usr/bin/wipefs --all ${DISK}
 #
 # End Arch setup stuff
 #
@@ -38,28 +38,28 @@ echo "==> Destroying magic strings and signatures on ${DISK}"
 function set_filesystems
 {
 	# Make the boot partition ext2
-	mkfs.vfat -F32 $12
+	sudo mkfs.vfat -F32 $12
 	# Make the file partition ext4
-	mkfs.ext4 $14
+	sudo mkfs.ext4 $14
 	# Make the third partition swap
-	mkswap $13
-	swapon $13
+	sudo mkswap $13
+	sudo swapon $13
 
 	echo "Filesystems set. Mounting partition where system will be built."
 }
 
 function make_directories
 {
-  mkdir -pv $LFS/boot
-  mkdir -pv $LFS/sources
-  mkdir -pv $LFS/tools
+  sudo mkdir -pv $LFS/boot
+  sudo mkdir -pv $LFS/sources
+  sudo mkdir -pv $LFS/tools
 
-  chmod -v a+wt $LFS/sources
-  ln -sv $LFS/tools /
+  sudo chmod -v a+wt $LFS/sources
+  sudo ln -sv $LFS/tools /
 
-  chown -v administrator $LFS/tools
-  chown -v administrator $LFS/sources
-  chown -v administrator $LFS/boot
+  sudo chown -v administrator $LFS/tools
+  sudo chown -v administrator $LFS/sources
+  sudo chown -v administrator $LFS/boot
 }
 
 function partition_disk
@@ -69,35 +69,35 @@ function partition_disk
 
 	# Make the disk GPT to make life easy later
 	echo "Using parted to label disk GPT."
-	parted -a optimal ${DISK} mklabel gpt
+	sudo parted -a optimal ${DISK} mklabel gpt
 	# Partition sizes will be given in megabytes
-	parted -a optimal ${DISK} unit mib
+	sudo parted -a optimal ${DISK} unit mib
 	echo "Setting partition format as recommended in Gentoo Handbook."
 	# Refer to the disk setup chapter for specifics
 	# But basically
 	# Four partitions. grub, boot, swap, files
-	parted -a optimal ${DISK} mkpart primary 1 3
-	parted -a optimal ${DISK} name 1 grub
-	parted -a optimal ${DISK} set 1 bios_grub on
-	parted -a optimal ${DISK} mkpart primary 3 131
-	parted -a optimal ${DISK} name 2 boot
-	parted -a optimal ${DISK} mkpart primary 131 643
-	parted -a optimal ${DISK} name 3 swap
-	parted -a optimal ${DISK} mkpart primary 643 -- -1
-	parted -a optimal ${DISK} name 4 rootfs
-	parted -a optimal ${DISK} set 2 boot on
-	parted -a optimal ${DISK} print
+	sudo parted -a optimal ${DISK} mkpart primary 1 3
+	sudo parted -a optimal ${DISK} name 1 grub
+	sudo parted -a optimal ${DISK} set 1 bios_grub on
+	sudo parted -a optimal ${DISK} mkpart primary 3 131
+	sudo parted -a optimal ${DISK} name 2 boot
+	sudo parted -a optimal ${DISK} mkpart primary 131 643
+	sudo parted -a optimal ${DISK} name 3 swap
+	sudo parted -a optimal ${DISK} mkpart primary 643 -- -1
+	sudo parted -a optimal ${DISK} name 4 rootfs
+	sudo parted -a optimal ${DISK} set 2 boot on
+	sudo parted -a optimal ${DISK} print
 
 	echo "Formatting disks complete. Now setting file system types."
 	set_filesystems ${DISK}
 }
 
 partition_disk
-mkdir -pv $LFS
-mount -v -t ext4 ${DISK}4 $LFS
+sudo mkdir -pv $LFS
+sudo mount -v -t ext4 ${DISK}4 $LFS
 make_directories
 
-mount -v -t vfat ${DISK}2 $LFS/boot
+sudo mount -v -t vfat ${DISK}2 $LFS/boot
 
 #pacman -Sy
 #pacman -Sc --noconfirm
@@ -106,16 +106,6 @@ mount -v -t vfat ${DISK}2 $LFS/boot
 cd $LFS
 wget https://files.gingertechnology.net/packersystems/lfs/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
-
-#exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
-umask 022
-LFS=/mnt/lfs
-echo $LFS
-LC_ALL=POSIX
-echo $LC_ALL
-LFS_TGT=$(uname -m)-lfs-linux-gnu
-echo "On $LFS_TGT"
-PATH=/tools/bin:/bin:/usr/bin
 
 function build_binutils
 {
@@ -142,7 +132,7 @@ function build_binutils
   make install
 
   cd $LFS/sources
-  rm -rf binutils-2.30
+  rm -rfv binutils-2.30
 }
 
 function build_gcc
@@ -209,7 +199,7 @@ esac
   make install
 
   cd $LFS/sources
-  rm -rf gcc-7.3.0
+  rm -rfv gcc-7.3.0
 }
 
 function build_linux_headers
@@ -222,6 +212,9 @@ function build_linux_headers
 
   make INSTALL_HDR_PATH=dest headers_install -j${CPUS}
   cp -rv dest/include/* /tools/include
+
+  cd $LFS/sources
+  rm -rfv linux-4.15.3
 }
 
 function build_glibc
@@ -244,6 +237,9 @@ function build_glibc
 
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv glibc-2.27
 }
 
 function build_libstdc
@@ -268,7 +264,7 @@ function build_libstdc
   make install
 
   cd $LFS/sources
-  rm -rf gcc-7.3.0
+  rm -rfv gcc-7.3.0
 }
 
 function build_binutils_again
@@ -296,12 +292,14 @@ function build_binutils_again
   make -C ld clean
   make -C ld LIB_PATH=/usr/lib:/lib
   cp -v ld/ld-new /tools/bin
+
+  cd $LFS/sources
+  rm -rfv binutils-2.30
 }
 
 function build_gcc_again
 {
   cd $LFS/sources
-  rm -rf gcc-7.3.0
   tar xvf gcc-7.3.0.tar.xz
   cd gcc-7.3.0
 
@@ -356,6 +354,9 @@ function build_gcc_again
   make install
 
   ln -sv gcc /tools/bin/cc
+
+  cd $LFS/sources
+  rm -rfv gcc-7.3.0
 }
 
 function build_tcl
@@ -375,6 +376,9 @@ function build_tcl
   make install-private-headers
 
   ln -sv tclsh8.6 /tools/bin/tclsh
+
+  cd $LFS/sources
+  rm -rfv tcl8.6.8
 }
 
 function build_expect
@@ -392,6 +396,9 @@ function build_expect
 
   make -j${CPUS}
   make SCRIPTS="" install
+
+  cd $LFS/sources
+  rm -rfv expect5.45.4
 }
 
 function build_dejagnu
@@ -403,6 +410,9 @@ function build_dejagnu
   ./configure --prefix=/tools
 
   make install
+
+  cd $LFS/sources
+  rm -rfv dejagnu-1.6.1
 }
 
 function build_m4
@@ -414,6 +424,9 @@ function build_m4
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv m4-1.4.18
 }
 
 function build_ncurses
@@ -432,6 +445,9 @@ function build_ncurses
   
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv ncurses-6.1
 }
 
 function build_bash
@@ -447,6 +463,9 @@ function build_bash
   make install
 
   ln -sv bash /tools/bin/sh
+
+  cd $LFS/sources
+  rm -rfv bash-4.4.18
 }
 
 function build_bison
@@ -459,6 +478,9 @@ function build_bison
 
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv bison-3.0.4
 }
 
 function build_bzip
@@ -469,6 +491,9 @@ function build_bzip
   
   make -j${CPUS}
   make PREFIX=/tools install
+
+  cd $LFS/sources
+  rm -rfv bzip2-1.0.6
 }
 
 function build_coreutils
@@ -481,6 +506,9 @@ function build_coreutils
 
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv coreutils-8.29
 }
 
 function build_diffutils
@@ -492,6 +520,9 @@ function build_diffutils
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv diffutils-3.6
 }
 
 function build_file
@@ -503,6 +534,9 @@ function build_file
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv file-5.32
 }
 
 function build_findutils
@@ -514,6 +548,9 @@ function build_findutils
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv findutils-4.6.0
 }
 
 function build_gawk
@@ -525,6 +562,9 @@ function build_gawk
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv gawk-4.2.0
 }
 
 function build_gettext
@@ -543,6 +583,9 @@ function build_gettext
   make -C src xgettext
 
   cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin
+
+  cd $LFS/sources
+  rm -rfv gettext-0.19.8.1
 }
 
 function build_grep
@@ -554,6 +597,9 @@ function build_grep
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv grep-3.1
 }
 
 function build_gzip
@@ -565,6 +611,9 @@ function build_gzip
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv gzip-1.9
 }
 
 function build_make
@@ -579,6 +628,9 @@ function build_make
 
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv make-4.2.1
 }
 
 function build_patch
@@ -590,6 +642,9 @@ function build_patch
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv patch-2.7.6
 }
 
 function build_perl
@@ -604,6 +659,9 @@ function build_perl
   cp -v perl cpan/podlators/scripts/pod2man /tools/bin
   mkdir -pv /tools/lib/perl5/5.26.1
   cp -Rv lib/* /tools/lib/perl5/5.26.1
+
+  cd $LFS/sources
+  rm -rfv perl-5.26.1
 }
 
 function build_sed
@@ -615,6 +673,9 @@ function build_sed
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv sed-4.4
 }
 
 function build_tar
@@ -626,6 +687,9 @@ function build_tar
   FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv tar-1.30
 }
 
 function build_texinfo
@@ -637,6 +701,9 @@ function build_texinfo
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv texinfo-6.5
 }
 
 function build_util_linux
@@ -654,6 +721,9 @@ function build_util_linux
   
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv util-linux-2.31.1
 }
 
 function build_xz
@@ -665,6 +735,9 @@ function build_xz
   ./configure --prefix=/tools
   make -j${CPUS}
   make install
+
+  cd $LFS/sources
+  rm -rfv xz-5.2.3
 }
 
 build_binutils
@@ -701,21 +774,21 @@ build_texinfo
 build_util_linux
 build_xz
 
-chown -R root:root $LFS/tools
+sudo chown -R root:root $LFS/tools
 
-mkdir -pv $LFS/{dev,proc,sys,run}
+sudo mkdir -pv $LFS/{dev,proc,sys,run}
 
-mknod -m 600 $LFS/dev/console c 5 1
-mknod -m 666 $LFS/dev/null c 1 3
+sudo mknod -m 600 $LFS/dev/console c 5 1
+sudo mknod -m 666 $LFS/dev/null c 1 3
 
-mount -v --bind /dev $LFS/dev
+sudo mount -v --bind /dev $LFS/dev
 #mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
-mount -vt proc proc $LFS/proc
-mount -vt sysfs sysfs $LFS/sys
-mount -vt tmpfs tmpfs $LFS/run
+sudo mount -vt proc proc $LFS/proc
+sudo mount -vt sysfs sysfs $LFS/sys
+sudo mount -vt tmpfs tmpfs $LFS/run
 
 if [ -h $LFS/dev/shm ]; then
-  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+  sudo mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
 mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
@@ -734,7 +807,7 @@ chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 chmod -v +x vpkg-provides.sh
 
-chroot "$LFS" /tools/bin/env -i \
+sudo chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \
     TERM="$TERM"                \
     PS1='(lfs chroot) \u:\w\$ ' \

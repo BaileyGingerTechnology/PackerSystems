@@ -1,8 +1,6 @@
 #!/tools/bin/bash
 # Author: Bailey Kasin
 
-echo "root user and groups setup"
-
 touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp -v utmp /var/log/lastlog
 chmod -v 664  /var/log/lastlog
@@ -11,7 +9,6 @@ chmod -v 600  /var/log/btmp
 function build_linux_headers
 {
   cd $LFS/sources
-  rm -rf linux-5.15.3
   tar xvf linux-4.15.3.tar.gz
   cd linux-4.15.3
 
@@ -34,7 +31,6 @@ function build_man_pages
 function build_glibc
 {
   cd $LFS/sources
-  rm -rf glibc-2.27
   tar xvf glibc-2.27.tar.xz
   cd glibc-2.27
 
@@ -173,7 +169,6 @@ rm -v dummy.c a.out dummy.log
 function build_zlib
 {
   cd $LFS/sources
-  rm -rf zlib-1.2.11
   tar xvf zlib-1.2.11.tar.xz
   cd zlib-1.2.11
 
@@ -189,7 +184,6 @@ function build_zlib
 function build_file
 {
   cd $LFS/sources
-  rm -rf file-5.32
   tar xvf file-5.32.tar.gz
   cd file-5.32
 
@@ -202,7 +196,6 @@ function build_file
 function build_readline
 {
   cd $LFS/sources
-  rm -rf readline-7.0
   tar xvf readline-7.0.tar.gz
   cd readline-7.0
 
@@ -213,7 +206,7 @@ function build_readline
               --disable-static \
               --docdir=/usr/share/doc/readline-7.0
 
-  make -j${CPUS} SHLIB_LIBS="-L/tools/lib -lncursesw"
+  make SHLIB_LIBS="-L/tools/lib -lncursesw"
   make SHLIB_LIBS="-L/tools/lib -lncurses" install
 
   mv -v /usr/lib/lib{readline,history}.so.* /lib
@@ -224,7 +217,6 @@ function build_readline
 function build_m4
 {
   cd $LFS/sources
-  rm -rf m4-1.4.18
   tar xvf m4-1.4.18.tar.xz
   cd m4-1.4.18
 
@@ -251,7 +243,6 @@ function build_bc
 function build_binutils
 {
   cd $LFS/sources
-  rm -rf binutils-2.30
   tar xvf binutils-2.30.tar.xz
   cd binutils-2.30
   
@@ -268,14 +259,13 @@ function build_binutils
               --enable-64-bit-bfd \
               --with-system-zlib
   
-  make -j${CPUS} tooldir=/usr
+  make tooldir=/usr -j${CPUS}
   make tooldir=/usr install
 }
 
 function build_gmp
 {
   cd $LFS/sources
-  rm -rf gmp-6.1.2
   tar xvf gmp-6.1.2.tar.xz
   cd gmp-6.1.2
 
@@ -290,6 +280,9 @@ function build_gmp
   make -j${CPUS}
   make html
 
+  make check 2>&1 | tee gmp-check-log
+  awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
+
   make install
   make install-html
 }
@@ -297,7 +290,6 @@ function build_gmp
 function build_mpfr
 {
   cd $LFS/sources
-  rm -rf mpfr-4.0.1
   tar xvf mpfr-4.0.1.tar.xz
   cd mpfr-4.0.1
 
@@ -316,7 +308,6 @@ function build_mpfr
 function build_mpc
 {
   cd $LFS/sources
-  rm -rf mpc-1.1.0
   tar xvf mpc-1.1.0.tar.gz
   cd mpc-1.1.0
 
@@ -334,8 +325,8 @@ function build_mpc
 function build_gcc
 {
   cd $LFS/sources
+  tar xvf gcc-7.3.0.tar.xz
   cd gcc-7.3.0
-  #rm -rf mpfr gmp mpc
 
   case $(uname -m) in
     x86_64)
@@ -344,6 +335,9 @@ function build_gcc
     ;;
   esac
   rm -f /usr/lib/gcc
+
+  mkdir -v build
+  cd build
   
   SED=sed                               \
   ../configure --prefix=/usr            \
@@ -351,14 +345,15 @@ function build_gcc
                --disable-multilib       \
                --disable-bootstrap      \
                --with-system-zlib
-  
-  cd build
+
   make -j${CPUS}
   ulimit -s 32768
 
   make install
+  echo "FIND ME TEST"
   ln -sv ../usr/bin/cpp /lib
   ln -sv gcc /usr/bin/cc
+
   install -v -dm755 /usr/lib/bfd-plugins
   ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/7.3.0/liblto_plugin.so \
           /usr/lib/bfd-plugins/

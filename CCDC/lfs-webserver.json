@@ -10,8 +10,7 @@
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
-    "disk_size": "20480",
-    "lfs": "/mnt/lfs"
+    "disk_size": "20480"
   },
   "builders": [
     {
@@ -52,7 +51,8 @@
       "boot_command": [
         "<enter><wait10><wait10><wait10>",
         "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
-        "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+        "/usr/bin/groupadd administrator<enter><wait5>",
+        "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
         "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
         "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
         "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
@@ -99,6 +99,10 @@
   ],
   "provisioners": [
     {
+      "type": "shell",
+      "script": "scripts/lfs/set-profile.sh"
+    },
+    {
       "type": "file",
       "source": "scripts/lfs/build-to-bash.sh",
       "destination": "/temp/build-to-bash.sh"
@@ -136,11 +140,10 @@
     {
       "environment_vars": [
           "COUNTRY={{ user `country` }}",
-          "LFS={{ user `lfs` }}",
           "CPUS={{ user `cpus` }}"
       ],
       "type": "shell",
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "execute_command": "{{ .Vars }} bash '{{ .Path }}'",
       "expect_disconnect": true,
       "scripts": [
         "scripts/lfs/setup-base.sh"

@@ -2,6 +2,7 @@
 # Author: Bailey Kasin
 
 echo "In chroot"
+echo "root user and groups setup"
 
 mkdir -pv /{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
 mkdir -pv /{media/{floppy,cdrom},sbin,srv,var}
