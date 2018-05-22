@@ -9,10 +9,7 @@ fi
 
 sudo apt update
 
-sudo apt-get -y install perl
-sudo apt-get -y install make
-sudo apt-get -y install linux-headers-$(uname -r)
-sudo apt-get -y install xserver-xorg
+sudo apt-get -y install perl make linux-headers-$(uname -r) xserver-xorg
 
 sudo mkdir /mnt/vmware
 sudo mount -o loop,ro ~/linux.iso /mnt/vmware
@@ -33,3 +30,5 @@ remove_answer ENABLE_VMBLOCK
 answer ENABLE_VMBLOCK no
 EOF
 sudo /usr/bin/vmware-config-tools.pl --default --skip-stop-start
+
+mkdir /home/administrator/Pictures

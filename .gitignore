@@ -10,7 +10,9 @@ ISO/win10.iso
 ISO/Win2012R2.iso
 CyberPatriot/manifest.json
 CyberPatriot/Builds
+CCDC/manifest.json
 CCDC/Builds
+variables.json
 
 # Binaries for programs and plugins
 *.exe

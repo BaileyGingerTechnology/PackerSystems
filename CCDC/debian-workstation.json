@@ -11,85 +11,124 @@
     "build_num": "1.0",
     "vmname": "Tuna"
   },
-  "builders": [{
-    "type": "qemu",
-    "iso_url": "{{user `mirror`}}",
-    "iso_checksum_url": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "<esc><wait>",
-      "auto ",
-      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
-      "<enter>"
-    ],
-    "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "shutdown_command": "sudo systemctl poweroff",
-    "qemuargs": [
-      ["-m", "{{user `memory`}}"],
-      ["-smp", "{{user `cpus`}}"]
-    ]
-  }, {
-    "type": "virtualbox-iso",
-    "guest_os_type": "Debian_64",
-    "iso_url": "{{user `mirror`}}",
-    "iso_checksum_url": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "<esc><wait>",
-      "auto ",
-      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
-      "<enter>"
-    ],
-    "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "shutdown_command": "sudo systemctl poweroff",
-    "vboxmanage": [
-      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
-    ]
-  }, {
-    "type": "vmware-iso",
-    "guest_os_type": "debian8-64",
-    "iso_url": "{{user `mirror`}}",
-    "iso_checksum_url": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "<esc><wait>",
-      "auto ",
-      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
-      "<enter>"
-    ],
-    "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "tools_upload_flavor": "linux",
-    "shutdown_command": "sudo systemctl poweroff",
-    "vmx_data": {
-      "memsize": "{{user `memory`}}",
-      "numvcpus": "{{user `cpus`}}"
+  "builders": [
+    {
+      "type": "qemu",
+      "iso_url": "{{user `mirror`}}",
+      "iso_checksum_url": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+        "auto ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
+        "<enter>"
+      ],
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "shutdown_command": "sudo systemctl poweroff",
+      "qemuargs": [
+        ["-m", "{{user `memory`}}"],
+        ["-smp", "{{user `cpus`}}"]
+      ]
+    },
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "Debian_64",
+      "iso_url": "{{user `mirror`}}",
+      "iso_checksum_url": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+        "auto ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
+        "<enter>"
+      ],
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "shutdown_command": "sudo systemctl poweroff",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+      ]
+    },
+    {
+      "type": "vmware-iso",
+      "guest_os_type": "debian8-64",
+      "iso_url": "{{user `mirror`}}",
+      "iso_checksum_url": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+        "auto ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
+        "<enter>"
+      ],
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "tools_upload_flavor": "linux",
+      "shutdown_command": "sudo systemctl poweroff",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      }
+    },
+    {
+      "type": "vmware-iso",
+      "name": "vmware-rem",
+      "guest_os_type": "debian8-64",
+      "iso_url": "{{user `mirror`}}",
+      "iso_checksum_url": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+        "auto ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
+        "<enter>"
+      ],
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "tools_upload_flavor": "linux",
+      "shutdown_command": "sudo systemctl poweroff",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      },
+      "remote_type": "esx5",
+      "remote_host": "{{user `esxi_host`}}",
+      "remote_datastore": "{{user `esxi_datastore`}}",
+      "remote_username": "{{user `esxi_username`}}",
+      "remote_password": "{{user `esxi_password`}}",
+      "keep_registered": true
     }
-  }],
+  ],
   "provisioners": [
     {
       "type": "shell",
@@ -99,7 +138,7 @@
     {
       "type": "shell",
       "scripts": "scripts/debian/vmware.sh",
-      "only": ["vmware-iso"]
+      "only": ["vmware-iso","vmware-rem"]
     },
     {
       "type": "shell",
@@ -119,7 +158,7 @@
     {
       "type": "file",
       "source": "files/tuna.png",
-      "destination": "/home/administrator/Pictures/"
+      "destination": "/home/administrator/Pictures/tuna.png"
     },
     {
       "type": "shell",

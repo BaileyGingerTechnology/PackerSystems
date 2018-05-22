@@ -81,6 +81,11 @@ cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
 
 	# clean up
 	/usr/bin/pacman -Rcns --noconfirm gptfdisk
+
+	/usr/bin/sed -i 's/#[/[/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/[custom/#[custom/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
+	/usr/bin/pacman -Syu --noconfirm
 EOF
 
 echo '==> Entering chroot and configuring system'

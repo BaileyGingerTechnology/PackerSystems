@@ -8,11 +8,12 @@ sudo tee -a /etc/ssh/sshd_config <<EOF
 UseDNS no
 EOF
 
-sudo cp /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
 TARGET_DIR='/mnt/arch'
 PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')
+KEYMAP='us'
+LANGUAGE='en_US.UTF-8'
+TIMEZONE='UTC'
 
 COUNTRY=${COUNTRY:-US}
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
@@ -22,7 +23,7 @@ else
 	DISK='/dev/sda'
 fi
 
-sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted
+sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim
 
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 
@@ -81,6 +82,9 @@ echo '==> Generating the system configuration script'
 sudo /usr/bin/install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 
 cat <<-EOF > "/temp/arch-config.sh"
+	set -e
+	set -x
+	
 	echo 'tuna.gingertech.com' > /etc/hostname
 	/usr/bin/ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 	echo 'KEYMAP=${KEYMAP}' > /etc/vconsole.conf
@@ -96,6 +100,10 @@ cat <<-EOF > "/temp/arch-config.sh"
 	/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 	echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
 	/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator
+
+	/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
 EOF
 
 sudo mv /temp/arch-config.sh ${TARGET_DIR}${CONFIG_SCRIPT}
@@ -105,8 +113,12 @@ sudo bash -c "arch-chroot ${TARGET_DIR} ${CONFIG_SCRIPT}"
 sudo rm "${TARGET_DIR}${CONFIG_SCRIPT}"
 
 cat << EOF > "/temp/finish.sh"
+	set -e
+	set -x
+	
   pacman -Syu --noconfirm
   pacman -S --needed --noconfirm base-devel git wget yajl curl openssl
+	update-ca-trust
 	git config --system http.sslverify false
 
   mkdir /temp && chmod 777 -R /temp && chown administrator -R /temp
@@ -131,4 +143,5 @@ sudo mv /temp/finish.sh /mnt/arch/finish.sh
 sudo chmod -v +x /mnt/arch/finish.sh
 
 sudo bash -c "arch-chroot ${TARGET_DIR} ./finish.sh"
-sudo bash -c "echo \"\narch-chroot ${TARGET_DIR}\" >> /etc/profile"
+echo "sudo arch-chroot ${TARGET_DIR} && exit" >> ~/.bashrc
+sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >> /root/.bashrc"
