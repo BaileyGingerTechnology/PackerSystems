@@ -5,25 +5,25 @@
 
 function redEcho
 {
-    echo -e $1
+    echo -e $(tput setaf 1)$1$(tput sgr0)
 }
 
 function greenEcho
 {
-    echo -e $1
+    echo $(tput setaf 2)$1$(tput sgr0)
 }
 
 function orangeEcho
 {
-    echo -e $1
+    echo $(tput setaf 3)$1$(tput sgr0)
 }
 
 function blueEcho
 {
-    echo -e $1
+    echo $(tput setaf 4)$1$(tput sgr0)
 }
 
 function pinkEcho
 {
-    echo -e $1
+    echo $(tput setaf 5)$1$(tput sgr0)
 }

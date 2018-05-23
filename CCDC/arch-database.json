@@ -5,7 +5,9 @@
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",
     "country": "US",
-    "headless": "false"
+    "headless": "false",
+    "build_num": "1.0",
+    "vmname": "ArchDB"
   },
   "builders": [
     {
@@ -29,7 +31,9 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo systemctl start poweroff.timer",
-      "headless" : "{{ user `headless`}}"
+      "headless" : "{{ user `headless`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
     },
     {
       "type": "vmware-iso",
@@ -49,7 +53,9 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo systemctl start poweroff.timer",
-      "headless" : "{{ user `headless`}}"
+      "headless" : "{{ user `headless`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
     },
     {
       "type": "qemu",
@@ -69,7 +75,9 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo systemctl start poweroff.timer",
-      "headless" : "{{ user `headless`}}"
+      "headless" : "{{ user `headless`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
     }
   ],
   "provisioners": [

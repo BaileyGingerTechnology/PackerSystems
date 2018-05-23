@@ -7,11 +7,13 @@
       "country": "USA",
       "arch_country": "US",
       "headless": "false",
-      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180517T214504Z.tar.xz",
-      "cpus": "2",
+      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180522T214503Z.tar.xz",
+      "cpus": "4",
       "cpus_after": "2",
       "memory": "1024",
-      "disk_size": "20480"
+      "disk_size": "20480",
+      "build_num": "1.0",
+      "vmname": "GentWeb"
   },
   "builders": [
       {
@@ -25,7 +27,7 @@
           "boot_wait": "5s",
           "boot_command": [
             "<enter><wait10><wait10><wait10>",
-            "PASSWORD=$(/usr/bin/openssl passwd -crypt '3dG5^hwo')<enter><wait5>",
+            "PASSWORD=$(/usr/bin/openssl passwd -crypt 'p@$Sword')<enter><wait5>",
             "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
             "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
             "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
@@ -36,10 +38,12 @@
           "disk_size": "{{user `disk_size`}}",
           "hard_drive_interface": "sata",
           "ssh_username": "administrator",
-          "ssh_password": "3dG5^hwo",
+          "ssh_password": "p@$Sword",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
           "shutdown_command": "poweroff",
           "headless" : "{{ user `headless`}}",
+          "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+          "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
           "vboxmanage": [
               ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
               ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
@@ -54,7 +58,7 @@
           "boot_wait": "5s",
           "boot_command": [
             "<enter><wait10><wait10><wait10>",
-            "PASSWORD=$(/usr/bin/openssl passwd -crypt '3dG5^hwo')<enter><wait5>",
+            "PASSWORD=$(/usr/bin/openssl passwd -crypt 'p@$Sword')<enter><wait5>",
             "/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
             "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
             "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
@@ -65,10 +69,12 @@
           "disk_size": "{{user `disk_size`}}",
           "disk_adapter_type": "sata",
           "ssh_username": "administrator",
-          "ssh_password": "3dG5^hwo",
+          "ssh_password": "p@$Sword",
           "ssh_timeout": "{{ user `ssh_timeout` }}",
           "shutdown_command": "poweroff",
           "headless" : "{{ user `headless`}}",
+          "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+          "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
           "vmx_data": {
               "memsize": "{{user `memory`}}",
               "numvcpus": "{{user `cpus`}}"
@@ -90,14 +96,26 @@
             "COUNTRY={{ user `country` }}",
             "ACOUNTRY={{ user `arch_country` }}"
         ],
-        "execute_command": "echo '3dG5^hwo' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "execute_command": "echo 'p@$Sword' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
         "inline": [
           "cd /temp",
           "tar xvf GentooInstall.tar.gz && rm GentooInstall.tar.gz",
-          "cd /temp/GentooInstall",
+          "cd /temp/GentooInstall && mv cleanup.sh /cleanup.sh",
           "./main.sh",
-          "cd /temp/GentooInstall",
-          "./cleanup.sh"
+          "/cleanup.sh"
+        ],
+        "type": "shell",
+        "expect_disconnect": "true"
+      },
+      {
+        "environment_vars": [
+            "TARBALL={{user `TARBALL`}}",
+            "COUNTRY={{ user `country` }}",
+            "ACOUNTRY={{ user `arch_country` }}"
+        ],
+        "execute_command": "echo 'p@$Sword' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "inline": [
+          "/cleanup.sh"
         ],
         "type": "shell",
         "expect_disconnect": "true"
@@ -107,9 +125,9 @@
         "environment_vars": [
             "COUNTRY={{ user `country` }}"
         ],
-        "execute_command": "echo '3dG5^hwo' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "execute_command": "echo 'p@$Sword' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
         "scripts": [
-          "scripts/gentoo/gentoo-workstation.sh"
+          "scripts/gentoo/gentoo-webserver.sh"
         ],
         "type": "shell"
       }

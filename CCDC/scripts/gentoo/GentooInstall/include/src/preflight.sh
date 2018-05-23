@@ -13,6 +13,14 @@ function check_root
     fi
 }
 
+function not_gentoo
+{
+    orangeEcho "Since you are not on Gentoo, some extra steps will need to be taken
+    during portions of this install, but it should still all go fine."
+    orangeEcho "Since you are not using Gentoo, going to install mirrorselect from source."
+    /tmp/install_mirrorselect.sh
+}
+
 function check_distro
 {
     # This Variable will be output to a file.
@@ -35,5 +43,6 @@ function check_distro
       _BANNER=""
       pacman -Sy
       pacman -S --noconfirm rsync git wget links ntp dialog
+      not_gentoo
     fi
 }

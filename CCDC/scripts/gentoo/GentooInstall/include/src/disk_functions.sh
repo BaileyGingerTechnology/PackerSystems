@@ -18,9 +18,9 @@ function set_filesystems
 	orangeEcho "Making an fstab file now, which will be used later."
 	# This file is used by both the system and genkernel. Easier to make it now than later
 	touch /tmp/fstab
-	echo "$12			/boot		vfat	defaults,noatime	0 2" >> /tmp/fstab
-	echo "$13			none		swap	sw					0 0" >> /tmp/fstab
-	echo "$14			/			ext4	noatime				0 1" >> /tmp/fstab
+	echo "/dev/$12		/boot		ext2	defaults,noatime	0 2" >> /tmp/fstab
+	echo "/dev/$13		none		swap	sw					0 0" >> /tmp/fstab
+	echo "/dev/$14		/			ext4	noatime				0 1" >> /tmp/fstab
 	echo "/dev/cdrom	/mnt/cdrom	auto	noauto,user			0 0" >> /tmp/fstab
 }
 
