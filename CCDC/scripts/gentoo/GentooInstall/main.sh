@@ -81,6 +81,7 @@ mount /dev/sda4 /mnt/gentoo
 toolLocation=$( find / |grep GentooInstall |head -n1 )
 cd $toolLocation && cd ../
 rsync -ah --progress GentooInstall /mnt/gentoo/
+rsync -ah --progress /cleanup.sh /mnt/gentoo/
 
 # Move the diskUsed file over
 mkdir /mnt/gentoo/tmp

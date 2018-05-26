@@ -3,6 +3,9 @@
 # Date    : 2/21/2017
 # Purpose : Main file of a suite of Gentoo install and config scripts
 
+set -eu
+set -x
+
 cd /GentooInstall/
 
 source ./include/src/preflight.sh
@@ -87,7 +90,7 @@ configure_network
 emerge sys-apps/shadow
 echo "Now setting password for root user!"
 chpasswd <<EOL
-root:p@$Sword
+root:z!6S$n8$
 EOL
 passwd -e root
 
@@ -109,17 +112,18 @@ rc-update add sshd default
 # Install DHCP client
 emerge net-misc/dhcpcd
 # Install wireless tools
-emerge net-wireless/iw net-wireless/wpa_supplicant
+#emerge net-wireless/iw net-wireless/wpa_supplicant
 
 greenEcho "Installing grub"
 # Install GRUB on that disk
 install_grub /dev/sda
 
 emerge app-admin/sudo
-/usr/bin/useradd --password password --comment 'administrator User' --create-home --user-group administrator
+PASSWORD=$(openssl passwd -crypt 'z!6S$n8$')
+useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
-/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator
+chmod 0440 /etc/sudoers.d/10_administrator
 
 greenEcho "We should be done."
 

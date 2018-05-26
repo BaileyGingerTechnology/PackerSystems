@@ -1,6 +1,10 @@
 #!/bin/bash
 # Author: Bailey Kasin
 
+set -eu
+set -x
+set +h
+
 function build_libtool
 {
   cd $LFS/sources

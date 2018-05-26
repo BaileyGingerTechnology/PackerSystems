@@ -1,6 +1,10 @@
 #!/bin/bash
 # Author: Bailey Kasin
 
+set -eu
+set -x
+set +h
+
 echo "Building RPM"
 
 function build_ssh
@@ -233,7 +237,7 @@ function build_rpm
 build_rpm
 cd $LFS/sources
 rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
+cd $LFS/sources/blfs-bootscripts-20180105
+make install-sshd
 
 #build_ssh
-
-$LFS/lfs-webserver.sh

@@ -117,11 +117,6 @@
     },
     {
       "type": "file",
-      "source": "scripts/lfs/lfs-webserver.sh",
-      "destination": "/temp/lfs-webserver.sh"
-    },
-    {
-      "type": "file",
       "source": "scripts/lfs/package-manager.sh",
       "destination": "/temp/package-manager.sh"
     },
@@ -149,7 +144,8 @@
       "execute_command": "{{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,
       "scripts": [
-        "scripts/lfs/setup-base.sh"
+        "scripts/lfs/setup-base.sh",
+        "scripts/lfs/lfs-webserver.sh"
       ]
     }
   ]

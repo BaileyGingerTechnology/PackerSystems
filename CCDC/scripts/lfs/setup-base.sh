@@ -14,7 +14,7 @@ else
 	DISK='/dev/sda'
 fi
 
-FQDN='workstation.gingertech.com'
+FQDN='gingertechweb.gingertech.com'
 KEYMAP='us'
 LANGUAGE='en_US.UTF-8'
 PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')
@@ -42,7 +42,7 @@ LFS=/mnt/lfs
 echo $LFS
 LC_ALL=POSIX
 echo $LC_ALL
-LFS_TGT=$(uname -m)-lfs-linux-gnu
+LFS_TGT=$(uname -m)-gt-linux-gnu
 echo "On $LFS_TGT"
 PATH=/tools/bin:/bin:/usr/bin
 
@@ -366,9 +366,6 @@ function build_gcc_again
   make install
 
   ln -sv gcc /tools/bin/cc
-
-  cd $LFS/sources
-  rm -rfv gcc-7.3.0
 }
 
 function build_tcl
@@ -805,7 +802,7 @@ fi
 
 mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
 mv -v /temp/finish-base.sh $LFS/finish-base.sh
-mv -v /temp/lfs-webserver.sh $LFS/lfs-webserver.sh
+#mv -v /temp/lfs-webserver.sh $LFS/lfs-webserver.sh
 mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
@@ -813,8 +810,8 @@ mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
-chmod -v 777 lfs-webserver.sh
-chmod -v +X lfs-webserver.sh
+#chmod -v 777 lfs-webserver.sh
+#chmod -v +X lfs-webserver.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 chmod -v +x vpkg-provides.sh

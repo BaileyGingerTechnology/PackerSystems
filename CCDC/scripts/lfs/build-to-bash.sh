@@ -1,6 +1,10 @@
 #!/tools/bin/bash
 # Author: Bailey Kasin
 
+set -eu
+set -x
+set +h
+
 touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp -v utmp /var/log/lastlog
 chmod -v 664  /var/log/lastlog
@@ -147,9 +151,9 @@ EOF
 mkdir -pv /etc/ld.so.conf.d
 
 mv -v /tools/bin/{ld,ld-old}
-mv -v /tools/$(uname -m)-pc-linux-gnu/bin/{ld,ld-old}
+mv -v /tools/$LFS_TGT/bin/{ld,ld-old}
 mv -v /tools/bin/{ld-new,ld}
-ln -sv /tools/bin/ld /tools/$(uname -m)-pc-linux-gnu/bin/ld
+ln -sv /tools/bin/ld /tools/$LFS_TGT/bin/ld
 
 gcc -dumpspecs | sed -e 's@/tools@@g'                   \
     -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \

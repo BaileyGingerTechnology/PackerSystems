@@ -1,6 +1,10 @@
 #!/tools/bin/bash
 # Author: Bailey Kasin
 
+set -eu
+set -x
+set +h
+
 echo "In chroot"
 echo "root user and groups setup"
 
@@ -63,5 +67,7 @@ mail:x:34:
 nogroup:x:99:
 users:x:999:
 EOF
+
+echo "build to bash"
 
 exec /tools/bin/bash --login +h $LFS/build-to-bash.sh
