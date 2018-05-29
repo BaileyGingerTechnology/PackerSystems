@@ -43,9 +43,15 @@ echo '==> Creating /root filesystem (ext4)'
 echo "==> Mounting ${ROOT_PARTITION} to ${TARGET_DIR}"
 /usr/bin/mount -o noatime,errors=remount-ro ${ROOT_PARTITION} ${TARGET_DIR}
 
+echo "==> Enabling testing repos and Multilib"
+/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
+/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
+/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
+
 echo '==> Bootstrapping the base installation'
 /usr/bin/pacstrap ${TARGET_DIR} base base-devel
-/usr/bin/arch-chroot ${TARGET_DIR} pacman -S --noconfirm gptfdisk openssh syslinux
+/usr/bin/pacman -Sy
+/usr/bin/arch-chroot ${TARGET_DIR} pacman -S --noconfirm gptfdisk openssh syslinux git zsh
 /usr/bin/arch-chroot ${TARGET_DIR} syslinux-install_update -i -a -m
 /usr/bin/sed -i "s|sda3|${ROOT_PARTITION##/dev/}|" "${TARGET_DIR}/boot/syslinux/syslinux.cfg"
 /usr/bin/sed -i 's/TIMEOUT 50/TIMEOUT 10/' "${TARGET_DIR}/boot/syslinux/syslinux.cfg"
@@ -82,8 +88,8 @@ cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
 	# clean up
 	/usr/bin/pacman -Rcns --noconfirm gptfdisk
 
-	/usr/bin/sed -i 's/#[/[/g' /etc/pacman.conf
-	/usr/bin/sed -i 's/[custom/#[custom/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
+	/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
 	/usr/bin/pacman -Syu --noconfirm
 EOF

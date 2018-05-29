@@ -18,8 +18,12 @@
       "type": "qemu",
       "floppy_files": [
         "floppy/81/Autounattend.xml",
-        "floppy/update-windows.ps1",
-        "floppy/configure-winrm.ps1"
+        "floppy/81/00-run-all-scripts.cmd",
+        "floppy/81/fixnetwork.ps1",
+        "floppy/81/install-winrm.cmd",
+        "floppy/81/zz-start-transports.cmd",
+        "floppy/81/Update-Needed.ps1",
+        "floppy/81/RunPwSh.bat"
       ],
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
@@ -32,7 +36,7 @@
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
-      "boot_wait":"2s",
+      "boot_wait":"2m",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "qemuargs": [
         ["-m", "{{user `memsize`}}"],
@@ -43,8 +47,12 @@
       "type": "virtualbox-iso",
       "floppy_files": [
         "floppy/81/Autounattend.xml",
-        "floppy/update-windows.ps1",
-        "floppy/configure-winrm.ps1"
+        "floppy/81/00-run-all-scripts.cmd",
+        "floppy/81/fixnetwork.ps1",
+        "floppy/81/install-winrm.cmd",
+        "floppy/81/zz-start-transports.cmd",
+        "floppy/81/Update-Needed.ps1",
+        "floppy/81/RunPwSh.bat"
       ],
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
@@ -61,28 +69,14 @@
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
+      "boot_wait":"2m",
       "guest_os_type": "Windows81_64",
       "guest_additions_mode": "upload",
       "guest_additions_path": "c:/Windows/Temp/windows.iso",
       "vboxmanage": [
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--memory",
-            "2048"
-          ],
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--cpus",
-            "2"
-          ],
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--vram", 
-            "32"
-          ]	
+          [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+          [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+          [ "modifyvm", "{{.Name}}", "--vram", "32" ]	
         ]
     },
     {
@@ -91,8 +85,12 @@
       "disk_size": 61440,
       "floppy_files": [
         "floppy/81/Autounattend.xml",
-        "floppy/update-windows.ps1",
-        "floppy/configure-winrm.ps1"
+        "floppy/81/00-run-all-scripts.cmd",
+        "floppy/81/fixnetwork.ps1",
+        "floppy/81/install-winrm.cmd",
+        "floppy/81/zz-start-transports.cmd",
+        "floppy/81/Update-Needed.ps1",
+        "floppy/81/RunPwSh.bat"
       ],
       "guest_os_type": "windows8srv-64",
       "headless": false,
@@ -104,6 +102,7 @@
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
+      "boot_wait":"2m",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "tools_upload_flavor": "windows",
       "vmx_data": {
@@ -122,13 +121,27 @@
   ],
   "provisioners": [
     {
-      "type": "powershell",
-      "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+      "type": "windows-shell",
+      "execute_command": "{{.Vars}} cmd /c C:\\Windows\\Temp\\script.bat",
+      "scripts": [
+        "scripts/winshared/guest-tools.bat"
+      ]
     },
     {
       "type": "file",
       "source": "scripts/winshared/InstallScoop.ps1",
       "destination": "C:\\InstallScoop.ps1"
+    },
+    {
+      "type": "file",
+      "source": "files/ninite-81.exe",
+      "destination": "C:\\ninite.exe"
+    },
+    {
+      "type": "windows-shell",
+      "inline": [
+        "C:\\ninite.exe /locale en-US"
+      ]
     },
     {
       "type": "file",

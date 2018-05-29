@@ -37,11 +37,10 @@ function set_timezone
 function set_hostname
 {
     orangeEcho "What do you want your hostname to be?"
-    read userHostname
 
     # Output hostname into the hostname file
-    echo 'hostname="nixstation"' > /etc/conf.d/hostname
-    echo $userHostname > /etc/hostname
+    echo 'hostname="gentweb"' > /etc/conf.d/hostname
+    echo "gentweb" > /etc/hostname
 
     set_timezone
 }

@@ -13,6 +13,8 @@ CyberPatriot/Builds
 CCDC/manifest.json
 CCDC/Builds
 variables.json
+# This can be found here: https://www.microsoft.com/en-us/download/details.aspx?id=55953
+CCDC/files/exchange.iso
 
 # Binaries for programs and plugins
 *.exe
@@ -45,4 +47,6 @@ Thumbs.db
 *.swp
 
 # Ignored ignores
+!CCDC/files/ninite.exe
+!CCDC/files/ninite-81.exe
 !CyberPatriot/files/ForensicDeployment.exe

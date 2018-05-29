@@ -15,6 +15,7 @@ function get_sources
 
 function install_sslfetch
 {
+    pip install requests
     # Go into ssl-fetch and insall
     cd /tmp/ssl-fetch
     ./setup.py build
@@ -35,6 +36,11 @@ function install_mirrorselect
     ./setup.py build
     ./setup.py install
 }
+
+# Keeps mirrorselect from getting pissy about not being
+# to find the portage make config
+mkdir /etc/portage
+touch /etc/portage/make.conf
 
 get_sources
 install_sslfetch

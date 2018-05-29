@@ -3,13 +3,15 @@
 # Date    : 12/14/2017
 # Purpose : Main file of a suite of Gentoo install and config scripts
 
+set -eu
+set -x
+
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${ACOUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
 
 echo "==> Setting local mirror"
 curl -s "$MIRRORLIST" |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist
 
 source ./include/src/disk_functions.sh
-source ./include/src/menu.sh
 source ./include/src/tarball_functions.sh
 source ./include/src/useful_functions.sh
 source ./include/src/profile_functions.sh

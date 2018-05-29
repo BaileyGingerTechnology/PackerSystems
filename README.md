@@ -4,10 +4,6 @@ The goal of this project is to eventually provide practice environments for thin
 
 1. CyberPatriot for high school students
 2. CCDC for college students
-3. And an example of a small environment that one might find in the real world
-
-Long term goals for the first two are to have a basic scoring engine that will give points as the player fixes bad practices and implements good ones
-and I hope to be able to keep the example of a real environment up to date.
 
 ## Build instructions:
 
@@ -31,25 +27,7 @@ Ubuntu and Windows 10 are both functional and build the base of what I want. But
 
 For Ubuntu:
 
-    - Installs VMware tools. Vbox tools currently not working for some reason
-
-    - Has KDE for the desktop, since I'm nice. That can be changed in the ubuntu.sh script
-
-    - It sets up a LAMP stack
-
-    - Puts Wordpress on that stack
-
-    - Installs a version of bash vulnerable to Shellshock
-
-    - Installs tigervnc
-
-    - Installs and makes vsftpd not very secure
-
-    - Makes SSH super insecure
-
-    - Makes some users with weak passwords and adds them to sudo
-
-    - Uses the hosts file to route search engines to localhost, except for Google which goes to ask.com's IP
+    - https://blog.gingertechnology.net/2018/05/28/ubuntu-1-0-a-cyberpatriot-practice-image/
 
 For Windows 10:
 

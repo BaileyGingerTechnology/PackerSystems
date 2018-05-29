@@ -7,11 +7,11 @@ function emerge_update
 {
 	# Finish the chroot
 	source /etc/profile
-	export PS1="(chroot) ${PS1}"
+	#export PS1="(chroot) ${PS1}"
 
 	# Finish mounting now that we are chrooted
 	echo "Mounting boot partition."
-	mkdir /boot
+	#mkdir /boot
 	mount /dev/sda2 /boot
 
 	# Get the latest metadata
@@ -56,7 +56,6 @@ function resolv_mount
 	fi
 
 	greenEcho "About to chroot. This will begin step two, which will cause a second run of the preflight steps, and then everything will pick up where it left off. Press enter to continue."
-	read enter
 	chroot /mnt/gentoo /bin/bash GentooInstall/step_two.sh
 }
 
@@ -68,9 +67,8 @@ function make_make
 
 	# Use the mirrorselect script to autoselect the best mirror to sync from
 	greenEcho "Now autopicking the closest mirror to you by downloading 100kb from each option and going with the fastest one."
-	greenEcho "To limit how long this will take..."
 
-    mirrorselect -s4 -b10 -o -c ${COUNTRY:-USA} -D >> /mnt/gentoo/etc/portage/make.conf
+  mirrorselect -s4 -b10 -o -c ${COUNTRY:-USA} -D >> /mnt/gentoo/etc/portage/make.conf
 
 	# If setting the core count kept the plus, set it to 2 instead
 	# Otherwise, echo the core count into make.conf

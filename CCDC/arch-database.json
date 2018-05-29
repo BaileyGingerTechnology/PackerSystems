@@ -96,6 +96,19 @@
     {
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "inline": [
+        "sh -c \"$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\""
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo password | chsh -s /usr/bin/zsh"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [
         "scripts/arch/arch-database.sh",
         "scripts/arch/cleanup.sh"

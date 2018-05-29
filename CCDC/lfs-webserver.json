@@ -1,6 +1,6 @@
 {
   "variables": {
-    "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.03.20-x86_64.iso",
+    "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.05.26-x86_64.iso",
     "iso_checksum_url": "https://files.gingertechnology.net/packersystems/SHA1SUMS",
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",

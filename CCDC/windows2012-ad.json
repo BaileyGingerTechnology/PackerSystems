@@ -1,11 +1,25 @@
 {
+  "variables": {
+    "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
+    "iso_checksum_type": "md5",
+    "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
+    "autounattend": "floppy/server/Autounattend.xml",
+    "headless": "false",
+    "cpus": "2",
+    "memory_size": "8192",
+    "disk_size": "40960",
+    "exchange_iso": "files/exchange.iso",
+    "build_num": "1.0",
+    "vmname": "AD-DC-Exchange"
+  },
   "builders": [
     {
       "type": "vmware-iso",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "headless": "{{user `headless`}}",
       "boot_wait": "2m",
       "communicator": "winrm",
@@ -20,10 +34,13 @@
       "vnc_port_max": 5980,
       "floppy_files": [
         "{{user `autounattend`}}",
-        "floppy/Win2012/00-run-all-scripts.cmd",
-        "floppy/Win2012/fixnetwork.ps1",
-        "floppy/Win2012/install-winrm.cmd",
-        "floppy/Win2012/zz-start-transports.cmd"
+        "floppy/server/00-run-all-scripts.cmd",
+        "floppy/server/fixnetwork.ps1",
+        "floppy/server/install-winrm.cmd",
+        "floppy/server/zz-start-transports.cmd",
+        "floppy/server/Update-Needed.ps1",
+        "floppy/server/RunPwSh.bat",
+        "floppy/guest-tools.bat"
       ],
       "vmx_data": {
         "RemoteDisplay.vnc.enabled": "false",
@@ -38,7 +55,8 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "headless": "{{user `headless`}}",
       "boot_wait": "2m",
       "communicator": "winrm",
@@ -50,26 +68,17 @@
       "disk_size": "{{user `disk_size`}}",
       "floppy_files": [
         "{{user `autounattend`}}",
-        "floppy/Win2012/00-run-all-scripts.cmd",
-        "floppy/Win2012/fixnetwork.ps1",
-        "floppy/Win2012/install-winrm.cmd",
-        "floppy/Win2012/zz-start-transports.cmd",
-        "floppy/Win2012/Update-Needed.ps1",
-        "floppy/Win2012/RunPwSh.bat"
+        "floppy/server/00-run-all-scripts.cmd",
+        "floppy/server/fixnetwork.ps1",
+        "floppy/server/install-winrm.cmd",
+        "floppy/server/zz-start-transports.cmd",
+        "floppy/server/Update-Needed.ps1",
+        "floppy/server/RunPwSh.bat",
+        "floppy/guest-tools.bat"
       ],
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "{{user `memory_size`}}"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "{{user `cpus`}}"
-        ]
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory_size`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}" ]
       ]
     }
   ],
@@ -77,6 +86,22 @@
     {
       "type": "windows-restart",
       "restart_command": "powershell Restart-Computer -force"
+    },
+    {
+      "type": "windows-shell",
+      "execute_command": "{{.Vars}} cmd /c C:\\Windows\\Temp\\script.bat",
+      "scripts": [
+        "scripts/winshared/guest-tools.bat"
+      ]
+    },
+    {
+      "type": "shell-local",
+      "command": "vboxmanage controlvm {{user `vmname`}}-{{user `build_num`}} poweroff soft && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium emptydrive && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium {{user `exchange_iso`}} && vboxmanage startvm {{user `vmname`}}-{{user `build_num`}}"
+    },
+    {
+      "type": "file",
+      "source": "files/ninite.exe",
+      "destination": "C:\\ninite.exe"
     },
     {
       "type": "file",
@@ -88,6 +113,41 @@
       "inline": [
         "powershell -NoLogo -ExecutionPolicy RemoteSigned C:\\InstallScoop.ps1"
       ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powerhsell",
+      "inline": [
+        "C:\\ninite.exe /locale en-US",
+        "choco install -y dotnet-4.6.2"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "Install-WindowsFeature ADLDS, RSAT-Clustering-CmdInterface, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "choco install -y ucma4"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
     },
     {
       "type": "file",
@@ -105,6 +165,18 @@
     {
       "type": "windows-restart",
       "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "scripts": [
+        "scripts/winshared/exchange.ps1"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
     }
   ],
   "post-processors": [
@@ -113,16 +185,5 @@
       "output": "manifest.json",
       "strip_path": true
     }
-  ],
-  "variables": {
-    "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
-    "iso_checksum_type": "md5",
-    "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
-    "autounattend": "floppy/Win2012/Autounattend.xml",
-    "headless": "false",
-    "cpus": "2",
-    "memory_size": "2048",
-    "disk_size": "40960",
-    "version": "0.1.0"
-  }
+  ]
 }

@@ -57,15 +57,13 @@ ensure_scoop_in_path
 success 'Scoop was installed successfully!'
 Write-Output "Type 'scoop help' for instructions."
 
-scoop install git
+scoop install git --global
 scoop bucket add extras
 scoop update scoop
 
 # Install FireFox because no one deserves Internet Explorer or Edge
-scoop install firefox
-scoop install go
-scoop install wget
-
-Set-MpPreference -DisableRealtimeMonitoring $true
+scoop install firefox --global
+scoop install go --global
+scoop install wget --global
 
 del C:\InstallScoop.ps1

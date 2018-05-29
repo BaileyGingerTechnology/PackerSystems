@@ -98,7 +98,7 @@
       "name": "vmware-rem",
       "guest_os_type": "debian8-64",
       "iso_url": "{{user `mirror`}}",
-      "iso_checksum_url": "{{user `iso_checksum`}}",
+      "iso_checksum": "dee715466ebfdc21ad9ef8bbe80a048bacf2d85a231b724315c8b1291922da5363a431da4ce16c0298b81bf7579120c7dfa9dcecf53419714c0e8c84c5878a52",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
