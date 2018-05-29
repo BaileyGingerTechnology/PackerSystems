@@ -43,7 +43,8 @@ echo "
 ";
 
 echo "Cleaning up from Gentoo setup"
-cd
-umount -l /mnt/gentoo/dev{/shm,/pts,}
+cd /mnt/gentoo
+rm -rf GentooInstall
+
 umount -R /mnt/gentoo
 reboot

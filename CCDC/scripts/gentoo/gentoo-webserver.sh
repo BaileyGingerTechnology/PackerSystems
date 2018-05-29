@@ -9,7 +9,7 @@ echo "www-apps/drupal" >> /etc/portage/package.accept_keywords
 sed -i 's/\bUSE=\b/apache2\ /' /etc/portage/make.conf
 
 emerge www-servers/apache dev-lang/php
-emerge drupal
+emerge --autounmask-write drupal
 emerge app-admin/webapp-config
 
 webapp-config -h gentoo-web -u root -d /drupal -I drupal 8.4.2
@@ -23,4 +23,4 @@ mv /home/administrator/oh /bin/oh
 chmod +x /bin/oh
 echo /bin/oh >> /etc/shells
 cat /home/administrator/.bashrc > /home/administrator/.ohrc
-chsh /bin/oh administrator
+chsh -s /bin/oh administrator

@@ -23,3 +23,6 @@ mv windows-zsh-theme/windows.zsh-theme ~/.oh-my-zsh/custom/themes/windows.zsh-th
 
 sed -i "s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"windows\"/g" ~/.zshrc
 su - administrator -c "sed -i \"s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"windows\"/g\" ~/.zshrc"
+
+echo "/usr/bin/zsh" >> /root/.bashrc
+echo "/usr/bin/zsh" >> /home/administrator/.bashrc

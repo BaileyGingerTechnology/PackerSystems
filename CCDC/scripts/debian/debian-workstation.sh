@@ -23,7 +23,7 @@ else
 	DISK='/dev/sda'
 fi
 
-sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim
+sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
 
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 
@@ -124,7 +124,7 @@ cat << EOF > "/temp/finish.sh"
 	set -x
 	
   pacman -Syu --noconfirm
-  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl
+  yes | pacman -S --needed base-devel git wget yajl curl openssl
 	update-ca-trust
 	git config --system http.sslverify false
 

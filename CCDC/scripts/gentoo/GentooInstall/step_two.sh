@@ -118,11 +118,17 @@ greenEcho "Installing grub"
 # Install GRUB on that disk
 install_grub /dev/sda
 
+set -x
+
+yes '8RG7s%XP$e' | passwd
+
 PASSWORD=$(openssl passwd -crypt 'password')
 useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
 chmod 0440 /etc/sudoers.d/10_administrator
+
+yes password | passwd administrator
 
 greenEcho "We should be done."
 
