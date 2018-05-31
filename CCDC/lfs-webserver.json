@@ -136,6 +136,11 @@
       "destination": "/temp/vpkg-provides.sh"
     },
     {
+      "type": "file",
+      "source": "files/libwww-perl-6.33.tar.gz",
+      "destination": "/temp/libwww-perl-6.33.tar.gz"
+    },
+    {
       "environment_vars": [
           "COUNTRY={{ user `country` }}",
           "CPUS={{ user `cpus` }}"

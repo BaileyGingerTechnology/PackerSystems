@@ -5,6 +5,16 @@ set -eu
 set -x
 set +h
 
+umask 022
+LFS=/
+echo $LFS
+LC_ALL=POSIX
+echo $LC_ALL
+LFS_TGT=$(uname -m)-gt-linux-gnu
+echo "On $LFS_TGT"
+PATH=/bin:/usr/bin:/tools/bin
+CPUS=8
+
 function build_libtool
 {
   cd $LFS/sources
@@ -97,6 +107,17 @@ function build_perl
   make -j${CPUS}
   make install
   unset BUILD_ZLIB BUILD_BZIP2
+}
+
+function build_perl_web
+{
+  cd $LFS/sources
+  tar xvf libwww-perl-6.33.tar.gz
+  cd libwww-perl-6.33
+
+  perl Makefile.PL
+  make -j${CPUS}
+  make install
 }
 
 function build_parser
