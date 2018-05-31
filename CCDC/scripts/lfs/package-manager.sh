@@ -5,6 +5,16 @@ set -eu
 set -x
 set +h
 
+umask 022
+LFS=/
+echo $LFS
+LC_ALL=POSIX
+echo $LC_ALL
+LFS_TGT=$(uname -m)-gt-linux-gnu
+echo "On $LFS_TGT"
+PATH=/tools/bin:/bin:/usr/bin
+CPUS=8
+
 echo "Building RPM"
 
 function build_ssh

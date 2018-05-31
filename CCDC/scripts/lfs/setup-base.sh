@@ -119,6 +119,8 @@ cd $LFS
 wget https://files.gingertechnology.net/packersystems/lfs/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 
+mv /temp/libwww-perl-6.33.tar.gz $LFS/sources
+
 function build_binutils
 {
   cd $LFS/sources
@@ -810,8 +812,6 @@ mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
-#chmod -v 777 lfs-webserver.sh
-#chmod -v +X lfs-webserver.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 chmod -v +x vpkg-provides.sh

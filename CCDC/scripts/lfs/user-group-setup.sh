@@ -70,4 +70,6 @@ EOF
 
 echo "build to bash"
 
-exec /tools/bin/bash --login +h $LFS/build-to-bash.sh
+cd /
+
+exec /tools/bin/bash --login +h ./build-to-bash.sh
