@@ -119,9 +119,9 @@ LFS Webserver:
 
     - Yep.
 
-CentOS FreeIPA:
+CentOS Docker:
 
-    - Will need to learn how to IPA, but this should be fun.
+    - Docker host. Makes sense enough I think.
 
 CentOS Scoring Box:
 

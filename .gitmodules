@@ -1,0 +1,6 @@
+[submodule "ForensicDeployment"]
+	path = ForensicDeployment
+	url = https://github.com/BaileyGingerTechnology/ForensicDeployment.git
+[submodule "ScoringEngine"]
+	path = ScoringEngine
+	url = https://github.com/BaileyGingerTechnology/ScoringEngine.git

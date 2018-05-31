@@ -3,7 +3,8 @@
     "cpus": "1",
     "memory": "2048",
     "disk_size": "8192",
-    "build_num": "1.0"
+    "build_num": "1.0",
+    "vmname": "CentShip"
   },
   "builders": [
     {
@@ -22,8 +23,8 @@
       "boot_wait": "15s",
       "http_directory": "http",
       "ssh_timeout": "10000s",
-      "output_directory": "VMBuild/PDEnv-POS/{{user `build_num`}}",
-      "vm_name": "PDEnv-POS-{{user `build_num`}}",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "disk_size": "{{user `disk_size`}}",
       "vmx_data": {
               "memsize": "{{user `memory`}}",
@@ -45,16 +46,39 @@
       "guest_os_type": "RedHat_64",
       "boot_wait": "15s",
       "http_directory": "http",
-      "ssh_timeout": "10000s"
+      "ssh_timeout": "10000s",
+      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+      ]
     }
   ],
   "provisioners": [
     {
       "type": "shell",
+      "expect_disconnect": true,
       "inline": [
         "sleep 30",
         "sudo yum -y update",
-        "sudo yum -y install epel-release"
+        "sudo yum -y install epel-release",
+        "sudo yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine",
+        "sudo yum install -y yum-utils device-mapper-persistent-data lvm2",
+        "sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo",
+        "sudo /bin/bash -c 'yes | yum install -y docker-ce'",
+        "sudo usermod -aG docker administrator",
+        "sudo systemctl start docker && sudo systemctl enable docker",
+        "sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose",
+        "sudo chmod +x /usr/local/bin/docker-compose",
+        "docker-compose --version",
+        "sudo reboot"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/docker/centdocker.sh"
       ]
     }
   ]

@@ -94,39 +94,34 @@
       }
     },
     {
-      "type": "vmware-iso",
+      "type": "vsphere-iso",
       "name": "vmware-rem",
-      "guest_os_type": "debian8-64",
-      "iso_url": "{{user `mirror`}}",
-      "iso_checksum": "dee715466ebfdc21ad9ef8bbe80a048bacf2d85a231b724315c8b1291922da5363a431da4ce16c0298b81bf7579120c7dfa9dcecf53419714c0e8c84c5878a52",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "guest_os_type": "debian8_64Guest",
+      "iso_paths": "[ISO Lib on Cortex] Linux/debian-8.9.0-amd64-netinst.iso",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "disk_size": "{{user `disk_size`}}",
-      "headless": "{{user `headless`}}",
-      "http_directory": "http",
+      "floppy_files": "http/debian-preseed.cfg",
       "boot_wait": "5s",
       "boot_command": [
         "<esc><wait>",
         "auto ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-preseed.cfg ",
+        "preseed/file=/media/debian-preseed.cfg ",
         "<enter>"
       ],
       "ssh_timeout": "{{user `ssh_timeout`}}",
       "ssh_username": "administrator",
       "ssh_password": "password",
-      "tools_upload_flavor": "linux",
       "shutdown_command": "sudo systemctl poweroff",
-      "vmx_data": {
-        "memsize": "{{user `memory`}}",
-        "numvcpus": "{{user `cpus`}}"
-      },
-      "remote_type": "esx5",
-      "remote_host": "{{user `esxi_host`}}",
-      "remote_datastore": "{{user `esxi_datastore`}}",
-      "remote_username": "{{user `esxi_username`}}",
-      "remote_password": "{{user `esxi_password`}}",
-      "keep_registered": true
+
+      "vcenter_server": "{{user `vcenter_host`}}",
+      "host": "{{user `esxi_host`}}",
+      "datastore": "{{user `esxi_datastore`}}",
+      "username": "{{user `remote_username`}}",
+      "password": "{{user `remote_password`}}",
+      "insecure_connection": true,
+
+      "CPUs": "{{user `cpus`}}",
+      "RAM": "{{user `memory`}}"
     }
   ],
   "provisioners": [
@@ -138,7 +133,7 @@
     {
       "type": "shell",
       "scripts": "scripts/debian/vmware.sh",
-      "only": ["vmware-iso","vmware-rem"]
+      "only": ["vmware-iso"]
     },
     {
       "type": "shell",

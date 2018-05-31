@@ -1,9 +1,9 @@
 # Whew boi, kill me now
 E:
-.\setup.exe /PrepareSchema /IAcceptExchangeServerLicenseTerms
-.\Setup.exe /PrepareAD /OrganizationName: /IAcceptExchangeServerLicenseTerms
-.\Setup.exe /PrepareAD /OrganizationName: /IAcceptExchangeServerLicenseTerms
-.\Setup.exe /mode:Install /role:Mailbox /OrganizationName: /IAcceptExchangeServerLicenseTerms
+.\Setup.exe /PrepareSchema /IAcceptExchangeServerLicenseTerms
+.\Setup.exe /PrepareAD /OrganizationName:gingertech /IAcceptExchangeServerLicenseTerms
+.\Setup.exe /PrepareAD /OrganizationName:gingertech /IAcceptExchangeServerLicenseTerms
+.\Setup.exe /mode:Install /role:Mailbox /OrganizationName:gingertech /IAcceptExchangeServerLicenseTerms
 # Theoretically Exchange might be installed?
 
 # Disable autologon
