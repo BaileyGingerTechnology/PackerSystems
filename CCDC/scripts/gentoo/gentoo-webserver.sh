@@ -15,6 +15,8 @@ emerge app-admin/webapp-config
 
 webapp-config -h gentweb.gingertech.com -d gingercloud -I owncloud 10.0.8
 
+rc-update add apache2 default
+
 # Since most people panic when they see Gentoo, I'm not really sure how much I should do to it,
 # given that from what I've seen, they'll forget the basics of Linux, not know the package manager,
 # and the way that Gentoo handles webapps is a bit odd compared to other Linux flavors
@@ -25,4 +27,4 @@ chmod +x /bin/oh
 echo /bin/oh >> /etc/shells
 chsh -s /bin/oh administrator
 
-yes "-5" | etc-update
+yes -- "-5" | etc-update

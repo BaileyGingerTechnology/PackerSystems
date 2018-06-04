@@ -47,9 +47,6 @@
           "vboxmanage": [
               ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
               ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
-          ],
-          "vboxmanage_post": [
-            ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus_after`}}"]
           ]
       },
       {
