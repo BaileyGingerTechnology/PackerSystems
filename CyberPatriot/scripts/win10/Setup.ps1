@@ -145,14 +145,9 @@ if($Authenticatefile.status -ne "valid") {write-host "Can't confirm download, ex
 Write-host "Installing RSAT for Windows 10 - please wait" -foregroundcolor yellow
 Start-Process -FilePath "C:\Windows\System32\wusa.exe" -ArgumentList $WusaArguments -Wait
 
-# Setup a web proxy so that even if they fix the hosts file internet still ded
-$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-Set-ItemProperty -Path $reg -Name ProxyServer -Value "proxy.google.com"
-Set-ItemProperty -Path $reg -Name ProxyEnable -Value 1
-
-# Import reg file for all other keys
-regedit /s c:\registryKeys.reg
-
 # Setup for Scoring Engine
 scoop install grep --global
 mkdir C:\ProgramData\gingertechengine
+
+# Import reg file for all other keys
+regedit /s c:\registryKeys.reg

@@ -137,7 +137,7 @@ Feedback on this idea can be sent to me at bailey@gingertechnology.net, and I wi
 
 My goal is to have a scoring engine for the CyberPatriot machines, and then another that checks whether services are running on the CCDC environment. I'll probably host the CCDC one on the attacking system that I plan to make.
 
-The Linux CyberPatriot one is almost done, aside from fixing an issue with Forensic Questions. The Windows one is also functional, I just need to make the checks for it.
+The Linux CyberPatriot one is almost done. The Windows one is also functional, I just need to make the checks for it.
 
 ### Support this project:
 

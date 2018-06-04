@@ -1,0 +1,125 @@
+{
+  "variables": {
+    "cpus": "1",
+    "memory": "2048",
+    "disk_size": "16384",
+    "build_num": "1.0",
+    "vmname": "Scoring"
+  },
+  "builders": [{
+    "type": "vmware-iso",
+    "iso_urls": ["http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"],
+    "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
+    "iso_checksum_type": "sha256",
+    "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
+    "communicator": "ssh",
+    "ssh_username": "administrator",
+    "ssh_password": "password",
+    "version": "{{user `version`}}",
+    "boot_command": [
+      "<esc><wait>",
+      "install <wait>",
+      "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
+      "debian-installer=en_US <wait>",
+      "auto <wait>",
+      "locale=en_US <wait>",
+      "hostname=scoring domain=locale.lan ",
+      "kbd-chooser/method=us <wait>",
+      "fb=false <wait>",
+      "interface=auto ",
+      "debconf/frontend=noninteractive <wait>",
+      "debconf/priority=critical ",
+      "console-setup/ask_detect=false <wait>",
+      "keymap=us <wait>",
+      "debian/priority=critical ",
+      "keyboard-configuration/xkb-keymap=us <wait>",
+      "<enter><wait>"
+    ],
+    "guest_os_type": "debian7-64",
+    "boot_wait": "15s",
+    "http_directory": "http",
+    "ssh_timeout": "10000s",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+    "disk_size": "{{user `disk_size`}}",
+    "vmx_data": {
+      "memsize": "{{user `memory`}}",
+      "numvcpus": "{{user `cpus`}}"
+    }
+  },
+  {
+    "type": "virtualbox-iso",
+    "iso_urls": ["http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"],
+    "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
+    "iso_checksum_type": "sha256",
+    "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
+    "communicator": "ssh",
+    "ssh_username": "administrator",
+    "ssh_password": "password",
+    "boot_command": [
+      "<esc><wait>",
+      "install <wait>",
+      "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
+      "debian-installer=en_US <wait>",
+      "auto <wait>",
+      "locale=en_US <wait>",
+      "hostname=scoring domain=locale.lan ",
+      "kbd-chooser/method=us <wait>",
+      "fb=false <wait>",
+      "interface=auto ",
+      "debconf/frontend=noninteractive <wait>",
+      "debconf/priority=critical ",
+      "console-setup/ask_detect=false <wait>",
+      "keymap=us <wait>",
+      "debian/priority=critical ",
+      "keyboard-configuration/xkb-keymap=us <wait>",
+      "<enter><wait>"
+    ],
+    "guest_os_type": "Debian_64",
+    "boot_wait": "15s",
+    "http_directory": "http",
+    "ssh_timeout": "10000s",
+    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+    "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
+  }
+],
+
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "files/kali.list",
+      "destination": "/tmp/sources.list"
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "inline": [
+        "sudo mv /tmp/sources.list /etc/apt/sources.list",
+	"sudo apt clean && sudo apt update && sudo apt -y upgrade && sudo apt -y dist-upgrade",
+        "sudo reboot"
+      ]
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "inline": [
+        "sudo apt -y --reinstall install open-vm-tools-desktop fuse",
+        "sudo reboot"
+      ],
+      "only": ["vmware-iso"]
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "inline": [
+        "sudo apt -y install virtualbox-guest-x11",
+        "sudo reboot"
+      ],
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "shell",
+      "script": "scripts/kali/kali-scoring.sh"
+    }
+  ]
+}

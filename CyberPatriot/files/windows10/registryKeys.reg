@@ -6,3 +6,7 @@
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon]
 "DisableCAD"="1"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyServer"="proxy.google.com"
+"ProxyEnable"="1"
