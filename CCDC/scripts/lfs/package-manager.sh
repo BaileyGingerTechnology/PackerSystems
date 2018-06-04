@@ -12,8 +12,8 @@ LC_ALL=POSIX
 echo $LC_ALL
 LFS_TGT=$(uname -m)-gt-linux-gnu
 echo "On $LFS_TGT"
-PATH=/tools/bin:/bin:/usr/bin
-CPUS=8
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
+CPUS=4
 
 echo "Building RPM"
 

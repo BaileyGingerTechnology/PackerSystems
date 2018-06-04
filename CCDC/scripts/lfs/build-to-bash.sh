@@ -3,7 +3,7 @@
 
 set +h
 
-echo "Building"
+echo $PATH
 
 umask 022
 LFS=/
@@ -12,8 +12,8 @@ LC_ALL=POSIX
 echo $LC_ALL
 LFS_TGT=$(uname -m)-gt-linux-gnu
 echo "On $LFS_TGT"
-PATH=/bin:/usr/bin:/tools/bin
-CPUS=8
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
+CPUS=4
 
 touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp -v utmp /var/log/lastlog

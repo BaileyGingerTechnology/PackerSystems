@@ -77,6 +77,7 @@ function make_make
 	else
 		echo "MAKEOPTS=-j$core_count" >> /mnt/gentoo/etc/portage/make.conf
 	fi
+	echo "USE=apache2" >> /mnt/gentoo/etc/portage/make.conf
 
 	echo "Portage configured. Preparing for chroot."
 	resolv_mount

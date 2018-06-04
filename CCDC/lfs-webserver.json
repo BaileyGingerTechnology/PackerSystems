@@ -6,7 +6,7 @@
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
-    "cpus": "8",
+    "cpus": "4",
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",

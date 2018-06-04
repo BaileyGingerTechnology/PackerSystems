@@ -1,22 +1,32 @@
 #!/bin/bash
 
-# Install dependencies
-apt install -y perl net-tools
+set -e
+set -x
 
-# Mount VMware Tools ISO file
-mount -t iso9660 -o loop /root/linux.iso /mnt
+if [ "$PACKER_BUILDER_TYPE" != "vmware-iso" ]; then
+  exit 0
+fi
 
-# Execute the installer
-cd /tmp
-cp /mnt/VMwareTools-*.gz .
-tar zxvf VMwareTools-*.gz
-./vmware-tools-distrib/vmware-install.pl -d
+apt update
 
-# Unmount ISO file
-umount /mnt
+apt-get -y install perl make linux-headers-$(uname -r) xserver-xorg
 
-# Delete ISO file
-rm -f /root/linux.iso
+mkdir /mnt/vmware
+mount -o loop,ro ~/linux.iso /mnt/vmware
 
-# Delete copied files from ISO
-rm -rf VMwareTools-.gz vmware-tools-distrib
+mkdir /tmp/vmware
+tar zxf /mnt/vmware/VMwareTools-*.tar.gz -C /tmp/vmware
+/tmp/vmware/vmware-tools-distrib/vmware-install.pl --default --force-install
+rm -r /tmp/vmware
+
+umount /mnt/vmware
+rm -r /mnt/vmware
+rm -f ~/linux.iso
+
+tee -a /etc/vmware-tools/locations <<EOF
+remove_answer ENABLE_VGAUTH
+answer ENABLE_VGAUTH no
+remove_answer ENABLE_VMBLOCK
+answer ENABLE_VMBLOCK no
+EOF
+/usr/bin/vmware-config-tools.pl --default --skip-stop-start
