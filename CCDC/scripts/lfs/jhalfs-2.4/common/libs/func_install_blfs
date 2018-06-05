@@ -1,0 +1,217 @@
+#!/bin/bash
+
+# $Id: func_install_blfs 3927 2017-03-19 16:17:18Z pierre $
+
+#----------------------------# Prepare BLFS_ROOT and extract
+install_blfs_tools() {       # the scriptlets to build
+#----------------------------# the dependency tools
+set -e
+# Install the files
+[[ ! -d ${BUILDDIR}${BLFS_ROOT} ]] && mkdir -pv ${BUILDDIR}${BLFS_ROOT}
+cp -r BLFS/* ${BUILDDIR}${BLFS_ROOT}
+cp -r menu ${BUILDDIR}${BLFS_ROOT}
+cp $COMMON_DIR/progress_bar.sh ${BUILDDIR}${BLFS_ROOT}
+cp README.BLFS ${BUILDDIR}${BLFS_ROOT}
+
+# Clean-up
+make -C ${BUILDDIR}${BLFS_ROOT}/menu clean
+rm -rf ${BUILDDIR}${BLFS_ROOT}/libs/.svn
+rm -rf ${BUILDDIR}${BLFS_ROOT}/xsl/.svn
+rm -rf ${BUILDDIR}${BLFS_ROOT}/menu/.svn
+rm -rf ${BUILDDIR}${BLFS_ROOT}/menu/lxdialog/.svn
+
+# Set some harcoded envars to their proper values
+sed -i s@tracking-dir@$TRACKING_DIR@ \
+    ${BUILDDIR}${BLFS_ROOT}/{Makefile,gen-makefile.sh}
+sed -i s@trunk/BOOK@$BLFS_TREE@ \
+    ${BUILDDIR}${BLFS_ROOT}/Makefile
+
+# If we have a working copy, copy it:
+if [[ "$BLFS_WORKING_COPY" = "y" ]]; then
+echo "copying the local BLFS working copy (may take some time)"
+# -r: recursive; -u: only if newer; -T: otherwise, would copy to a subdirectory
+# of blfs-xml, if blfs-xml already exists; --preserve=timestamps: if the local
+# book has already been validated, tmp is posterior to the others, and
+# validation will not be done again.
+  cp -ruT --preserve=timestamps $BLFS_WC_LOCATION \
+                                ${BUILDDIR}${BLFS_ROOT}/blfs-xml
+fi
+# Downloads the book if necessary, initialize the tracking file and the
+# package database.
+# sudo is needed if $BUILDDIR/var/lib is owned by root and /var/lib/jhalfs
+# has to be created
+sudo make -j1 -C $BUILDDIR$BLFS_ROOT          \
+          REV=$INITSYS                        \
+          TRACKING_DIR=$BUILDDIR$TRACKING_DIR \
+          $BUILDDIR$BLFS_ROOT/packages.xml
+
+# Because the BLFS Makefile is supposed to be used in chroot (or booted)
+# mode, the tracking file has wrong path for DTD. Change it:
+sudo sed -i s@$BUILDDIR@@ $BUILDDIR$TRACKING_DIR/instpkg.xml
+
+# Manually build a 'configuration' file
+if [ "$DEP_LIBXML" = y ]; then
+  LINE_LIBXML='CONFIG_libxml2=y'
+else
+  LINE_LIBXML='#CONFIG_libxml2 is not set'
+fi
+if [ "$DEP_LIBXSLT" = y ]; then
+  LINE_LIBXSLT='CONFIG_libxslt=y'
+else
+  LINE_LIBXSLT='#CONFIG_libxslt is not set'
+fi
+# DocBook is a rec dep of libxslt
+# if [ "$DEP_DBXML" = y ]; then
+#   LINE_DBXML='CONFIG_DocBook=y'
+# else
+#   LINE_DBXML='#CONFIG_DocBook is not set'
+# fi
+if [ "$DEP_LYNX" = y ]; then
+  LINE_LYNX='CONFIG_lynx=y'
+else
+  LINE_LYNX='#CONFIG_lynx is not set'
+fi
+if [ "$DEP_SUDO" = y ]; then
+  LINE_SUDO='CONFIG_sudo=y'
+else
+  LINE_SUDO='#CONFIG_sudo is not set'
+fi
+if [ "$DEP_WGET" = y ]; then
+  LINE_WGET='CONFIG_wget=y'
+else
+  LINE_WGET='#CONFIG_wget is not set'
+fi
+if [ "$DEP_GPM" = y ]; then
+  LINE_GPM='CONFIG_gpm=y'
+else
+  LINE_GPM='#CONFIG_gpm is not set'
+fi
+if [ "$DEP_SVN" = y ]; then
+  LINE_SVN='CONFIG_subversion=y'
+else
+  LINE_SVN='#CONFIG_subversion is not set'
+fi
+if [ "$DEP_OPENSSL" = y ]; then
+  LINE_OPENSSL='CONFIG_openssl=y'
+else
+  LINE_OPENSSL='#CONFIG_openssl is not set'
+fi
+if [ "$DEP_PYTHON" = y ]; then
+  LINE_PYTHON='CONFIG_python2=y'
+else
+  LINE_PYTHON='#CONFIG_python2 is not set'
+fi
+
+cat >$BUILDDIR$BLFS_ROOT/configuration <<EOF
+$LINE_OPENSSL
+$LINE_PYTHON
+$LINE_LIBXML
+$LINE_LIBXSLT
+$LINE_WGET
+$LINE_SVN
+$LINE_GPM
+$LINE_LYNX
+$LINE_SUDO
+MAIL_SERVER=sendmail
+optDependency=2
+SUDO=n
+EOF
+
+# Generates the scripts for the blfs tools dependencies (in ./scripts)
+yes "yes" | $BUILDDIR$BLFS_ROOT/gen_pkg_book.sh  $BUILDDIR$BLFS_ROOT
+
+# Move the scriptlets where they should be
+sudo rm -rf $BUILDDIR$BLFS_ROOT/scripts
+mv scripts $BUILDDIR$BLFS_ROOT
+
+# Generates a list containing download and copying instructions for tarballs
+echo -e '#!/bin/bash\nset -e\n' > $BUILDDIR$BLFS_ROOT/download_script
+sed -n -e '/PACKAGE=/,/^fi/{/^fi/a\
+cp $PACKAGE $SRC_ARCHIVE
+p}' \
+       -e '/|[ ]*md5sum/p' \
+       -e '/PACKAGE1=/,/^fi/{/^fi/a\
+cp $PACKAGE1 $SRC_ARCHIVE
+p}' \
+       -e '/PATCH=/,/^fi/{/^fi/a\
+cp $PACKAGE1 $SRC_ARCHIVE
+p}' \
+       -e '/URL=/,/^fi/{/^fi/a\
+cp $PACKAGE1 $SRC_ARCHIVE
+p}' \
+    $BUILDDIR$BLFS_ROOT/scripts/* >> $BUILDDIR$BLFS_ROOT/download_script
+chmod u+x $BUILDDIR$BLFS_ROOT/download_script
+
+# Downloads (or copy) to build_dir/sources
+pushd $BUILDDIR/sources
+# Remove `unpacked' files if some have been left
+sudo find . -name unpacked -exec rm \{\} \;
+if [ "$GETPKG" = "y" ]; then
+    FTP_SERVER=$SERVER/pub/blfs/ \
+    SRC_ARCHIVE=${SRC_ARCHIVE:-/dev/null}     \
+    $BUILDDIR$BLFS_ROOT/download_script
+else # Save the download script in case the user wants to run it later
+    cp $BUILDDIR$BLFS_ROOT/download_script .
+fi
+popd
+rm -v $BUILDDIR$BLFS_ROOT/download_script
+
+# Suppresses unneeded parts of the scriptlets
+if [ "$DEP_LIBXSLT" = y ]; then
+  # libxslt pulls docbook-xsl in, which populates the catalog with annoying
+  # **EDITME** references. Fortunately, those lines are regognizable because
+  # they occur between lines containing '/etc/xml/catalog' at the end of the
+  # line (without '&&'). I  have not found a simple way to delete lines
+  # between 2 addresses, excluding either the first or the last one. So use
+  # a loop for accumulating lines and deleting at the end.
+  # Sorry for sed synthax.
+  sed -i '\@^[[:space:]]*/etc/xml/catalog$@{
+n
+:a
+\@/etc/xml/catalog$@bb
+N
+ba
+:b
+d}' \
+      $BUILDDIR$BLFS_ROOT/scripts/*docbook-xsl
+fi
+if [ "$DEP_SUDO" = y ]; then
+  sed -i '/cat.*pam.d/i mkdir -p /etc/pam.d' $BUILDDIR$BLFS_ROOT/scripts/*sudo
+fi
+if [ "$DEP_SVN" = y ]; then
+  sed -i -e /javahl/d -e /swig/d $BUILDDIR$BLFS_ROOT/scripts/*subversion
+fi
+if [ "$DEP_LYNX" = y ]; then
+  if [ "$DEP_OPENSSL" = y -o "$DEP_WGET" = y ]; then
+    sed -e 's/configure/& --with-ssl/' \
+        -i $BUILDDIR$BLFS_ROOT/scripts/*lynx
+  fi
+fi
+# At last generates the build Makefile
+mkdir -p $BUILDDIR$BLFS_ROOT/work
+pushd $BUILDDIR$BLFS_ROOT/work
+../gen-makefile.sh
+# The generated Makefile updates the tracking file after each package
+# installation, using libxslt, which is not installed yet. So move
+# updating to the end of the process, adding an 'update' target
+sed -i -e '/xsltproc/,+6d' \
+       -e '/^all/s@$@ update@' \
+       -e 's/touch/@touch/' Makefile
+cat >> Makefile << EOF
+update:
+	@echo Updating the tracking file
+	@for file in *-*; do \\
+	xsltproc --stringparam packages ../packages.xml \\
+	--stringparam package \$\${file##*z-} \\
+	-o track.tmp \\
+	../xsl/bump.xsl \$(TRACKING_FILE); \\
+	sed -i 's@PACKDESC@$BLFS_ROOT/packdesc.dtd@' track.tmp; \\
+	xmllint --format --postvalid track.tmp > \$(TRACKING_FILE); \\
+	rm track.tmp; \\
+	done
+	@touch \$@
+	@echo -e "\n\n "\$(BOLD)Target \$(BLUE)\$@ \$(BOLD)OK
+	@echo --------------------------------------------------------------------------------\$(WHITE)
+EOF
+popd
+}

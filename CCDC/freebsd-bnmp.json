@@ -32,8 +32,8 @@
     "ssh_password": "password",
     "shutdown_command": "sudo poweroff",
     "qemuargs": [
-      ["-m", "{{user `memory`}}"],
-      ["-smp", "{{user `cpus`}}"]
+      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
     ]
   }, {
     "type": "virtualbox-iso",
@@ -62,7 +62,9 @@
     "shutdown_command": "sudo poweroff",
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"],
+      ["createhd", "--filename", "drive2.vdi", "--size", "16384"],
+      ["storageattach", "{{.NAME}}", "--storagectl", "IDE Controller", "--port", "1", "--device", "1", "--type", "hdd", "--medium", "drive2.vdi"]
     ]
   }, {
     "type": "vmware-iso",

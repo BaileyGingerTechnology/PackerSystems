@@ -1,0 +1,70 @@
+TITLE : Package management in jhalfs
+BY    : Pierre Labastie (work in progress)
+$Id: README.PACKAGE_MANAGEMENT 3935 2017-03-20 15:31:30Z pierre $
+
+1. INTRODUCTION:
+
+      There are several hints discussing package management for LFS, but
+  nothing under jhalfs. There used to be a patch for PACO that I cannot
+  find now. This is a modification ("DESTDIR install" automation), which
+  allows to use a package manager inside jhalfs. I hope it is flexible enough
+  to support several package managers, at least among those who use DESTDIR
+  install. My initial implementation used dpkg, from Debian, in a very
+  crude way (Debian has a sophisticated package management system, which
+  I have not tried to use here). There is also a port to Pacman from
+  Arch Linux (http://www.archlinux.org). I am sorry to say I have (almost)
+  no experience with rpm, so I cannot tell whether it would fit.
+
+2. OVERVIEW OF THE SYSTEM:
+
+      Presently, package management is only available for LFS. I plan to
+  upgrade BLFS tools, but nothing usable right now. I have not attempted
+  to adapt this tool for the other flavours of LFS.
+
+      To use package management, you need to create the required files in
+  the pkgmngt directory (see below), and to select "package management" in
+  the build settings. Note that this is incompatible with creating an SBU
+  and usage report.
+
+3. DETAILS OF OPERATION:
+
+      This system performs basically a "DESTDIR install" for all pages
+  in chapter 6, 7 and 8 of the book. The name of the DESTDIR directory is the
+  same as the one of the executed script. The path to this directory is
+  made available to the scriplets through the PKG_DEST variable.
+      The XSL stylesheet used for generating the scriptlets, automatically
+  adds DESTDIR install instructions when "package management" is selected.
+  Also all the paths beginning with " /" or ">/" (absolute paths) are prepended
+  with $PKG_DEST. This has the default that you might want to move
+  files to non existent directories. There is no simple way to automatically
+  create those directories, because you have sometimes to use the full path
+  (instructions of the form `cp file dir') and sometimes only the dirname
+  (instructions of the form `cp file1 file2'). So the XSL stylesheet
+  creates a reasonable subset of the FHS hierarchy into the destination
+  directory. Empty directories are then removed before packing the
+  binary package.
+      In order to use the package manager, it has to be installed at the end of
+  chapter 5 (temporary installation in /tools) and chapter 6 (final install).
+  Furthermore, the administrative files and directories have to be created
+  during the `Creating Directories' and `Creating Essential Files' stages.
+  For all this, the user has to supply a file in docbook XML format, with
+  the necessary instructions and enough information to download the tarball.
+  This file should reside in the `pkgmngt' directory and be named
+  `packageManager.xml'. A template named `packageManager.xml.template' is
+  provided in the `pkgmngt' subdirectory. There are also two XML files for
+  dpkg and pacman, respectively `packageManager.xml.dpkg' and
+  `packageManager.xml.pacman', that you can copy to `packageManager.xml'.
+  They are not updated often, so the versions used can be rather old.
+      The last thing to do is to tell how to use the package manager. When
+  the binary package is ready, the scriptlets call a shell function named
+  `packInstall', which should pack the binary package and install it on the
+  system. Note that nothing has been done to manage configuration files, 
+  which are ususally treated specially by package managers: depending on
+  the book layout, it is sometimes possible to create those files afterwards,
+  and sometimes not, which means that you have to check them after each
+  upgrade. The user has to write his own `packInstall' function. The shell
+  function should be defined in a file named `packInstall.sh', residing in
+  the `pkgmngt' directory. A template is provided, as well as two example
+  scripts for dpkg and pacman. Note that, due to the way pacman checks the
+  available space on disk, the root directory in chroot must be a mount point,
+  otherwise the installation of packages fails.

@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# $Id: common-functions 3763 2013-12-15 07:34:58Z pierre $
+
+set -e
+
+
+no_empty_builddir() {
+  'clear'
+cat <<- -EOF-
+${DD_BORDER}
+
+${tab_}${tab_}${BOLD}${RED}W A R N I N G${OFF}
+    Looks like the \$BUILDDIR directory contains subdirectories
+    from a previous build.
+
+    Please format the partition mounted on \$BUILDDIR or set
+    a different build directory before running jhalfs.
+${OFF}
+${DD_BORDER}
+-EOF-
+  exit
+}
+
+
+#----------------------------#
+run_make() {                 #
+#----------------------------#
+  # Test if make must be run.
+  if [ "$RUNMAKE" = "y" ] ; then
+    # Test to make sure we're not running the build as root
+    if [ "$UID" = "0" ] ; then
+      echo "You must not be logged in as root to build the system."
+      exit 1
+    fi
+    # Build the system
+    if [ -e $MKFILE ] ; then
+      echo -ne "Building the system...\n"
+      cd $JHALFSDIR && make
+      echo -ne "done\n"
+    fi
+  fi
+}
+
+
+#----------------------------#
+clean_builddir() {           #
+#----------------------------#
+# Test if the clean must be done.
+if [ "${CLEAN}" = "y" ]; then
+  # If empty (i.e. could contain lost+found), do not do anything
+  if $(ls -d $BUILDDIR/* > /dev/null 2>&1) &&
+       [ "$(ls $BUILDDIR)" != "lost+found" ]; then
+    # Test to make sure that the build directory was populated by jhalfs
+    if [ ! -d $JHALFSDIR ] || [ ! -d $BUILDDIR/sources ] ; then
+      echo "Looks like $BUILDDIR was not populated by a previous jhalfs run."
+      exit 1
+    # Test that dev filesystems are not mounted in $BUILDDIR
+    elif mount | grep $BUILDDIR/dev > /dev/null ; then
+      echo "Looks like kernel filesystems are still mounted on $BUILDDIR."
+      exit 1
+    else
+      # Clean the build directory
+      echo -n "Cleaning $BUILDDIR ..."
+      # First delete proc and sys directories, if exist.
+      # Both should be empty. If not, we exit, and the rmdir command
+      # has generated an error message
+      if [ -d $BUILDDIR/proc ] ; then
+        sudo rmdir $BUILDDIR/proc || exit 1
+      fi
+      if [ -d $BUILDDIR/sys ] ; then
+        sudo rmdir $BUILDDIR/sys || exit 1
+      fi
+      sudo rm -rf $BUILDDIR/{bin,boot,dev,etc,home,lib{,64},media,mnt,run}
+      sudo rm -rf $BUILDDIR/{opt,root,sbin,srv,tmp,tools,cross-tools,usr,var}
+      echo "done"
+      if [[ "${BLFS_TOOL}" = "y" ]] ; then 
+        echo -n "Cleaning $BUILDDIR/$BLFS_ROOT ..."
+        sudo rm -rf $BUILDDIR/$BLFS_ROOT
+        echo "done"
+      fi
+      echo -n "Cleaning $JHALFSDIR ..."
+      sudo rm -rf $JHALFSDIR
+      echo "done"
+      echo -n "Cleaning remaining extracted sources in $BUILDDIR/sources ..."
+      sudo rm -rf `find $BUILDDIR/sources -maxdepth 1 -mindepth 1 -type d`
+      echo "done"
+    fi
+  fi
+fi
+}
+
+VERBOSITY2=$VERBOSITY
+
+[[ $VERBOSITY2 > 0 ]] && echo ""
+
+[[ $VERBOSITY2 > 0 ]] && echo -n "Loading <func_book_parser>..."
+source $COMMON_DIR/libs/func_book_parser
+[[ $? > 0 ]] && echo "file libs/func_book_parser did not load.." && exit 1
+[[ $VERBOSITY2 > 0 ]] && echo "OK"
+
+
+[[ $VERBOSITY2 > 0 ]] && echo -n "Loading <func_download_pkgs>..."
+source $COMMON_DIR/libs/func_download_pkgs
+[[ $? > 0 ]] && echo "file libs/func_download_pkgs did not load.." && exit 1
+[[ $VERBOSITY2 > 0 ]] && echo "OK"
+
+
+[[ $VERBOSITY2 > 0 ]] && echo -n "Loading <func_wrt_Makefile>..."
+source $COMMON_DIR/libs/func_wrt_Makefile
+[[ $? > 0 ]] && echo "file libs/func_wrt_Makefile did not load.." && exit 1
+[[ $VERBOSITY2 > 0 ]] && echo "OK"
+
+
+[[ $VERBOSITY2 > 0 ]] && echo -n "    ..."

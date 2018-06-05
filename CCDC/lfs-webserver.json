@@ -6,7 +6,7 @@
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
-    "cpus": "4",
+    "cpus": "2",
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
@@ -25,7 +25,7 @@
       "http_directory": "http",
       "boot_wait": "5s",
       "boot_command": [
-        "<enter><wait10><wait10><wait10><wait10>",
+        "<enter><wait10><wait10><wait10>",
         "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
         "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
         "/usr/bin/bash ./enable-ssh.sh<enter>",
@@ -106,6 +106,11 @@
   ],
   "provisioners": [
     {
+        "type": "file",
+        "source": "http/jhalfs-2.4.tar.gz",
+        "destination": "/temp/jhalfs-2.4.tar.gz"
+    },
+    {
       "type": "file",
       "source": "scripts/lfs/build-to-bash.sh",
       "destination": "/temp/build-to-bash.sh"
@@ -149,7 +154,7 @@
       "execute_command": "{{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,
       "scripts": [
-        "scripts/lfs/setup-base.sh",
+        "scripts/lfs/prep-jhalfs.sh",
         "scripts/lfs/lfs-webserver.sh"
       ]
     }

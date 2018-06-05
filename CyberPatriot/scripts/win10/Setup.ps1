@@ -149,5 +149,5 @@ Start-Process -FilePath "C:\Windows\System32\wusa.exe" -ArgumentList $WusaArgume
 scoop install grep --global
 mkdir C:\ProgramData\gingertechengine
 
-# Import reg file for all other keys
+# Import reg file for modified keys
 regedit /s c:\registryKeys.reg

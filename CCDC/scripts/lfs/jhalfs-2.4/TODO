@@ -1,0 +1,28 @@
+            jhalfs TODO
+          ---------------
+$Id: TODO 3913 2017-03-12 13:34:15Z pierre $
+
+MASTER SCRIPT
+-------------
+
+  - Add a way to choose the network configuration (ip, gateway, etc).
+  - [CLFS] Add a switch to choose between static or DHCP network configuration
+    for CLFS.
+
+
+xLFS MODULES
+------------
+
+  - Add a way to choose the network configuration (ip, gateway, etc).
+  - [CLFS] Add a switch to choose between static or DHCP network configuration
+    for CLFS.
+
+
+BLFS MODULE (See BLFS/TODO)
+-----------
+
+
+OTHERS
+------
+
+  - Bugs hunting and code clean-up.

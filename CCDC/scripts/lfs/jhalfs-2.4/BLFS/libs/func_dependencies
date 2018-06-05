@@ -1,0 +1,295 @@
+#!/bin/bash
+#
+# $Id: func_dependencies 3857 2016-02-29 15:30:06Z pierre $
+#
+
+#---------------------------------------------------------------------------#
+# This is a set of (recursive) functions for manipulating a dependency      #
+# tree. Everything would be "simple" without circular dependencies. We      #
+# would just have to build the tree using the packages.xml file, and to     #
+# provide a function for browsing it. But we need to be able to detect      #
+# circular dependencies and to possibly change the tree depending on        #
+# priorities. This is why we keep with each node a record of the path       #
+# from the root to the node, which we call *link* and a record of the       #
+# successive priorities which we call *priolink*.                           #
+#                                                                           #
+# Layout of the tree:                                                       #
+#                                                                           #
+# A node of the tree is represented by a file <nodeName>.dep. We keep all   #
+# those files in the same directory. The root node file is "root.dep".      #
+# Files <nodeName>.dep have the following layout:                           #
+#   - the first line is the link: the link is an array of numbers           #
+#     (n1 n2 ... nN), describing the path from the root to <nodeName>: n1   #
+#     is the position of the first node of the path in root.dep, n2 is the  #
+#     position of the second node of the path in <node1>.dep and so on. The #
+#     link is not needed for normal tree operations (building a subtree or  #
+#     browsing the tree), but it allows to check whether a dependency is    #
+#     circular, and to find its parent.                                     #
+#   - the second line is an array of priorities (p1 p2 ... pN), giving the  #
+#     priority (1=required, 2=recommended, 3=optional) of each dependency   #
+#     in the link.                                                          #
+#   - each subsequent line is of the form "p <depname>", where p is the     #
+#     priority as above, and <depname> is the name of the dependency. The   #
+#     position which is recorded in the link is the number of the line      #
+#     minus 2.                                                              #
+#                                                                           #
+# Circular dependencies:                                                    #
+#                                                                           #
+# In case we find a cirdular dependency, it has the form :                  #
+# parent->dependency_0->...->dependency_n->dependency_0                     #
+# If we want to build dependency_n before dependency_0, no problem:         #
+# we just prune the tree at dependency_n. If we want to build first         #
+# dependency_0, we need to put dependency_n as a dependency of parent,      #
+# then erase and rebuild the subtree from there. Now, we may have met       #
+# another circular dependency in the subtree, and erasing the tree makes    #
+# us forget the decision which was made. So, after first generating the     #
+# list of dependencies from packages.xml, we keep the generated list in     #
+# a file <nodeName>.odep, which we modify according to the decision which   #
+# was made.                                                                 #
+#---------------------------------------------------------------------------#
+
+# Global variables:
+# A string of spaces for indenting:
+declare -a spaceSTR="                                                                   "
+# When we are backing up from a circular dependency, `exchange_triplet'
+# shall contain (parent dependency_0 dependency_n):
+declare -a exchange_triplet
+
+#----------------------------#
+generate_dependency_tree() { #
+#----------------------------#
+: <<inline_doc
+    function:   Create a subtree of the dependency tree
+                (recursive function)
+    input vars: $1 : file with a list of targets (child nodes)
+		     the first line of the file is the link
+                $2 : priority (1=req, 2=rec, 3=opt)
+    externals:  vars:  DEP_LEVEL   contains 1 if we want to build the
+                                   tree only for required dependencies,
+                                   2 if we want also recommended ones,
+                                   and 3 if we want optional ones too.
+                       MAIL_SERVER contains the name of the MTA we want to use.
+                files: ../xsl/dependencies.xsl: stylesheet for creating the
+                                               .dep files
+                       ../packages.xml:         File containing packages id
+                                                and dependencies
+    returns:    0 if the tree has been successfully created
+                1 if we are backing up to the parent of a circular dep
+    modifies:   vars: exchange_triplet contains the triplet when return is 1
+    output:     files: for each <pkg> with dependencies in $1,
+                       a file <pkg>.dep and its dependencies
+    on error:   nothing
+    on success: nothing
+inline_doc
+
+local DepFile=$1
+local priority=$2
+local -a rootlink
+local -a priolink
+local -a otherlink
+local -i depth
+local -i count=0
+local id_of_dep
+local parent
+local lines_to_remove=
+local srootlink
+local dep_level
+local priostring
+local dpriostring
+local i
+
+{
+# We use fd number 6 for input from DepFile, because we need 0 for user input
+read -u6 -a rootlink
+depth=${#rootlink[*]}
+read -u6 -a priolink
+dep_level=$DEP_LEVEL
+# For now, process optional deps only for the root packages.
+if (( $DEP_LEVEL > 2 )) && (( $depth > 1 )); then dep_level=2; fi
+srootlink="${rootlink[*]} "
+case $priority in
+    1) priostring=required ;;
+    2) priostring=recommended ;;
+    3) priostring=optional ;;
+    4) priostring=external ;;
+esac
+# start of DepFile
+echo -en "\nNode: $depth${spaceSTR:0:$depth}${RED}$DepFile${OFF} $priostring"
+
+while read -u6 prio_of_dep id_of_dep; do
+case $prio_of_dep in
+    1) dpriostring=required ;;
+    2) dpriostring=recommended ;;
+    3) dpriostring=optional ;;
+    4) dpriostring=external ;;
+esac
+# count entries in file
+  (( count++ ))
+# Has this entry already been seen?
+  if [ -f ${id_of_dep}.dep ]; then # found ${id_of_dep}.dep already in tree
+    otherlink=($(head -n 1 ${id_of_dep}.dep))
+    if [ -z "${otherlink[*]}" ] 
+      then echo otherlink empty for $id_of_dep.dep
+      echo This should not happen, but happens to happen...
+      exit 1
+    fi
+# Do not use "${rootlink[*]}" =~ "${otherlink[*]}": case rootlink=(1 11)
+# and otherlink=(1 1)
+    if [[ ${srootlink#"${otherlink[*]} "} != ${srootlink} ]]; then # cir. dep
+      echo -en "\nCirc: $((depth+1))${spaceSTR:0:$((depth+1))}${YELLOW}${id_of_dep}${OFF} $dpriostring"
+# First look for the other parent of this dependency.
+# The parent has the same link without the last entry.
+# We do not need otherlink anymore so just destroy the last element
+      unset otherlink[-1]
+      parent=$(grep ^"${otherlink[*]}"\$ -l *)
+      parent=${parent%.dep}
+# Find lowest priority in branch from parent to DepFile:
+      p2=0
+      for (( i=${#otherlink[*]}; i < $depth ; i++ )) ; do
+        if (( ${priolink[i]} > $p2 )); then p2=${priolink[i]}; fi
+      done
+      if (( $prio_of_dep >= $p2 )); then # prune
+        lines_to_remove="$lines_to_remove $id_of_dep"
+        sed -i "/$id_of_dep/d" ${DepFile/.dep/.odep}
+      else #backup with prio priority
+        exchange_triplet=($parent $id_of_dep ${DepFile%.dep})
+        return $priority
+      fi
+    else # not circular: prune tree (but not .odep, since it may happen that
+         # the tree is destroyed and rebuilt in another order)
+      lines_to_remove="$lines_to_remove $id_of_dep"
+    fi # circular or not
+    continue # this dependency has already been seen, and the associated
+             # subtree computed. We are done
+  fi # Has this entry already been seen?
+# So, this entry has not already been seen.
+# If this is an external dep, just display it and go to next dep:
+  if [ "$prio_of_dep" -eq 4 ]; then
+    echo "${rootlink[*]} $count" > ${id_of_dep}.dep
+    echo -en "\nLeaf: $(($depth+1))${spaceSTR:0:$(($depth+1))}${CYAN}${id_of_dep}${OFF} $dpriostring"
+    continue
+  fi
+# Otherwise, let's build the corresponding
+# subtree. Since decisions about circular deps can lead us to start again
+# dependencies, we restart until the flag is false.
+  flag=true
+  while [ $flag = true ]; do
+    flag=false
+    if [ ! -f "${id_of_dep}.odep" ]; then
+      xsltproc --stringparam dependencies ${dep_level} \
+        --stringparam idofdep $id_of_dep \
+        --stringparam MTA $MAIL_SERVER   \
+        -o ${id_of_dep}.odep \
+        ../xsl/dependencies.xsl ../packages.xml
+    fi
+
+# Use -s, because it may happen that after removing lines, .odep exists
+# but is empty.
+    if [[ -s ${id_of_dep}.odep ]]; then # this dependency has dependencies
+      sed "1i${rootlink[*]} $count\\
+${priolink[*]} $prio_of_dep" < ${id_of_dep}.odep \
+                             > ${id_of_dep}.dep # add link and priolink
+      generate_dependency_tree ${id_of_dep}.dep $prio_of_dep
+# Test return value, in case we exchange dependencies
+      p2=$?
+      case $p2 in
+       0) # Normal return
+         ;;
+       [123]) # We are backing up to parent
+         if [[ ${exchange_triplet} == ${DepFile%.dep} ]] ; then
+# We are the parent!
+# First, we have to find the parent of our new direct dep, and remove
+# the new direct dep from the parent.odep:
+           otherlink=($(head -n1 ${exchange_triplet[2]}.dep))
+           unset otherlink[-1]
+           parent=$(grep -l ^"${otherlink[*]}"\$ *.dep)
+           sed -i /[[:digit:]]\ ${exchange_triplet[2]}\$/d ${parent/.dep/.odep}
+           tree_erase ${id_of_dep}.dep
+# We want that our direct dep be ${exchange_triplet[2]} and that id_of_dep
+# be pulled in as an indirect dep, so exchange.
+# Just doing a sed -i "s@${id_of_dep}@${exchange_triplet[2]}@" $DepFile
+# is not good if $DepFile contains several times the same line
+# so first find the first line and then sed
+           lineno=$(sed -n /${id_of_dep}/= $DepFile | head -n1)
+           sed -i "${lineno}s@${id_of_dep}@${exchange_triplet[2]}@" $DepFile
+# Do the same for the odep file:
+           local OdepFile=${DepFile/.dep/.odep}
+           lineno=$(sed -n /${id_of_dep}/= $OdepFile | head -n1)
+           sed -i "${lineno}s@${id_of_dep}@${exchange_triplet[2]}@" $OdepFile
+           id_of_dep=${exchange_triplet[2]}
+           flag=true # we have to regenerate the tree for the new dependency
+         else
+# We are not the parent. If our priority is greater than p2
+# we have to change the triplet and return priority, else return current p2.
+# echo (DEBUG) backing up to ${exchange_triplet} at ${DepFile%.dep}
+           if (( $priority > $p2 )); then
+             exchange_triplet[2]=${DepFile%.dep}
+             return $priority
+           else
+             return $p2
+           fi
+         fi
+         ;;
+      esac
+    else # id_of_dep has no dependencies, just record the link in a file
+         # and print
+      echo "${rootlink[*]} $count" > ${id_of_dep}.dep
+      echo -en "\nLeaf: $(($depth+1))${spaceSTR:0:$(($depth+1))}${CYAN}${id_of_dep}${OFF} $dpriostring"
+    fi
+  done
+done
+echo -en "\n End: $depth${spaceSTR:0:$depth}${GREEN}$DepFile${OFF}"
+} 6<$DepFile
+# It may happen that a file is created with several times
+# the same line. Normally, all those lines but one
+# would be flagged to be removed (or all of them if
+# the dependency appeared before). A simple sed /$line/d
+# destroys all the lines. We should instead remove
+# only one for each appearance of it in lines_to_remove.
+# so first get the position of last line and then delete
+# that line
+for line in $lines_to_remove
+  do lineno=$(sed -n /^[[:digit:]]\ $line\$/= $DepFile | tail -n1)
+  sed -i ${lineno}d $DepFile
+done
+return 0
+}
+
+#---------------#
+tree_browse() { #
+#---------------#
+local file=$1
+local f
+
+#echo file=$file
+for f in $(grep '[^0-9 ]' $file | sed 's/.* //'); do
+#  echo f=$f
+  if grep -q '[^0-9 ]' ${f}.dep ; then
+    tree_browse ${f}.dep
+  fi
+  echo $f
+done
+}
+
+#--------------#
+tree_erase() { #
+#--------------#
+local file=$1
+local f
+local -a rootlink
+local rootlink2
+
+#echo file=$file
+rootlink=($(head -n1 $file))
+for f in $(grep '[^0-9 ]' $file | sed 's/.* //'); do
+#  echo "    f"=$f
+  if [ -f ${f}.dep ]; then
+    rootlink2="$(head -n1 ${f}.dep) "
+# See comment above about srootlink
+    if [[ ${rootlink2#"${rootlink[*]} "} != ${rootlink2} ]] ; then
+      tree_erase ${f}.dep
+    fi
+  fi
+done
+rm -f $file
+}

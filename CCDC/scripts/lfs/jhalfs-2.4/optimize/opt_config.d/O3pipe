@@ -1,0 +1,22 @@
+#
+#$Id: O3pipe 2677 2006-05-11 20:21:14Z manuel $
+#
+#####
+#
+# MODE O3pipe configuration
+#
+# Usage: - Apply optimization string to each variable
+#        - "unset" will cause the variable to be not set
+#          instead of just set to null.
+#
+# Use this as an example for cunstomized modes
+#
+#####
+
+CFLAGS_O3pipe="-O3 -pipe"
+CXXFLAGS_O3pipe=$CFLAGS_O3pipe
+LDFLAGS_O3pipe="unset"
+
+OTHER_CFLAGS_O3pipe=$CFLAGS_O3pipe
+OTHER_CXXFLAGS_O3pipe=$CXXFLAGS_O3pipe
+OTHER_LDFLAGS_O3pipe=$LDFLAGS_O3pipe

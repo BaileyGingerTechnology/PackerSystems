@@ -1,0 +1,37 @@
+#
+# $Id: 961-openssl 3855 2016-02-20 22:13:22Z pierre $
+#
+# The OpenSSL package contains management tools and libraries
+# relating to cryptography. These are useful for providing
+# cryptography functions to other packages, notably OpenSSH,
+# email applications and web browsers (for accessing HTTPS sites).
+#
+
+PKG="openssl"
+PKG_VERSION="1.0.2d"
+PKG_FILE="openssl-${PKG_VERSION}.tar.gz"
+URL="ftp://ftp.openssl.org/source/${PKG_FILE}"
+MD5="38dd619b2e77cbac69b99f52a053d25a"
+for i in PATCH{1..10}; do
+   unset $i
+done
+
+( cat << "xEOFx"
+
+./config --prefix=/usr         \
+         --openssldir=/etc/ssl \
+         --libdir=lib          \
+         shared                \
+         zlib-dynamic &&
+make
+
+#sed -i 's# libcrypto.a##;s# libssl.a##' Makefile
+make MANDIR=/usr/share/man MANSUFFIX=ssl install &&
+install -dv -m755 /usr/share/doc/openssl-1.0.2d  &&
+cp -vfr doc/*     /usr/share/doc/openssl-1.0.2d
+
+#
+# Note: certificates not installed by this.
+#
+xEOFx
+) > tmp

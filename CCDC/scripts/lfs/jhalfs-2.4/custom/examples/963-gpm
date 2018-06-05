@@ -1,0 +1,49 @@
+#
+# $Id: 963-gpm 3855 2016-02-20 22:13:22Z pierre $
+#
+PKG="gpm"
+PKG_VERSION="1.20.7"
+PKG_FILE="gpm-${PKG_VERSION}.tar.bz2"
+URL="http://www.nico.schottelius.org/software/gpm/archives/${PKG_FILE}"
+MD5="bf84143905a6a903dbd4d4b911a2a2b8"
+for i in PATCH{1..10}; do
+   unset $i
+done
+
+( cat << "xEOFx"
+
+./autogen.sh                                &&
+./configure --prefix=/usr --sysconfdir=/etc &&
+make
+
+make install                                          &&
+
+install-info --dir-file=/usr/share/info/dir           \
+             /usr/share/info/gpm.info                 &&
+
+ln -sfv libgpm.so.2.1.0 /usr/lib/libgpm.so            &&
+install -v -m644 conf/gpm-root.conf /etc              &&
+
+install -v -m755 -d /usr/share/doc/gpm-${PKG_FILE}/support &&
+install -v -m644    doc/support/*                     \
+                    /usr/share/doc/gpm-${PKG_FILE}/support &&
+install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
+                    /usr/share/doc/gpm-${PKG_FILE}
+
+# The normal cmd to install the boot script for gpm
+# --- PUT THIS CMD INSIDE 999-blfs_bootscripts
+#make install-gpm
+
+cat > /etc/sysconfig/mouse << "EOF"
+# Begin /etc/sysconfig/mouse
+
+MDEVICE="/dev/input/mice"
+PROTOCOL="imps2"
+GPMOPTS=""
+
+# End /etc/sysconfig/mouse
+EOF
+
+xEOFx
+) > tmp
+

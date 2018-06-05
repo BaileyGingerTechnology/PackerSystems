@@ -1,0 +1,49 @@
+#####
+#
+# optimization configuration file
+#
+#####
+#
+#$Id: opt_config 3762 2013-11-17 22:24:11Z pierre $
+#
+
+#--- List of packages that have issues with parallelization.
+#    This list may be different for you.
+BLACK_LIST="attr autoconf coreutils dejagnu gettext gperf groff man-db vim"
+#    Rationale for attr, coreutils, gperf: the tests do not pass with -jX
+#    CLFS packages
+BLACK_LIST="$BLACK_LIST libee"
+
+#--- Default optimization mode
+#    This mode is overridden by definitions in opt_override;
+#    in this way, packages can be tuned independently.  For example,
+#    if you have trouble building a package in the mode set here, add
+#    the package to opt_override with a different mode.
+#
+#    Not set here combined modes of form defOpt_myMode.
+#    Combined modes of form modeA_modeB can be set here.
+DEF_OPT_MODE=noOpt
+
+
+#--- Active optimization variables
+#    Variables listed here will be set as defined in the appropriate
+#    file in opt_config.d/; others will be ignored.
+ACTIVE_OPT_VARS="CFLAGS CXXFLAGS LDFLAGS \
+                 OTHER_CFLAGS OTHER_CXXFLAGS OTHER_LDFLAGS"
+
+#--- Load optimization modes
+#    To add modes, create a working template..
+#      cp opt_config.d/O3pipe opt_config.d/newMode
+#    ..and edit it as desired.
+#
+#    To inherit another mode and add to it, see opt_config.d/O3pipe_march
+#    or opt_config.d/defOpt_fPIC as examples for two different ways of
+#    doing it.  Given opt_config.d/modeA_modeB_modeC, modeB inherits
+#    the optimizations of modeA by sourcing it, and modeC inherits those
+#    of modeB (which includes those of modeA).
+#
+#    Add packages that are to use this mode to opt_override with:
+#      echo 'myPkg  newMode' >> opt_override
+for mode in optimize/opt_config.d/* ; do
+  source $mode
+done
