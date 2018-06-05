@@ -44,7 +44,7 @@ echo "
 
 echo "Cleaning up from Gentoo setup"
 cd /mnt/gentoo
-rm -rf GentooInstall
+rm -rf GentooInstall stage3-* cleanup.sh
 
 umount -R /mnt/gentoo
 reboot

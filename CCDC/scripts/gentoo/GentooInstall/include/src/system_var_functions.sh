@@ -10,14 +10,14 @@ function set_locales
     greenEcho "You can use ctrl+w to search the file for the ones you want."
 
     # Open locales folder and good luck
-    sed -i 's/[#]//g' /etc/locale.gen
+    sed -i 's/\[#\]//g' /etc/locale.gen
     locale-gen
 
     greenEcho "Here is the list of the ones you picked. Which one should be the default? (Enter it's number)"
     # List all uncommented locales
     eselect locale list
     # Set the default one for the system to the one selected
-    eselect locale set 5
+    eselect locale set 13
     env-update && source /etc/profile && export PS1="(chroot) $PS1"
 }
 

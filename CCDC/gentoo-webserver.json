@@ -126,6 +126,15 @@
         ],
         "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
         "type": "shell",
+        "scripts": "scripts/gentoo/virtualbox-tools.sh",
+        "only": ["virtualbox-iso"]
+      },
+      {
+        "environment_vars": [
+            "COUNTRY={{ user `country` }}"
+        ],
+        "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+        "type": "shell",
         "scripts": "scripts/gentoo/vmware-tools.sh",
         "only": ["vmware-iso"]
       },
