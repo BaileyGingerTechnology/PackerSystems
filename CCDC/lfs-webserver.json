@@ -6,7 +6,7 @@
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
-    "cpus": "2",
+    "cpus": "4",
     "cpus_after": "1",
     "memory": "4096",
     "memory_after": "1024",
@@ -26,9 +26,12 @@
       "boot_wait": "5s",
       "boot_command": [
         "<enter><wait10><wait10><wait10>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
-        "/usr/bin/bash ./enable-ssh.sh<enter>",
+        "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
+        "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group -k /dev/null administrator<enter>",
+        "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+        "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/systemctl start sshd.service<enter>",
         "mkdir /temp && chown administrator -R /temp<enter>"
       ],
       "disk_size": "{{user `disk_size`}}",
@@ -55,7 +58,7 @@
       "boot_command": [
         "<enter><wait10><wait10><wait10>",
         "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
-        "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator<enter>",
+        "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group -k /dev/null administrator<enter>",
         "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
         "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
         "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
@@ -88,10 +91,13 @@
       "http_directory": "http",
       "boot_wait": "5s",
       "boot_command": [
-        "<enter><wait10><wait10><wait10><wait10>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
-        "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/poweroff.timer<enter><wait5>",
-        "/usr/bin/bash ./enable-ssh.sh<enter>",
+        "<enter><wait10><wait10><wait10>",
+        "PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')<enter><wait5>",
+        "/usr/bin/useradd -s /bin/bash --password ${PASSWORD} --comment 'administrator User' --create-home --user-group -k /dev/null administrator<enter>",
+        "echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers.d/10_administrator<enter>",
+        "echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator<enter>",
+        "/usr/bin/systemctl start sshd.service<enter>",
         "mkdir /temp && chown administrator -R /temp<enter>"
       ],
       "disk_size": "{{user `disk_size`}}",
@@ -107,8 +113,8 @@
   "provisioners": [
     {
         "type": "file",
-        "source": "http/jhalfs-2.4.tar.gz",
-        "destination": "/temp/jhalfs-2.4.tar.gz"
+        "source": "files/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch",
+        "destination": "/temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch"
     },
     {
       "type": "file",
@@ -141,9 +147,10 @@
       "destination": "/temp/vpkg-provides.sh"
     },
     {
-      "type": "file",
-      "source": "files/libwww-perl-6.33.tar.gz",
-      "destination": "/temp/libwww-perl-6.33.tar.gz"
+      "type": "shell",
+      "scripts": [
+        "scripts/lfs/bash-setup.sh"
+      ]
     },
     {
       "environment_vars": [
@@ -154,7 +161,7 @@
       "execute_command": "{{ .Vars }} {{ .Path }}",
       "expect_disconnect": true,
       "scripts": [
-        "scripts/lfs/prep-jhalfs.sh",
+        "scripts/lfs/setup-base.sh",
         "scripts/lfs/lfs-webserver.sh"
       ]
     }

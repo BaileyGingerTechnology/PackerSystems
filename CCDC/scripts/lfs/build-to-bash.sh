@@ -5,14 +5,6 @@ set +h
 
 echo $PATH
 
-umask 022
-LFS=/
-echo $LFS
-LC_ALL=POSIX
-echo $LC_ALL
-LFS_TGT=$(uname -m)-gt-linux-gnu
-echo "On $LFS_TGT"
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
 CPUS=4
 
 touch /var/log/{btmp,lastlog,faillog,wtmp}
@@ -23,12 +15,12 @@ chmod -v 600  /var/log/btmp
 function build_linux_headers
 {
   cd $LFS/sources
-  tar xvf linux-4.15.3.tar.gz
-  cd linux-4.15.3
+  tar xvf linux-4.16.10.tar.xz
+  cd linux-4.16.10
 
   make mrproper
 
-  make INSTALL_HDR_PATH=dest headers_install -j${CPUS}
+  make INSTALL_HDR_PATH=dest headers_install
   find dest/include \( -name .install -o -name ..install.cmd \) -delete
   cp -rv dest/include/* /usr/include
 }
@@ -36,8 +28,8 @@ function build_linux_headers
 function build_man_pages
 {
   cd $LFS/sources
-  tar xvf man-pages-4.15.tar.xz
-  cd man-pages-4.15
+  tar xvf man-pages-4.16.tar.xz
+  cd man-pages-4.16
 
   make install
 }
@@ -52,10 +44,10 @@ function build_glibc
   ln -sfv /tools/lib/gcc /usr/lib
 
   case $(uname -m) in
-    i?86)   GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/7.3.0/include
+    i?86)   GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/8.1/0/include
             ln -sfv ld-linux.so.2 /lib/ld-lsb.so.3
     ;;
-    x86_64) GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/7.3.0/include
+    x86_64) GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.0/include
             ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64
             ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
     ;;
@@ -112,7 +104,7 @@ rpc: files
 # End /etc/nsswitch.conf
 EOF
 
-tar -xf ../../tzdata2018c.tar.gz
+tar -xf ../../tzdata2018e.tar.gz
 
 ZONEINFO=/usr/share/zoneinfo
 mkdir -pv $ZONEINFO/{posix,right}
@@ -189,8 +181,8 @@ function build_zlib
 function build_file
 {
   cd $LFS/sources
-  tar xvf file-5.32.tar.gz
-  cd file-5.32
+  tar xvf file-5.33.tar.gz
+  cd file-5.33
 
   ./configure --prefix=/usr
 
@@ -330,8 +322,8 @@ function build_mpc
 function build_gcc
 {
   cd $LFS/sources
-  tar xvf gcc-7.3.0.tar.xz
-  cd gcc-7.3.0
+  tar xvf gcc-8.1.0.tar.xz
+  cd gcc-8.1.0
 
   case $(uname -m) in
     x86_64)
@@ -360,7 +352,7 @@ function build_gcc
   ln -sv gcc /usr/bin/cc
 
   install -v -dm755 /usr/lib/bfd-plugins
-  ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/7.3.0/liblto_plugin.so \
+  ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/8.1.0/liblto_plugin.so \
           /usr/lib/bfd-plugins/
 
   mkdir -pv /usr/share/gdb/auto-load/usr/lib
@@ -541,8 +533,8 @@ function build_libcap
 function build_sed
 {
   cd $LFS/sources
-  tar xvf sed-4.4.tar.xz
-  cd sed-4.4
+  tar xvf sed-4.5.tar.xz
+  cd sed-4.5
 
   sed -i 's/usr/tools/'                 build-aux/help2man
   sed -i 's/testsuite.panic-tests.sh//' Makefile.in
@@ -553,15 +545,15 @@ function build_sed
   make html
 
   make install
-  install -d -m755           /usr/share/doc/sed-4.4
-  install -m644 doc/sed.html /usr/share/doc/sed-4.4
+  install -d -m755           /usr/share/doc/sed-4.5
+  install -m644 doc/sed.html /usr/share/doc/sed-4.5
 }
 
 function build_shadow
 {
   cd  $LFS/sources
-  tar xvf shadow-4.5.tar.xz
-  cd shadow-4.5
+  tar xvf shadow-4.6.tar.xz
+  cd shadow-4.6
 
   sed -i 's/groups$(EXEEXT) //' src/Makefile.in
   find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;

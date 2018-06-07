@@ -119,8 +119,6 @@ cd $LFS
 wget https://files.gingertechnology.net/packersystems/lfs/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 
-mv /temp/libwww-perl-6.33.tar.gz $LFS/sources
-
 
 # Start 5.4 Binutils
 cd $LFS/sources
@@ -153,8 +151,8 @@ sleep 30
 # Start 5.5 GCC Pass 1
 cd $LFS/sources
 
-tar xvf gcc-7.3.0.tar.xz
-cd gcc-7.3.0
+tar xvf gcc-8.1.0.tar.xz
+cd gcc-8.1.0
 
 tar xvf ../mpfr-4.0.1.tar.xz
 mv -v mpfr-4.0.1 mpfr
@@ -186,49 +184,48 @@ esac
 mkdir -v build
 cd build
 
-../configure                                     \
-  --target=$LFS_TGT                              \
-  --prefix=/tools                                \
-  --with-glibc-version=2.11                      \
-  --with-sysroot=$LFS                            \
-  --with-newlib                                  \
-  --without-headers                              \
-  --with-local-prefix=/tools                     \
-  --with-native-system-header-dir=/tools/include \
-  --disable-nls                                  \
-  --disable-shared                               \
-  --disable-multilib                             \
-  --disable-decimal-float                        \
-  --disable-threads                              \
-  --disable-libatomic                            \
-  --disable-libgomp                              \
-  --disable-libmpx                               \
-  --disable-libquadmath                          \
-  --disable-libssp                               \
-  --disable-libvtv                               \
-  --disable-libstdcxx                            \
-  --enable-languages=c,c++
+../configure                                       \
+    --target=$LFS_TGT                              \
+    --prefix=/tools                                \
+    --with-glibc-version=2.11                      \
+    --with-sysroot=$LFS                            \
+    --with-newlib                                  \
+    --without-headers                              \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --disable-nls                                  \
+    --disable-shared                               \
+    --disable-multilib                             \
+    --disable-decimal-float                        \
+    --disable-threads                              \
+    --disable-libatomic                            \
+    --disable-libgomp                              \
+    --disable-libmpx                               \
+    --disable-libquadmath                          \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --disable-libstdcxx                            \
+    --enable-languages=c,c++
 
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gcc-7.3.0
 sleep 30
 # End 5.5 GCC
 
 
 # Start 5.6 Linux API Headers
 cd $LFS/sources
-tar xvf linux-4.15.3.tar.gz
-cd linux-4.15.3
+tar xvf linux-4.16.10.tar.xz
+cd linux-4.16.10
 
 make mrproper
-make INSTALL_HDR_PATH=dest headers_install -j${CPUS}
+make INSTALL_HDR_PATH=dest headers_install
 cp -rv dest/include/* /tools/include
 
 cd $LFS/sources
-rm -rfv linux-4.15.3
+rm -rfv linux-4.16.10
 sleep 30
 # End 5.6 Linux API Headers
 
@@ -236,19 +233,19 @@ sleep 30
 # Start 5.7 Glibc
 cd $LFS/sources
 tar xvf glibc-2.27.tar.xz
-
 cd glibc-2.27
+
 mkdir -v build
 cd build
 
-../configure                            \
-    --prefix=/tools                     \
-    --host=$LFS_TGT                     \
-    --build=$(../scripts/config.guess)  \
-    --enable-kernel=3.2                 \
-    --with-headers=/tools/include       \
-    libc_cv_forced_unwind=yes           \
-    libc_cv_c_cleanup=yes
+../configure                             \
+      --prefix=/tools                    \
+      --host=$LFS_TGT                    \
+      --build=$(../scripts/config.guess) \
+      --enable-kernel=3.2             \
+      --with-headers=/tools/include      \
+      libc_cv_forced_unwind=yes          \
+      libc_cv_c_cleanup=yes
 
 make -j${CPUS}
 make install
@@ -260,27 +257,24 @@ sleep 30
 
 
 # Start 5.8 Libstdc++
-cd $LFS/sources
-tar xvf gcc-7.3.0.tar.xz
-cd gcc-7.3.0
+cd gcc-8.1.0
 
-mkdir -v build
 cd build
 
-../libstdc++-v3/configure         \
-  --host=$LFS_TGT                 \
-  --prefix=/tools                 \
-  --disable-multilib              \
-  --disable-nls                   \
-  --disable-libstdcxx-threads     \
-  --disable-libstdcxx-pch         \
-  --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/7.3.0
+../libstdc++-v3/configure           \
+    --host=$LFS_TGT                 \
+    --prefix=/tools                 \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-threads     \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/8.1.0
   
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gcc-7.3.0
+rm -rfv gcc-8.1.0
 sleep 30
 # Start 5.8 Libstdc++
 
@@ -293,15 +287,15 @@ cd binutils-2.30
 mkdir -v build
 cd build
 
-CC=$LFS_TGT-gcc               \
-AR=$LFS_TGT-ar                \
-RANLIB=$LFS_TGT-ranlib        \
-../configure                  \
-  --prefix=/tools             \
-  --disable-nls               \
-  --disable-werror            \
-  --with-lib-path=/tools/lib  \
-  --with-sysroot
+CC=$LFS_TGT-gcc                \
+AR=$LFS_TGT-ar                 \
+RANLIB=$LFS_TGT-ranlib         \
+../configure                   \
+    --prefix=/tools            \
+    --disable-nls              \
+    --disable-werror           \
+    --with-lib-path=/tools/lib \
+    --with-sysroot
 
 make -j${CPUS}
 make install
@@ -318,8 +312,8 @@ sleep 30
 
 # Start 5.10 GCC Pass 2
 cd $LFS/sources
-tar xvf gcc-7.3.0.tar.xz
-cd gcc-7.3.0
+tar xvf gcc-8.1.0.tar.xz
+cd gcc-8.1.0
 
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
   `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include-fixed/limits.h
@@ -354,19 +348,19 @@ mv -v mpc-1.1.0 mpc
 mkdir -v build
 cd build
 
-CC=$LFS_TGT-gcc                                  \
-CXX=$LFS_TGT-g++                                 \
-AR=$LFS_TGT-ar                                   \
-RANLIB=$LFS_TGT-ranlib                           \
-../configure                                     \
-  --prefix=/tools                                \
-  --with-local-prefix=/tools                     \
-  --with-native-system-header-dir=/tools/include \
-  --enable-languages=c,c++                       \
-  --disable-libstdcxx-pch                        \
-  --disable-multilib                             \
-  --disable-bootstrap                            \
-  --disable-libgomp
+CC=$LFS_TGT-gcc                                    \
+CXX=$LFS_TGT-g++                                   \
+AR=$LFS_TGT-ar                                     \
+RANLIB=$LFS_TGT-ranlib                             \
+../configure                                       \
+    --prefix=/tools                                \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --enable-languages=c,c++                       \
+    --disable-libstdcxx-pch                        \
+    --disable-multilib                             \
+    --disable-bootstrap                            \
+    --disable-libgomp
 
 make -j${CPUS}
 make install
@@ -457,7 +451,7 @@ sed -i s/mawk// configure
             --without-ada   \
             --enable-widec  \
             --enable-overwrite
-  make -j${CPUS}
+make -j${CPUS}
 make install
 
 cd $LFS/sources
@@ -471,8 +465,7 @@ cd $LFS/sources
 tar xvf bash-4.4.18.tar.gz
 cd bash-4.4.18
 
-./configure --prefix=/tools \
-            --without-bash-malloc
+./configure --prefix=/tools --without-bash-malloc
   
 make -j${CPUS}
 make install
@@ -504,7 +497,7 @@ cd $LFS/sources
 tar xvf bzip2-1.0.6.tar.gz
 cd bzip2-1.0.6
   
-make -j${CPUS}
+make
 make PREFIX=/tools install
 
 cd $LFS/sources
@@ -545,15 +538,15 @@ sleep 30
 
 # Start 5.21 File
 cd $LFS/sources
-tar xvf file-5.32.tar.gz
-cd file-5.32
+tar xvf file-5.33.tar.gz
+cd file-5.33
 
 ./configure --prefix=/tools
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv file-5.32
+rm -rfv file-5.33
 sleep 30
 # Start 5.21 File
 
@@ -575,15 +568,15 @@ sleep 30
 
 # Start 5.23 Gawk
 cd $LFS/sources
-tar xvf gawk-4.2.0.tar.xz
-cd gawk-4.2.0
+tar xvf gawk-4.2.1.tar.xz
+cd gawk-4.2.1
 
 ./configure --prefix=/tools
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gawk-4.2.0
+rm -rfv gawk-4.2.1
 sleep 30
 # Start 5.23 Gawk
 
@@ -675,33 +668,33 @@ sleep 30
 
 # Start 5.29 Perl
 cd $LFS/sources
-tar xvf perl-5.26.1.tar.xz
-cd perl-5.26.1
+tar xvf perl-5.26.2.tar.xz
+cd perl-5.26.2
 
 sh Configure -des -Dprefix=/tools -Dlibs=-lm
 make -j${CPUS}
 
 cp -v perl cpan/podlators/scripts/pod2man /tools/bin
-mkdir -pv /tools/lib/perl5/5.26.1
-cp -Rv lib/* /tools/lib/perl5/5.26.1
+mkdir -pv /tools/lib/perl5/5.26.2
+cp -Rv lib/* /tools/lib/perl5/5.26.2
 
 cd $LFS/sources
-rm -rfv perl-5.26.1
+rm -rfv perl-5.26.2
 sleep 30
 # Start 5.29 Perl
 
 
 # Start 5.30 Sed
 cd $LFS/sources
-tar xvf sed-4.4.tar.xz
-cd sed-4.4
+tar xvf sed-4.5.tar.xz
+cd sed-4.5
 
 ./configure --prefix=/tools
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv sed-4.4
+rm -rfv sed-4.5
 sleep 30
 # Start 5.30 Sed
 
@@ -738,8 +731,8 @@ sleep 30
 
 # Start 5.33 Util-linux
 cd $LFS/sources
-tar xvf util-linux-2.31.1.tar.xz
-cd util-linux-2.31.1
+tar xvf util-linux-2.32.tar.xz
+cd util-linux-2.32
 
 ./configure --prefix=/tools                \
             --without-python               \
@@ -752,22 +745,22 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv util-linux-2.31.1
+rm -rfv util-linux-2.32
 sleep 30
 # Start 5.33 Util-linux
 
 
 # Start 5.34 Xz
 cd $LFS/sources
-tar xvf xz-5.2.3.tar.xz
-cd xz-5.2.3
+tar xvf xz-5.2.4.tar.xz
+cd xz-5.2.4
 
 ./configure --prefix=/tools
 make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv xz-5.2.3
+rm -rfv xz-5.2.4
 sleep 30
 # Start 5.34 Xz
 
@@ -795,12 +788,21 @@ mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
 mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
+mv -v /temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch $LFS/sources/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
 chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 chmod -v +x vpkg-provides.sh
+
+# Let's see if this works. It might, it might not
+cd $LFS/sources
+tar xvf elfutils-0.170.tar.bz2
+cd elfutils-0.170
+patch -Np1 -i ../0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
+./configure --prefix=/usr
+make -j${CPUS}
 
 sudo chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \

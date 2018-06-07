@@ -23,6 +23,8 @@ TIMEZONE='UTC'
 
 TARGET_DIR='/mnt'
 COUNTRY=${COUNTRY:-US}
+export MAKEOPTS=-j${CPUS:-2}
+echo $MAKEOPTS
 
 echo "==> Clearing partition table on ${DISK}"
 sudo /usr/bin/sgdisk --zap ${DISK}

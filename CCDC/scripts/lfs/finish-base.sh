@@ -90,8 +90,8 @@ function build_inetutils
 function build_perl
 {
   cd $LFS/sources
-  tar xvf perl-5.26.1.tar.xz
-  cd perl-5.26.1
+  tar xvf perl-5.26.2.tar.xz
+  cd perl-5.26.2
 
   echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
   export BUILD_ZLIB=False
@@ -159,10 +159,10 @@ function build_autoconf
 function build_automake
 {
   cd $LFS/sources
-  tar xvf automake-1.15.1.tar.xz
-  cd automake-1.15.1
+  tar xvf automake-1.16.1.tar.xz
+  cd automake-1.16.1
 
-  ./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.15.1
+  ./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.1
   make -j${CPUS}
   make install
 }
@@ -170,12 +170,12 @@ function build_automake
 function build_xz
 {
   cd $LFS/sources
-  tar xvf xz-5.2.3.tar.xz
-  cd xz-5.2.3
+  tar xvf xz-5.2.4.tar.xz
+  cd xz-5.2.4
 
   ./configure --prefix=/usr    \
               --disable-static \
-              --docdir=/usr/share/doc/xz-5.2.3
+              --docdir=/usr/share/doc/xz-5.2.4
   make -j${CPUS}
   make install
 
@@ -227,11 +227,12 @@ function build_gettext
 function build_libelf
 {
   cd $LFS/sources
-  tar xvf elfutils-0.170.tar.bz2
-  cd elfutils-0.170
+  #tar xvf elfutils-0.170.tar.bz2
+  #cd elfutils-0.170
 
-  ./configure --prefix=/usr
-  make -j${CPUS}
+  #patch -Np1 -i ../0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
+  #./configure --prefix=/usr
+  #make -j${CPUS}
   make -C libelf install
   install -vm644 config/libelf.pc /usr/lib/pkgconfig
 }
@@ -257,8 +258,8 @@ function build_libffi
 function build_openssl
 {
   cd $LFS/sources
-  tar xvf openssl-1.1.0g.tar.gz
-  cd openssl-1.1.0g
+  tar xvf openssl-1.1.0h.tar.gz
+  cd openssl-1.1.0h
 
   ./config --prefix=/usr         \
            --openssldir=/etc/ssl \
@@ -270,15 +271,15 @@ function build_openssl
   sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
   make MANSUFFIX=ssl install
 
-  mv -v /usr/share/doc/openssl /usr/share/doc/openssl-1.1.0g
-  cp -vfr doc/* /usr/share/doc/openssl-1.1.0g
+  mv -v /usr/share/doc/openssl /usr/share/doc/openssl-1.1.0h
+  cp -vfr doc/* /usr/share/doc/openssl-1.1.0h
 }
 
 function build_python
 {
   cd $LFS/sources
-  tar xvf Python-3.6.4.tar.xz
-  cd Python-3.6.4
+  tar xvf Python-3.6.5.tar.xz
+  cd Python-3.6.5
 
   ./configure --prefix=/usr       \
               --enable-shared     \
@@ -291,13 +292,13 @@ function build_python
   chmod -v 755 /usr/lib/libpython3.6m.so
   chmod -v 755 /usr/lib/libpython3.so
 
-  install -v -dm755 /usr/share/doc/python-3.6.4/html 
+  install -v -dm755 /usr/share/doc/Python-3.6.5/html 
 
   tar --strip-components=1  \
       --no-same-owner       \
       --no-same-permissions \
-      -C /usr/share/doc/python-3.6.4/html \
-      -xvf ../python-3.6.4-docs-html.tar.bz2
+      -C /usr/share/doc/Python-3.6.5/html \
+      -xvf ../Python-3.6.5-docs-html.tar.bz2
 }
 
 function build_ninja
@@ -320,8 +321,8 @@ function build_ninja
 function build_meson
 {
   cd $LFS/sources
-  tar xvf meson-0.44.0.tar.gz
-  cd meson-0.44.0
+  tar xvf meson-0.46.1.tar.gz
+  cd meson-0.46.1
 
   python3 setup.py build
   python3 setup.py install
@@ -330,13 +331,13 @@ function build_meson
 function build_procps
 {
   cd $LFS/sources
-  tar xvf procps-ng-3.3.12.tar.xz
-  cd procps-ng-3.3.12
+  tar xvf procps-ng-3.3.15.tar.xz
+  cd procps-ng-3.3.15
 
   ./configure --prefix=/usr                            \
               --exec-prefix=                           \
               --libdir=/usr/lib                        \
-              --docdir=/usr/share/doc/procps-ng-3.3.12 \
+              --docdir=/usr/share/doc/procps-ng-3.3.15 \
               --disable-static                         \
               --disable-kill
   make -j${CPUS}
@@ -354,8 +355,8 @@ function build_procps
 function build_e2fsprogs
 {
   cd $LFS/sources
-  tar xvf e2fsprogs-1.43.9.tar.gz
-  cd e2fsprogs-1.43.9
+  tar xvf e2fsprogs-1.44.2.tar.gz
+  cd e2fsprogs-1.44.2
 
   mkdir -v build
   cd build
@@ -434,16 +435,16 @@ function build_diffutil
 function build_gawk
 {
   cd $LFS/sources
-  tar xvf gawk-4.2.0.tar.xz
-  cd gawk-4.2.0
+  tar xvf gawk-4.2.1.tar.xz
+  cd gawk-4.2.1
 
   sed -i 's/extras//' Makefile.in
   ./configure --prefix=/usr
   make -j${CPUS}
   make install
 
-  mkdir -v /usr/share/doc/gawk-4.2.0
-  cp    -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-4.2.0
+  mkdir -v /usr/share/doc/gawk-4.2.1
+  cp    -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-4.2.1
 }
 
 function build_findutils
@@ -515,15 +516,15 @@ function build_gzip
 function build_iproute
 {
   cd $LFS/sources
-  tar xvf iproute2-4.15.0.tar.xz
-  iproute2-4.15.0
+  tar xvf iproute2-4.16.0.tar.xz
+  iproute2-4.16.0
 
   sed -i /ARPD/d Makefile
   rm -fv man/man8/arpd.8
   sed -i 's/m_ipt.o//' tc/Makefile
 
   make -j${CPUS}
-  make DOCDIR=/usr/share/doc/iproute2-4.15.0 install
+  make DOCDIR=/usr/share/doc/iproute2-4.16.0 install
 }
 
 function build_kbd
@@ -645,10 +646,10 @@ EOF
 function build_sysvinit
 {
   cd $LFS/sources
-  tar xvf sysvinit-2.88dsf.tar.bz2
-  cd sysvinit-2.88dsf
+  tar xvf sysvinit-2.89.tar.bz2
+  cd sysvinit-2.89
 
-  patch -Np1 -i ../sysvinit-2.88dsf-consolidated-1.patch
+  patch -Np1 -i ../sysvinit-2.89-consolidated-1.patch
   make -C src
   make -C src install
 }
@@ -692,13 +693,13 @@ EOF
 function build_util_linux
 {
   cd $LFS/sources
-  tar xvf util-linux-2.31.1.tar.xz
-  cd util-linux-2.31.1
+  tar xvf util-linux-2.32.tar.xz
+  cd util-linux-2.32
 
   mkdir -pv /var/lib/hwclock
 
   ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
-              --docdir=/usr/share/doc/util-linux-2.31.1 \
+              --docdir=/usr/share/doc/util-linux-2.32 \
               --disable-chfn-chsh  \
               --disable-login      \
               --disable-nologin    \
@@ -717,11 +718,11 @@ function build_util_linux
 function build_man
 {
   cd $LFS/sources
-  tar xvf man-db-2.8.1.tar.xz
-  cd man-db-2.8.1
+  tar xvf man-db-2.8.3.tar.xz
+  cd man-db-2.8.3
 
   ./configure --prefix=/usr                        \
-              --docdir=/usr/share/doc/man-db-2.8.1 \
+              --docdir=/usr/share/doc/man-db-2.8.3 \
               --sysconfdir=/etc                    \
               --disable-setuid                     \
               --enable-cache-owner=bin             \
@@ -762,8 +763,8 @@ function build_texinfo
 function build_vim
 {
   cd $LFS/sources
-  tar xvf vim-8.0.586.tar.bz2
-  cd vim80
+  tar xvf vim-8.1.tar.bz2
+  cd vim81
 
   echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
   sed -i '/call/{s/split/xsplit/;s/303/492/}' src/testdir/test_recover.vim
@@ -776,7 +777,7 @@ function build_vim
   for L in  /usr/share/man/{,*/}man1/vim.1; do
       ln -sv vim.1 $(dirname $L)/vi.1
   done
-  ln -sv ../vim/vim80/doc /usr/share/doc/vim-8.0.586
+  ln -sv ../vim/vim80/doc /usr/share/doc/vim-8.1
 }
 
 build_sysvinit
@@ -979,8 +980,8 @@ function build_kernel
 {
   echo "Starting kernel"
   cd $LFS/sources
-  tar xvf linux-4.15.3.tar.gz
-  cd linux-4.15.3
+  tar xvf linux-4.16.10.tar.xz
+  cd linux-4.16.10
 
   make mrproper
   # Let's see if this works
@@ -990,11 +991,11 @@ function build_kernel
   make modules_install
   
   # Make system bootable
-  cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.15.3-gt-1.0
-  cp -iv System.map /boot/System.map-4.15.3
-  cp -iv .config /boot/config-4.15.3
-  install -d /usr/share/doc/linux-4.15.3
-  cp -r Documentation/* /usr/share/doc/linux-4.15.3
+  cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.16.10-gt-1.0
+  cp -iv System.map /boot/System.map-4.16.10
+  cp -iv .config /boot/config-4.16.10
+  install -d /usr/share/doc/linux-4.16.10
+  cp -r Documentation/* /usr/share/doc/linux-4.16.10
 
   install -v -m755 -d /etc/modprobe.d
   echo "Finished kernel"
@@ -1021,8 +1022,8 @@ set timeout=5
 insmod ext2
 set root=(hd0,2)
 
-menuentry "GNU/Linux, Linux 4.15.3-gt-1.0" {
-        linux   /vmlinuz-4.15.3-gt-1.0 root=/dev/sda4 ro
+menuentry "GNU/Linux, Linux 4.16.10-gt-1.0" {
+        linux   /vmlinuz-4.16.10-gt-1.0 root=/dev/sda4 ro
 }
 EOF
 
