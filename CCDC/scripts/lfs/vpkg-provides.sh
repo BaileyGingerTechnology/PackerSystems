@@ -73,7 +73,7 @@ hostname=`uname -n`
 # the virtual package) then call this script with ignore_dirs set to a
 # valid grep -E pattern which describes the directories to ignore.
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/ucb:/usr/bsd
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
 export PATH
 
 

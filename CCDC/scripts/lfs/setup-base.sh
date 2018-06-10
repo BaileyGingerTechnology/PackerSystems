@@ -24,11 +24,11 @@ TARGET_DIR='/mnt'
 COUNTRY=${COUNTRY:-US}
 
 echo "==> Clearing partition table on ${DISK}"
-sudo /usr/bin/sgdisk --zap ${DISK}
+/usr/bin/sgdisk --zap ${DISK}
 
 echo "==> Destroying magic strings and signatures on ${DISK}"
-sudo /usr/bin/dd if=/dev/zero of=${DISK} bs=512 count=2048
-sudo /usr/bin/wipefs --all ${DISK}
+/usr/bin/dd if=/dev/zero of=${DISK} bs=512 count=2048
+/usr/bin/wipefs --all ${DISK}
 #
 # End Arch setup stuff
 #
@@ -44,33 +44,33 @@ LC_ALL=POSIX
 echo $LC_ALL
 LFS_TGT=$(uname -m)-gt-linux-gnu
 echo "On $LFS_TGT"
-PATH=/tools/bin:/bin:/usr/bin
+PATH=/tools/bin:/bin:/usr/bin:/usr/bin/core_perl
 
 function set_filesystems
 {
 	# Make the boot partition ext2
-	sudo mkfs.vfat -F32 $12
+	mkfs.vfat -F32 $12
 	# Make the file partition ext4
-	sudo mkfs.ext4 $14
+	mkfs.ext4 $14
 	# Make the third partition swap
-	sudo mkswap $13
-	sudo swapon $13
+	mkswap $13
+	swapon $13
 
 	echo "Filesystems set. Mounting partition where system will be built."
 }
 
 function make_directories
 {
-  sudo mkdir -pv $LFS/boot
-  sudo mkdir -pv $LFS/sources
-  sudo mkdir -pv $LFS/tools
+  mkdir -pv $LFS/boot
+  mkdir -pv $LFS/sources
+  mkdir -pv $LFS/tools
 
-  sudo chmod -v a+wt $LFS/sources
-  sudo ln -sv $LFS/tools /
+  chmod -v a+wt $LFS/sources
+  ln -sv $LFS/tools /
 
-  sudo chown -v administrator $LFS/tools
-  sudo chown -v administrator $LFS/sources
-  sudo chown -v administrator $LFS/boot
+  chown -v administrator $LFS/tools
+  chown -v administrator $LFS/sources
+  chown -v administrator $LFS/boot
 }
 
 function partition_disk
@@ -80,44 +80,42 @@ function partition_disk
 
 	# Make the disk GPT to make life easy later
 	echo "Using parted to label disk GPT."
-	sudo parted -a optimal ${DISK} mklabel gpt
+	parted -a optimal ${DISK} mklabel gpt
 	# Partition sizes will be given in megabytes
-	sudo parted -a optimal ${DISK} unit mib
+	parted -a optimal ${DISK} unit mib
 	echo "Setting partition format as recommended in Gentoo Handbook."
 	# Refer to the disk setup chapter for specifics
 	# But basically
 	# Four partitions. grub, boot, swap, files
-	sudo parted -a optimal ${DISK} mkpart primary 1 3
-	sudo parted -a optimal ${DISK} name 1 grub
-	sudo parted -a optimal ${DISK} set 1 bios_grub on
-	sudo parted -a optimal ${DISK} mkpart primary 3 131
-	sudo parted -a optimal ${DISK} name 2 boot
-	sudo parted -a optimal ${DISK} mkpart primary 131 643
-	sudo parted -a optimal ${DISK} name 3 swap
-	sudo parted -a optimal ${DISK} mkpart primary 643 -- -1
-	sudo parted -a optimal ${DISK} name 4 rootfs
-	sudo parted -a optimal ${DISK} set 2 boot on
-	sudo parted -a optimal ${DISK} print
+	parted -a optimal ${DISK} mkpart primary 1 3
+	parted -a optimal ${DISK} name 1 grub
+	parted -a optimal ${DISK} set 1 bios_grub on
+	parted -a optimal ${DISK} mkpart primary 3 131
+	parted -a optimal ${DISK} name 2 boot
+	parted -a optimal ${DISK} mkpart primary 131 643
+	parted -a optimal ${DISK} name 3 swap
+	parted -a optimal ${DISK} mkpart primary 643 -- -1
+	parted -a optimal ${DISK} name 4 rootfs
+	parted -a optimal ${DISK} set 2 boot on
+	parted -a optimal ${DISK} print
 
 	echo "Formatting disks complete. Now setting file system types."
 	set_filesystems ${DISK}
 }
 
 partition_disk
-sudo mkdir -pv $LFS
-sudo mount -v -t ext4 ${DISK}4 $LFS
-sudo chown -v administrator $LFS
+mkdir -pv $LFS
+mount -v -t ext4 ${DISK}4 $LFS
+chown -v administrator $LFS
 make_directories
 
-sudo mount -v -t vfat ${DISK}2 $LFS/boot
-
-#pacman -Sy
-#pacman -Sc --noconfirm
+mount -v -t vfat ${DISK}2 $LFS/boot
 
 # Move into the main disk and download all the packages that will be needed
 cd $LFS
 wget https://files.gingertechnology.net/packersystems/lfs/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
+mv -v /temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch $LFS/sources/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
 
 
 # Start 5.4 Binutils
@@ -143,8 +141,8 @@ esac
 
 make install
 cd $LFS/sources
-rm -rfv binutils-2.30
-sleep 30
+rm -rf binutils-2.30
+sleep 15
 # End 5.4 Binutils
 
 
@@ -211,7 +209,7 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-sleep 30
+sleep 15
 # End 5.5 GCC
 
 
@@ -225,8 +223,8 @@ make INSTALL_HDR_PATH=dest headers_install
 cp -rv dest/include/* /tools/include
 
 cd $LFS/sources
-rm -rfv linux-4.16.10
-sleep 30
+rm -rf linux-4.16.10
+sleep 15
 # End 5.6 Linux API Headers
 
 
@@ -251,8 +249,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv glibc-2.27
-sleep 30
+rm -rf glibc-2.27
+sleep 15
 # End 5.7 Glibc
 
 
@@ -274,8 +272,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gcc-8.1.0
-sleep 30
+rm -rf gcc-8.1.0
+sleep 15
 # Start 5.8 Libstdc++
 
 
@@ -305,8 +303,8 @@ make -C ld LIB_PATH=/usr/lib:/lib
 cp -v ld/ld-new /tools/bin
 
 cd $LFS/sources
-rm -rfv binutils-2.30
-sleep 30
+rm -rf binutils-2.30
+sleep 15
 # Start 5.9 Binutils Pass 2
 
 
@@ -365,7 +363,7 @@ RANLIB=$LFS_TGT-ranlib                             \
 make -j${CPUS}
 make install
 ln -sv gcc /tools/bin/cc
-sleep 30
+sleep 15
 # Start 5.10 GCC Pass 2
 
 
@@ -384,8 +382,8 @@ make install-private-headers
 ln -sv tclsh8.6 /tools/bin/tclsh
 
 cd $LFS/sources
-rm -rfv tcl8.6.8
-sleep 30
+rm -rf tcl8.6.8
+sleep 15
 # Start 5.11 Tcl-Core
 
 
@@ -405,8 +403,8 @@ make -j${CPUS}
 make SCRIPTS="" install
 
 cd $LFS/sources
-rm -rfv expect5.45.4
-sleep 30
+rm -rf expect5.45.4
+sleep 15
 # Start 5.12 Expect
 
 
@@ -419,8 +417,8 @@ cd dejagnu-1.6.1
 make install
 
 cd $LFS/sources
-rm -rfv dejagnu-1.6.1
-sleep 30
+rm -rf dejagnu-1.6.1
+sleep 15
 # Start 5.13 DejaGNU
 
 
@@ -434,8 +432,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv m4-1.4.18
-sleep 30
+rm -rf m4-1.4.18
+sleep 15
 # Start 5.14 M4
 
 
@@ -455,8 +453,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv ncurses-6.1
-sleep 30
+rm -rf ncurses-6.1
+sleep 15
 # Start 5.15 Ncurses
 
 
@@ -472,8 +470,8 @@ make install
 ln -sv bash /tools/bin/sh
 
 cd $LFS/sources
-rm -rfv bash-4.4.18
-sleep 30
+rm -rf bash-4.4.18
+sleep 15
 # Start 5.16 Bash
 
 
@@ -487,8 +485,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv bison-3.0.4
-sleep 30
+rm -rf bison-3.0.4
+sleep 15
 # Start 5.17 Bison
 
 
@@ -501,8 +499,8 @@ make
 make PREFIX=/tools install
 
 cd $LFS/sources
-rm -rfv bzip2-1.0.6
-sleep 30
+rm -rf bzip2-1.0.6
+sleep 15
 # Start 5.18 Bzip2
 
 
@@ -516,8 +514,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv coreutils-8.29
-sleep 30
+rm -rf coreutils-8.29
+sleep 15
 # Start 5.19 Coreutils
 
 
@@ -531,8 +529,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv diffutils-3.6
-sleep 30
+rm -rf diffutils-3.6
+sleep 15
 # Start 5.10 Diffutils
 
 
@@ -546,8 +544,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv file-5.33
-sleep 30
+rm -rf file-5.33
+sleep 15
 # Start 5.21 File
 
 
@@ -561,8 +559,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv findutils-4.6.0
-sleep 30
+rm -rf findutils-4.6.0
+sleep 15
 # Start 5.22 Findutils
 
 
@@ -576,8 +574,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gawk-4.2.1
-sleep 30
+rm -rf gawk-4.2.1
+sleep 15
 # Start 5.23 Gawk
 
 
@@ -598,8 +596,8 @@ make -C src xgettext
 cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin
 
 cd $LFS/sources
-rm -rfv gettext-0.19.8.1
-sleep 30
+rm -rf gettext-0.19.8.1
+sleep 15
 # Start 5.24 Gettext
 
 
@@ -613,8 +611,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv grep-3.1
-sleep 30
+rm -rf grep-3.1
+sleep 15
 # Start 5.25 Grep
 
 
@@ -628,8 +626,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv gzip-1.9
-sleep 30
+rm -rf gzip-1.9
+sleep 15
 # Start 5.26 Gzip
 
 
@@ -646,8 +644,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv make-4.2.1
-sleep 30
+rm -rf make-4.2.1
+sleep 15
 # Start 5.27 Make
 
 
@@ -661,8 +659,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv patch-2.7.6
-sleep 30
+rm -rf patch-2.7.6
+sleep 15
 # Start 5.28 Patch
 
 
@@ -679,8 +677,8 @@ mkdir -pv /tools/lib/perl5/5.26.2
 cp -Rv lib/* /tools/lib/perl5/5.26.2
 
 cd $LFS/sources
-rm -rfv perl-5.26.2
-sleep 30
+rm -rf perl-5.26.2
+sleep 15
 # Start 5.29 Perl
 
 
@@ -694,8 +692,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv sed-4.5
-sleep 30
+rm -rf sed-4.5
+sleep 15
 # Start 5.30 Sed
 
 
@@ -709,8 +707,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv tar-1.30
-sleep 30
+rm -rf tar-1.30
+sleep 15
 # Start 5.31 Tar
 
 
@@ -724,8 +722,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv texinfo-6.5
-sleep 30
+rm -rf texinfo-6.5
+sleep 15
 # Start 5.32 Texinfo
 
 
@@ -745,8 +743,8 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv util-linux-2.32
-sleep 30
+rm -rf util-linux-2.32
+sleep 15
 # Start 5.33 Util-linux
 
 
@@ -760,26 +758,26 @@ make -j${CPUS}
 make install
 
 cd $LFS/sources
-rm -rfv xz-5.2.4
-sleep 30
+rm -rf xz-5.2.4
+sleep 15
 # Start 5.34 Xz
 
 
-sudo chown -R root:root $LFS/tools
+chown -R root:root $LFS/tools
 
-sudo mkdir -pv $LFS/{dev,proc,sys,run}
+mkdir -pv $LFS/{dev,proc,sys,run}
 
-sudo mknod -m 600 $LFS/dev/console c 5 1
-sudo mknod -m 666 $LFS/dev/null c 1 3
+mknod -m 600 $LFS/dev/console c 5 1
+mknod -m 666 $LFS/dev/null c 1 3
 
-sudo mount -v --bind /dev $LFS/dev
+mount -v --bind /dev $LFS/dev
 #mount -vt devpts devpts $LFS/dev/pts -o gid=5,mods=620
-sudo mount -vt proc proc $LFS/proc
-sudo mount -vt sysfs sysfs $LFS/sys
-sudo mount -vt tmpfs tmpfs $LFS/run
+mount -vt proc proc $LFS/proc
+mount -vt sysfs sysfs $LFS/sys
+mount -vt tmpfs tmpfs $LFS/run
 
 if [ -h $LFS/dev/shm ]; then
-  sudo mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
 mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
@@ -788,7 +786,6 @@ mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
 mv -v /temp/system.spec $LFS/system.spec
 mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
-mv -v /temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch $LFS/sources/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
@@ -796,18 +793,14 @@ chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
 chmod -v +x vpkg-provides.sh
 
-# Let's see if this works. It might, it might not
 cd $LFS/sources
-tar xvf elfutils-0.170.tar.bz2
-cd elfutils-0.170
-patch -Np1 -i ../0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
-./configure --prefix=/usr
-make -j${CPUS}
+rm -R -- */
 
-sudo chroot "$LFS" /tools/bin/env -i \
+chroot "$LFS" /tools/bin/env -i \
     HOME=/root                  \
     TERM="$TERM"                \
+    CPUS="$CPUS"                \
     PS1='(lfs chroot) \u:\w\$ ' \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/usr/bin/core_perl \
     /tools/bin/bash --login +h \
     ./user-group-setup.sh

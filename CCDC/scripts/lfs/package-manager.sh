@@ -5,16 +5,6 @@ set -eu
 set -x
 set +h
 
-umask 022
-LFS=/
-echo $LFS
-LC_ALL=POSIX
-echo $LC_ALL
-LFS_TGT=$(uname -m)-gt-linux-gnu
-echo "On $LFS_TGT"
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
-CPUS=4
-
 echo "Building RPM"
 
 function build_ssh
@@ -39,7 +29,7 @@ function build_ssh
               --sysconfdir=/etc/ssh             \
               --with-md5-passwords              \
               --with-privsep-path=/var/lib/sshd
-  make
+  make -j${CPUS}
   make install
   install -v -m755    contrib/ssh-copy-id /usr/bin
   install -v -m644    contrib/ssh-copy-id.1 \
@@ -48,6 +38,8 @@ function build_ssh
   install -v -m644    INSTALL LICENCE OVERVIEW README* \
                       /usr/share/doc/openssh-7.6p1
 
+  cd $LFS/sources
+  tar xvf blfs-bootscripts-20180105.tar.xz
   cd $LFS/sources/blfs-bootscripts-20180105
   make install-sshd
 }
@@ -64,7 +56,7 @@ function build_berkeley
                     --enable-dbm        \
                     --disable-static    \
                     --enable-cxx        &&
-  make
+  make -j${CPUS}
   make docdir=/usr/share/doc/db-6.2.32 install &&
 
   chown -v -R root:root                 \
@@ -84,7 +76,7 @@ function build_nettools
   sed -i '/#include <netinet\/ip.h>/d' iptunnel.c &&
 
   yes "" | make config &&
-  make
+  make -j${CPUS}
   make update
 }
 
@@ -94,7 +86,7 @@ function build_gnupg
   tar xvf libgpg-error-1.27.tar.bz2
   cd libgpg-error-1.27
   ./configure --prefix=/usr &&
-  make
+  make -j${CPUS}
   make install &&
   install -v -m644 -D README /usr/share/doc/libgpg-error-1.27/README
 
@@ -102,14 +94,14 @@ function build_gnupg
   tar xvf libassuan-2.5.1.tar.bz2
   cd libassuan-2.5.1
   ./configure --prefix=/usr &&
-  make
+  make -j${CPUS}
   make install
 
   cd $LFS/sources
   tar xvf libgcrypt-1.8.2.tar.bz2
   cd libgcrypt-1.8.2
   ./configure --prefix=/usr &&
-  make
+  make -j${CPUS}
   make install &&
   install -v -dm755 /usr/share/doc/libgcrypt-1.8.2 &&
   install -v -m644 README doc/{README.apichanges,fips*,libgcrypt*} \
@@ -119,14 +111,14 @@ function build_gnupg
   tar xvf libksba-1.3.5.tar.bz2
   cd libksba-1.3.5
   ./configure --prefix=/usr &&
-  make
+  make -j${CPUS}
   make install
 
   cd $LFS/sources
   tar xvf npth-1.5.tar.bz2
   cd npth-1.5
   ./configure --prefix=/usr &&
-  make
+  make -j${CPUS}
   make install
 
   cd $LFS/sources
@@ -138,7 +130,7 @@ function build_gnupg
               --enable-symcryptrun      \
               --enable-maintainer-mode  \
               --docdir=/usr/share/doc/gnupg-2.2.4 &&
-  make &&
+  make -j${CPUS} &&
   makeinfo --html --no-split \
             -o doc/gnupg_nochunks.html  doc/gnupg.texi &&
   makeinfo --plaintext       \
@@ -158,7 +150,7 @@ function build_pinentry
   cd pinentry-1.1.0
   
   ./configure --prefix=/usr --enable-pinentry-tty &&
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -175,7 +167,7 @@ function build_libxml2
               --disable-static    \
               --with-history      \
               --with-python=/usr/bin/python3 &&
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -192,7 +184,7 @@ function build_popt
   cd popt-1.16
 
   ./configure --prefix=/usr --disable-static &&
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -203,7 +195,7 @@ function build_libarchive
   cd libarchive-3.3.2
 
   ./configure --prefix=/usr --disable-static &&
-  make
+  make -j${CPUS}
   make install
 }
 
@@ -214,7 +206,7 @@ function build_neon
   cd neon-0.25.5
 
   ./configure --prefix=/usr --enable-shared &&
-  make &&
+  make -j${CPUS} &&
   make install
 }
 
@@ -229,25 +221,43 @@ function build_rpm
   cd rpm-4.14.1
   
   ./configure --prefix=/usr           \
-			        --enable-posixmutexes   \
+              --enable-posixmutexes   \
               --with-crypto=openssl   \
 			        --without-selinux       \
         	    --without-python        \
               --without-lua           \
       	      --without-javaglue &&
-  make &&
+  make -j${CPUS} &&
   make install
   
-  rpm --initdb --root=/
+  rpm --initdb --root=/usr/var/lib/rpm
   cd $LFS
-  $LFS/vpkg-provides.sh --spec_header $LFS/system.spec
+  mkdir /root/rpmbuild
+  mkdir /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+  $LFS/vpkg-provides.sh --spec_header $LFS/system.spec >> /root/rpmbuild/SPECS/system.spec
+  sleep 30
   rpm --version
+
+  cd /root/rpmbuild/SPECS
+  rpmbuild -bb system.spec
+  cd ../RPMS/x86_64
+  sed -i '/Provides:\ 0/d' system.spec
+  sed -i '/Provides:\ 1/d' system.spec
+  sed -i '/Provides:\ 2/d' system.spec
+  sed -i '/Provides:\ 3/d' system.spec
+  sed -i '/Provides:\ 4/d' system.spec
+  sed -i '/Provides:\ 5/d' system.spec
+  sed -i '/Provides:\ 6/d' system.spec
+  sed -i '/Provides:\ 7/d' system.spec
+  sed -i '/Provides:\ 8/d' system.spec
+  sed -i '/Provides:\ 9/d' system.spec
+  sed -i '/Provides:\ =/d' system.spec
+  rpm -ivh *.rpm
 }
 
+build_ssh
 build_rpm
-cd $LFS/sources
-rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
-cd $LFS/sources/blfs-bootscripts-20180105
-make install-sshd
-
-#build_ssh
+#cd $LFS/sources
+#rpm -i -vv openssh-5.3p1-122.el6.x86_64.rpm
+#cd $LFS/sources/blfs-bootscripts-20180105
+#make install-sshd

@@ -12,8 +12,8 @@ LC_ALL=POSIX
 echo $LC_ALL
 LFS_TGT=$(uname -m)-gt-linux-gnu
 echo "On $LFS_TGT"
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
-CPUS=4
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/usr/bin/core_perl
+echo $PATH
 
 function build_libtool
 {
@@ -227,12 +227,12 @@ function build_gettext
 function build_libelf
 {
   cd $LFS/sources
-  #tar xvf elfutils-0.170.tar.bz2
-  #cd elfutils-0.170
+  tar xvf elfutils-0.170.tar.bz2
+  cd elfutils-0.170
 
-  #patch -Np1 -i ../0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
-  #./configure --prefix=/usr
-  #make -j${CPUS}
+  patch -Np1 -i ../0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch
+  ./configure --prefix=/usr
+  make -j${CPUS}
   make -C libelf install
   install -vm644 config/libelf.pc /usr/lib/pkgconfig
 }
@@ -291,14 +291,6 @@ function build_python
 
   chmod -v 755 /usr/lib/libpython3.6m.so
   chmod -v 755 /usr/lib/libpython3.so
-
-  install -v -dm755 /usr/share/doc/Python-3.6.5/html 
-
-  tar --strip-components=1  \
-      --no-same-owner       \
-      --no-same-permissions \
-      -C /usr/share/doc/Python-3.6.5/html \
-      -xvf ../Python-3.6.5-docs-html.tar.bz2
 }
 
 function build_ninja
@@ -395,9 +387,10 @@ function build_coreutils
   patch -Np1 -i ../coreutils-8.29-i18n-1.patch
   sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 
+  autoreconf -fiv
   FORCE_UNSAFE_CONFIGURE=1 ./configure \
-              --prefix=/usr            \
-              --enable-no-install-program=kill,uptime
+            --prefix=/usr            \
+            --enable-no-install-program=kill,uptime
   FORCE_UNSAFE_CONFIGURE=1 make -j${CPUS}
   make install
 
@@ -517,7 +510,7 @@ function build_iproute
 {
   cd $LFS/sources
   tar xvf iproute2-4.16.0.tar.xz
-  iproute2-4.16.0
+  cd iproute2-4.16.0
 
   sed -i /ARPD/d Makefile
   rm -fv man/man8/arpd.8
@@ -654,41 +647,42 @@ function build_sysvinit
   make -C src install
 }
 
-function build_eudev
-{
-  cd $LFS/sources
-  tar xvf eudev-3.2.5.tar.gz
-  cd eudev-3.2.5
+build_sysvinit
 
-  sed -r -i 's|/usr(/bin/test)|\1|' test/udev-test.pl
-  cat > config.cache << "EOF"
+
+# Start 6.72 Eudev
+cd $LFS/sources
+tar xvf eudev-3.2.5.tar.gz
+cd eudev-3.2.5
+
+sed -r -i 's|/usr(/bin/test)|\1|' test/udev-test.pl
+cat > config.cache << "EOF"
 HAVE_BLKID=1
 BLKID_LIBS="-lblkid"
 BLKID_CFLAGS="-I/tools/include"
 EOF
 
-  ./configure --prefix=/usr           \
-              --bindir=/sbin          \
-              --sbindir=/sbin         \
-              --libdir=/usr/lib       \
-              --sysconfdir=/etc       \
-              --libexecdir=/lib       \
-              --with-rootprefix=      \
-              --with-rootlibdir=/lib  \
-              --enable-manpages       \
-              --disable-static        \
-              --config-cache
-  LIBRARY_PATH=/tools/lib make -j${CPUS}
-  mkdir -pv /lib/udev/rules.d
-  mkdir -pv /etc/udev/rules.d
+./configure --prefix=/usr           \
+            --bindir=/sbin          \
+            --sbindir=/sbin         \
+            --libdir=/usr/lib       \
+            --sysconfdir=/etc       \
+            --libexecdir=/lib       \
+            --with-rootprefix=      \
+            --with-rootlibdir=/lib  \
+            --enable-manpages       \
+            --disable-static        \
+            --config-cache
+LIBRARY_PATH=/tools/lib make -j${CPUS}
+mkdir -pv /lib/udev/rules.d
+mkdir -pv /etc/udev/rules.d
 
-  make LD_LIBRARY_PATH=/tools/lib check
-  make LD_LIBRARY_PATH=/tools/lib install
+make LD_LIBRARY_PATH=/tools/lib install
 
-  tar -xvf ../udev-lfs-20171102.tar.bz2
-  make -f udev-lfs-20171102/Makefile.lfs install
-  LD_LIBRARY_PATH=/tools/lib udevadm hwdb --update
-}
+tar -xvf ../udev-lfs-20171102.tar.bz2
+make -f udev-lfs-20171102/Makefile.lfs install
+LD_LIBRARY_PATH=/tools/lib udevadm hwdb --update
+# End 6.72 Eudev
 
 function build_util_linux
 {
@@ -777,11 +771,9 @@ function build_vim
   for L in  /usr/share/man/{,*/}man1/vim.1; do
       ln -sv vim.1 $(dirname $L)/vi.1
   done
-  ln -sv ../vim/vim80/doc /usr/share/doc/vim-8.1
+  ln -sv ../vim/vim81/doc /usr/share/doc/vim-8.1
 }
 
-build_sysvinit
-build_eudev
 build_util_linux
 build_man
 build_tar
@@ -830,10 +822,10 @@ build_bootscripts
 bash /lib/udev/init-net-rules.sh
 
 echo "Setting net rules"
-cd -v /etc/sysconfig/
-cat > ifconfig.eth0 << "EOF"
+cd /etc/sysconfig/
+cat > ifconfig.enp0s3 << "EOF"
 ONBOOT="yes"
-IFACE="eth0"
+IFACE="enp0s3"
 SERVICE="dhcpcd"
 DHCP_START="-b -q"
 DHCP_STOP="-k"
