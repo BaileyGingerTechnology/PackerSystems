@@ -5,6 +5,16 @@ set -eu
 set -x
 set +h
 
+umask 022
+LFS=/
+echo $LFS
+LC_ALL=POSIX
+echo $LC_ALL
+LFS_TGT=$(uname -m)-gt-linux-gnu
+echo "On $LFS_TGT"
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/usr/bin/core_perl
+echo $PATH
+
 echo "Building RPM"
 
 function build_ssh
@@ -34,7 +44,7 @@ function build_ssh
   install -v -m755    contrib/ssh-copy-id /usr/bin
   install -v -m644    contrib/ssh-copy-id.1 \
                       /usr/share/man/man1
-  install -v -m755 -d /usr/share/doc/openssh-7.6p
+  install -v -m755 -d /usr/share/doc/openssh-7.6p1
   install -v -m644    INSTALL LICENCE OVERVIEW README* \
                       /usr/share/doc/openssh-7.6p1
 
@@ -239,8 +249,6 @@ function build_rpm
   rpm --version
 
   cd /root/rpmbuild/SPECS
-  rpmbuild -bb system.spec
-  cd ../RPMS/x86_64
   sed -i '/Provides:\ 0/d' system.spec
   sed -i '/Provides:\ 1/d' system.spec
   sed -i '/Provides:\ 2/d' system.spec
@@ -252,6 +260,8 @@ function build_rpm
   sed -i '/Provides:\ 8/d' system.spec
   sed -i '/Provides:\ 9/d' system.spec
   sed -i '/Provides:\ =/d' system.spec
+  rpmbuild -bb system.spec
+  cd ../RPMS/x86_64
   rpm -ivh *.rpm
 }
 
