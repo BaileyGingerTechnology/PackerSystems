@@ -41,7 +41,7 @@ For Windows 10:
 
     - Puts the eicar test file (file that gets flagged as malware but actually does nothing) in SysWOW64
 
-    - Makes a few fake users
+    - Makes a few users
 
     - Disables password policy
 
@@ -89,11 +89,13 @@ Arch Database:
 
 Windows 2012r2 Server:
 
-    - Going to do AD and potentially have it be alongside a freeIPA CentOS box.
+    - Going to do AD and potentially have it be a monolithic Exchange box.
 
 Debian workstation:
 
     - Was gonna do Fedora, but I guess it has really bad ESXi support (or vice versa), so I'll do Debian instead.
+
+    - I dub thee "Tuna Linux" because it's friggen stupid. I install Arch alongside Debian, and it auto-chroots into the Arch install whenever one opens Bash.
 
 Windows 8.1 workstation:
 
@@ -103,7 +105,7 @@ FreeBSD BAMP server:
 
     - BSD, Apache, MySQL, PHP
 
-    - Theoretically best web server you can have. Also jails are fun. Gonna need to learn a way to automate this, but it should (in theory) not be too bad.
+    - Theoretically best web server you can have. Also jails are fun. Specifically iocage ones.
 
 VyOS router/firewall:
 
@@ -115,19 +117,24 @@ Gentoo Webserver:
 
     - People get so scared when they see Gentoo, and need to get over it.
 
+    - Set default shell to "oh" which is a shell built in Go, and Go is great.
+
 LFS Webserver:
 
     - Yep.
+
+    - Was originally gonna do something with RPM, and I still might, but it currently seems like that won't work as planned.
+        - Now looking at DPKG (Debian/Ubuntu) or libzypp (Suse).
 
 CentOS Docker:
 
     - Docker host. Makes sense enough I think.
 
-CentOS Scoring Box:
+Kali Scoring Box:
 
     - Will not have an account for the player to use.
 
-    - I'm thinking I'll have it host a Golang webapp that will check connections to the boxes and the needed services.
+    - Will write more about the scoring engine in a blog post, but at the moment it's a tag team Golang/Dotnet app.
 
     - Automated attack engine that will not damage the boxes too badly, but will send info to the webapp about how it got in.
 

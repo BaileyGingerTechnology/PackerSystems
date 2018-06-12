@@ -15,6 +15,7 @@ CCDC/Builds
 variables.json
 # This can be found here: https://www.microsoft.com/en-us/download/details.aspx?id=55953
 CCDC/files/exchange.iso
+CCDC/drive2.vdi
 
 # Binaries for programs and plugins
 *.exe

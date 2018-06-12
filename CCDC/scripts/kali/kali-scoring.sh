@@ -6,39 +6,14 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 
 systemctl enable nginx
 
-# Install NPM and Node
-ARCH=$(uname -m)
-sleep 5
-echo "[+] Changing to /tmp"
 cd /tmp
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg
+mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/
+wget -q https://packages.microsoft.com/config/debian/9/prod.list
+mv prod.list /etc/apt/sources.list.d/microsoft-prod.list
+chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg
+chown root:root /etc/apt/sources.list.d/microsoft-prod.list
 
-# libv8 package
-echo "[+] Downloading libv8 package..."
-wget http://ftp.us.debian.org/debian/pool/main/libv/libv8-3.14/libv8-3.14.5_3.14.5.8-8~bpo70+1_${architecture}.deb
-
-sleep 3
-
-# nodejs package
-echo "[+] Downloading nodejs package..."
-wget http://ftp.tku.edu.tw/Linux/Kali/kali/pool/main/n/nodejs/nodejs_0.10.29~dfsg-1~bpo70+1_${architecture}.deb
-
-sleep 3
-
-# install nodejs / dependency
-echo "[+] Installing NodeJS"
-dpkg -i libv8*
-dpkg -i nodejs_0.10.29~dfsg-1~bpo70+1_${architecture}.deb
-ln /usr/bin/nodejs /usr/bin/node
-
-echo "[+] Testing NodeJS version"
-node -v
-
-sleep 3
-
-# install npm (you will get error but it works okay)
-echo "[+] Installing NPM"
-curl https://www.npmjs.org/install.sh | sudo sh
-
-# clean up
+apt update && apt install -y dotnet-sdk-2.1 aspnetcore-runtime-2.1
 echo "[+] Removing temporary files"
 rm -rf /tmp/*

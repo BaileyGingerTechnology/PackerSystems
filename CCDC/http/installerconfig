@@ -1,15 +1,27 @@
-if [ -e /dev/vtbd0 ]; then
-  PARTITIONS=vtbd0
-elif [ -e /dev/ada0 ]; then
-  PARTITIONS=ada0
+DISTRIBUTIONS="base.txz lib32.txz kernel.txz src.txz"
+
+# for variations in the root disk device name between VMware and Virtualbox
+if [ -e /dev/ada0 ]; then
+  DISKSLICE=ada0
 elif [ -e /dev/da0 ]; then
-  PARTITIONS=da0
+  DISKSLICE=da0
+elif [ -e /dev/vtbd0 ]; then
+  DISKSLICE=vtbd0
 else
-  echo "ERROR: There is no disk available for installation" >&2
-  exit 1
+  echo "Unknown disk for install.sh to work with!"
+  exit -1
 fi
 
-#!/bin/sh
+# Workaround for https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=203777
+export nonInteractive="YES"
+
+export ZFSBOOT_DISKS="$DISKSLICE"
+export ZFSBOOT_CONFIRM_LAYOUT=0
+
+HOSTNAME=freebsd
+
+#!/bin/sh -x
+
 cat <<EOF > /etc/resolv.conf
 nameserver 8.8.8.8
 EOF
@@ -17,12 +29,26 @@ EOF
 ASSUME_ALWAYS_YES=yes pkg install curl
 ASSUME_ALWAYS_YES=yes pkg install sudo
 
-interface=$(route get default | awk '/interface/ { print $2 }')
-cat <<EOF > /etc/rc.conf
-ifconfig_${interface}="DHCP"
+ifdev=$(ifconfig | grep '^[a-z]' | cut -d: -f1 | head -n 1)
+# Enable required services
+cat >> /etc/rc.conf << EOT
+ifconfig_${ifdev}="dhcp"
 sshd_enable="YES"
-EOF
+EOT
 
+# Tune and boot from zfs
+cat >> /boot/loader.conf << EOT
+vm.kmem_size="200M"
+vm.kmem_size_max="200M"
+vfs.zfs.arc_max="40M"
+vfs.zfs.vdev.cache.size="5M"
+autoboot_delay=3
+EOT
+
+# zfs doesn't use an fstab, but some rc scripts expect one
+touch /etc/fstab
+
+# Set up user accounts
 echo 'password' | pw useradd administrator -h 0 -m
 echo 'password' | pw usermod root -h 0
 
@@ -31,3 +57,5 @@ Defaults:administrator !requiretty
 administrator ALL=(ALL) NOPASSWD: ALL
 EOF
 chmod 440 /usr/local/etc/sudoers.d/administrator
+
+reboot

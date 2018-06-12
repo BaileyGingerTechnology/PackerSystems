@@ -39,8 +39,7 @@
         "floppy/server/install-winrm.cmd",
         "floppy/server/zz-start-transports.cmd",
         "floppy/server/Update-Needed.ps1",
-        "floppy/server/RunPwSh.bat",
-        "floppy/guest-tools.bat"
+        "floppy/server/RunPwSh.bat"
       ],
       "vmx_data": {
         "RemoteDisplay.vnc.enabled": "false",
@@ -73,8 +72,7 @@
         "floppy/server/install-winrm.cmd",
         "floppy/server/zz-start-transports.cmd",
         "floppy/server/Update-Needed.ps1",
-        "floppy/server/RunPwSh.bat",
-        "floppy/guest-tools.bat"
+        "floppy/server/RunPwSh.bat"
       ],
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory_size`}}" ],
@@ -93,6 +91,10 @@
       "scripts": [
         "scripts/winshared/guest-tools.bat"
       ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -force"
     },
     {
       "type": "shell-local",
@@ -119,7 +121,7 @@
       "restart_command": "powershell Restart-Computer -Force"
     },
     {
-      "type": "powerhsell",
+      "type": "powershell",
       "inline": [
         "C:\\ninite.exe /locale en-US",
         "choco install -y dotnet-4.6.2"
