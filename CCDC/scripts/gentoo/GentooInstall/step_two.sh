@@ -91,7 +91,7 @@ echo "Now setting password for root user!"
 chpasswd <<EOL
 root:password
 EOL
-passwd -e root
+passwd root
 
 # Install sudo for privilege escalation
 emerge app-admin/sudo

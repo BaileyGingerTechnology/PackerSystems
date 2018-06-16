@@ -39,7 +39,8 @@
         "floppy/server/install-winrm.cmd",
         "floppy/server/zz-start-transports.cmd",
         "floppy/server/Update-Needed.ps1",
-        "floppy/server/RunPwSh.bat"
+        "floppy/server/RunPwSh.bat",
+        "floppy/update-windows.ps1"
       ],
       "vmx_data": {
         "RemoteDisplay.vnc.enabled": "false",
@@ -72,7 +73,8 @@
         "floppy/server/install-winrm.cmd",
         "floppy/server/zz-start-transports.cmd",
         "floppy/server/Update-Needed.ps1",
-        "floppy/server/RunPwSh.bat"
+        "floppy/server/RunPwSh.bat",
+        "floppy/update-windows.ps1"
       ],
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory_size`}}" ],
@@ -81,6 +83,23 @@
     }
   ],
   "provisioners": [
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -force"
+    },
+    {
+      "type": "file",
+      "source": "scripts/winshared/netbullshit.ps1",
+      "destination": "C:\\netbullshit.ps1"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "C:\\netbullshit.ps1 1"
+      ]
+    },
     {
       "type": "windows-restart",
       "restart_command": "powershell Restart-Computer -force"
@@ -98,7 +117,7 @@
     },
     {
       "type": "shell-local",
-      "command": "vboxmanage controlvm {{user `vmname`}}-{{user `build_num`}} poweroff soft && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium emptydrive && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium {{user `exchange_iso`}} && vboxmanage startvm {{user `vmname`}}-{{user `build_num`}}"
+      "command": "vboxmanage controlvm {{user `vmname`}}-{{user `build_num`}} poweroff soft && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium emptydrive && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium {{user `exchange_iso`}} && vboxmanage startvm {{user `vmname`}}-{{user `build_num`}} && sleep 10"
     },
     {
       "type": "file",
@@ -123,8 +142,7 @@
     {
       "type": "powershell",
       "inline": [
-        "C:\\ninite.exe /locale en-US",
-        "choco install -y dotnet-4.6.2"
+        "C:\\ninite.exe /locale en-US"
       ]
     },
     {
@@ -133,6 +151,32 @@
     },
     {
       "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "C:\\netbullshit.ps1 2"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "C:\\netbullshit.ps1 3"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
       "inline": [
         "Install-WindowsFeature ADLDS, RSAT-Clustering-CmdInterface, NET-Framework-45-Features, RPC-over-HTTP-proxy, RSAT-Clustering, RSAT-Clustering-CmdInterface, RSAT-Clustering-Mgmt, RSAT-Clustering-PowerShell, Web-Mgmt-Console, WAS-Process-Model, Web-Asp-Net45, Web-Basic-Auth, Web-Client-Auth, Web-Digest-Auth, Web-Dir-Browsing, Web-Dyn-Compression, Web-Http-Errors, Web-Http-Logging, Web-Http-Redirect, Web-Http-Tracing, Web-ISAPI-Ext, Web-ISAPI-Filter, Web-Lgcy-Mgmt-Console, Web-Metabase, Web-Mgmt-Console, Web-Mgmt-Service, Web-Net-Ext45, Web-Request-Monitor, Web-Server, Web-Stat-Compression, Web-Static-Content, Web-Windows-Auth, Web-WMI, Windows-Identity-Foundation, RSAT-ADDS"
       ]
@@ -143,6 +187,8 @@
     },
     {
       "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
       "inline": [
         "choco install -y ucma4"
       ]

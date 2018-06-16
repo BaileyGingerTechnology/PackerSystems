@@ -119,9 +119,14 @@
             </AutoLogon>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
+                    <CommandLine>powershell -NoLogo -ExecutionPolicy RemoteSigned -File a:\update-windows.ps1</CommandLine>
+                    <Description>Update Windows, and when finished, run configure-winrm.ps1 to turn WinRM on so this party can get started</Description>
+                    <Order>1</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\00-run-all-scripts.cmd</CommandLine>
                     <Description>Run all *.bat and *.cmd scripts on drive A:</Description>
-                    <Order>1</Order>
+                    <Order>2</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
             </FirstLogonCommands>

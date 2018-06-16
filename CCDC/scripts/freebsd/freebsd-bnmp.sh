@@ -10,7 +10,7 @@ sudo iocage activate zroot
 echo 6 |sudo iocage fetch
 
 sudo tee -a /etc/rc.conf << EOF
-ezjail_enable=YES
+iocage_enable="YES"
 cloned_interfaces="lo1"
 EOF
 echo "FIND ME"
@@ -39,3 +39,6 @@ sudo chroot /iocage/jails/fnginx/root \
 
 sudo chroot /iocage/jails/fmysql/root \
   ./freebsd-fmysql.sh
+
+sudo iocage set boot=on fnginx
+sudo iocage set boot=on fmysql
