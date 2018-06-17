@@ -1074,8 +1074,44 @@ useradd --password ${PASSWORD} --comment 'administrator User' --create-home --us
 echo 'Defaults env_keep += \"SSH_AUTH_SOCK\"' > /etc/sudoers
 echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
+function build_ssh
+{
+  # OpenSSH Server to connect post-reboot
+  cd $LFS/sources
+  tar xvf openssh-7.6p1.tar.gz
+  cd openssh-7.6p1
+
+  install  -v -m700 -d /var/lib/sshd &&
+  chown    -v root:sys /var/lib/sshd &&
+
+  groupadd -g 75 sshd
+  useradd  -c 'sshd PrivSep' \
+           -d /var/lib/sshd  \
+           -g sshd           \
+           -s /bin/false     \
+           -u 75 sshd
+  patch -Np1 -i ../openssh-7.6p1-openssl-1.1.0-1.patch
+
+  ./configure --prefix=/usr                     \
+              --sysconfdir=/etc/ssh             \
+              --with-md5-passwords              \
+              --with-privsep-path=/var/lib/sshd
+  make -j${CPUS}
+  make install
+  install -v -m755    contrib/ssh-copy-id /usr/bin
+  install -v -m644    contrib/ssh-copy-id.1 \
+                      /usr/share/man/man1
+  install -v -m755 -d /usr/share/doc/openssh-7.6p1
+  install -v -m644    INSTALL LICENCE OVERVIEW README* \
+                      /usr/share/doc/openssh-7.6p1
+
+  cd $LFS/sources
+  tar xvf blfs-bootscripts-20180105.tar.xz
+  cd $LFS/sources/blfs-bootscripts-20180105
+  make install-sshd
+}
+
+build_ssh
+
 cd $LFS/sources
 rm -R -- */
-
-cd $LFS
-$LFS/package-manager.sh

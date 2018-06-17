@@ -274,7 +274,7 @@ make install
 cd $LFS/sources
 rm -rf gcc-8.1.0
 sleep 15
-# Start 5.8 Libstdc++
+# End 5.8 Libstdc++
 
 
 # Start 5.9 Binutils Pass 2
@@ -305,7 +305,7 @@ cp -v ld/ld-new /tools/bin
 cd $LFS/sources
 rm -rf binutils-2.30
 sleep 15
-# Start 5.9 Binutils Pass 2
+# End 5.9 Binutils Pass 2
 
 
 # Start 5.10 GCC Pass 2
@@ -364,7 +364,7 @@ make -j${CPUS}
 make install
 ln -sv gcc /tools/bin/cc
 sleep 15
-# Start 5.10 GCC Pass 2
+# End 5.10 GCC Pass 2
 
 
 # Start 5.11 Tcl-Core
@@ -384,7 +384,7 @@ ln -sv tclsh8.6 /tools/bin/tclsh
 cd $LFS/sources
 rm -rf tcl8.6.8
 sleep 15
-# Start 5.11 Tcl-Core
+# End 5.11 Tcl-Core
 
 
 # Start 5.12 Expect
@@ -405,7 +405,7 @@ make SCRIPTS="" install
 cd $LFS/sources
 rm -rf expect5.45.4
 sleep 15
-# Start 5.12 Expect
+# End 5.12 Expect
 
 
 # Start 5.13 DejaGNU
@@ -419,7 +419,7 @@ make install
 cd $LFS/sources
 rm -rf dejagnu-1.6.1
 sleep 15
-# Start 5.13 DejaGNU
+# End 5.13 DejaGNU
 
 
 # Start 5.14 M4
@@ -434,7 +434,7 @@ make install
 cd $LFS/sources
 rm -rf m4-1.4.18
 sleep 15
-# Start 5.14 M4
+# End 5.14 M4
 
 
 # Start 5.15 Ncurses
@@ -455,7 +455,7 @@ make install
 cd $LFS/sources
 rm -rf ncurses-6.1
 sleep 15
-# Start 5.15 Ncurses
+# End 5.15 Ncurses
 
 
 # Start 5.16 Bash
@@ -472,7 +472,7 @@ ln -sv bash /tools/bin/sh
 cd $LFS/sources
 rm -rf bash-4.4.18
 sleep 15
-# Start 5.16 Bash
+# End 5.16 Bash
 
 
 # Start 5.17 Bison
@@ -487,7 +487,7 @@ make install
 cd $LFS/sources
 rm -rf bison-3.0.4
 sleep 15
-# Start 5.17 Bison
+# End 5.17 Bison
 
 
 # Start 5.18 Bzip2
@@ -501,7 +501,7 @@ make PREFIX=/tools install
 cd $LFS/sources
 rm -rf bzip2-1.0.6
 sleep 15
-# Start 5.18 Bzip2
+# End 5.18 Bzip2
 
 
 # Start 5.19 Coreutils
@@ -516,7 +516,7 @@ make install
 cd $LFS/sources
 rm -rf coreutils-8.29
 sleep 15
-# Start 5.19 Coreutils
+# End 5.19 Coreutils
 
 
 # Start 5.20 Diffutils
@@ -531,7 +531,7 @@ make install
 cd $LFS/sources
 rm -rf diffutils-3.6
 sleep 15
-# Start 5.10 Diffutils
+# End 5.10 Diffutils
 
 
 # Start 5.21 File
@@ -546,7 +546,7 @@ make install
 cd $LFS/sources
 rm -rf file-5.33
 sleep 15
-# Start 5.21 File
+# End 5.21 File
 
 
 # Start 5.22 Findutils
@@ -561,7 +561,7 @@ make install
 cd $LFS/sources
 rm -rf findutils-4.6.0
 sleep 15
-# Start 5.22 Findutils
+# End 5.22 Findutils
 
 
 # Start 5.23 Gawk
@@ -576,7 +576,7 @@ make install
 cd $LFS/sources
 rm -rf gawk-4.2.1
 sleep 15
-# Start 5.23 Gawk
+# End 5.23 Gawk
 
 
 # Start 5.24 Gettext
@@ -598,7 +598,7 @@ cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin
 cd $LFS/sources
 rm -rf gettext-0.19.8.1
 sleep 15
-# Start 5.24 Gettext
+# End 5.24 Gettext
 
 
 # Start 5.25 Grep
@@ -613,7 +613,7 @@ make install
 cd $LFS/sources
 rm -rf grep-3.1
 sleep 15
-# Start 5.25 Grep
+# End 5.25 Grep
 
 
 # Start 5.26 Gzip
@@ -628,7 +628,7 @@ make install
 cd $LFS/sources
 rm -rf gzip-1.9
 sleep 15
-# Start 5.26 Gzip
+# End 5.26 Gzip
 
 
 # Start 5.27 Make
@@ -646,7 +646,7 @@ make install
 cd $LFS/sources
 rm -rf make-4.2.1
 sleep 15
-# Start 5.27 Make
+# End 5.27 Make
 
 
 # Start 5.28 Patch
@@ -661,7 +661,7 @@ make install
 cd $LFS/sources
 rm -rf patch-2.7.6
 sleep 15
-# Start 5.28 Patch
+# End 5.28 Patch
 
 
 # Start 5.29 Perl
@@ -679,7 +679,7 @@ cp -Rv lib/* /tools/lib/perl5/5.26.2
 cd $LFS/sources
 rm -rf perl-5.26.2
 sleep 15
-# Start 5.29 Perl
+# End 5.29 Perl
 
 
 # Start 5.30 Sed
@@ -694,7 +694,7 @@ make install
 cd $LFS/sources
 rm -rf sed-4.5
 sleep 15
-# Start 5.30 Sed
+# End 5.30 Sed
 
 
 # Start 5.31 Tar
@@ -709,7 +709,7 @@ make install
 cd $LFS/sources
 rm -rf tar-1.30
 sleep 15
-# Start 5.31 Tar
+# End 5.31 Tar
 
 
 # Start 5.32 Texinfo
@@ -724,7 +724,7 @@ make install
 cd $LFS/sources
 rm -rf texinfo-6.5
 sleep 15
-# Start 5.32 Texinfo
+# End 5.32 Texinfo
 
 
 # Start 5.33 Util-linux
@@ -745,7 +745,7 @@ make install
 cd $LFS/sources
 rm -rf util-linux-2.32
 sleep 15
-# Start 5.33 Util-linux
+# End 5.33 Util-linux
 
 
 # Start 5.34 Xz
@@ -760,7 +760,7 @@ make install
 cd $LFS/sources
 rm -rf xz-5.2.4
 sleep 15
-# Start 5.34 Xz
+# End 5.34 Xz
 
 
 chown -R root:root $LFS/tools

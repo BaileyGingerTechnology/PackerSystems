@@ -162,6 +162,18 @@
       "expect_disconnect": true,
       "scripts": [
         "scripts/lfs/setup-base.sh",
+        "scripts/lfs/reboot.sh"
+      ]
+    },
+    {
+      "environment_vars": [
+          "COUNTRY={{ user `country` }}",
+          "CPUS={{ user `cpus` }}"
+      ],
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "expect_disconnect": true,
+      "scripts": [
         "scripts/lfs/lfs-webserver.sh"
       ]
     }
