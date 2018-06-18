@@ -128,23 +128,8 @@
     },
     {
       "type": "file",
-      "source": "scripts/lfs/package-manager.sh",
-      "destination": "/temp/package-manager.sh"
-    },
-    {
-      "type": "file",
       "source": "scripts/lfs/user-group-setup.sh",
       "destination": "/temp/user-group-setup.sh" 
-    },
-    {
-      "type": "file",
-      "source": "files/system.spec",
-      "destination": "/temp/system.spec"
-    },
-    {
-      "type": "file",
-      "source": "scripts/lfs/vpkg-provides.sh",
-      "destination": "/temp/vpkg-provides.sh"
     },
     {
       "type": "shell",

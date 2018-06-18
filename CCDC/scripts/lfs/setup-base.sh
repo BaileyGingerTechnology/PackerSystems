@@ -782,16 +782,11 @@ fi
 
 mv -v /temp/build-to-bash.sh $LFS/build-to-bash.sh
 mv -v /temp/finish-base.sh $LFS/finish-base.sh
-mv -v /temp/package-manager.sh $LFS/package-manager.sh
 mv -v /temp/user-group-setup.sh $LFS/user-group-setup.sh
-mv -v /temp/system.spec $LFS/system.spec
-mv -v /temp/vpkg-provides.sh $LFS/vpkg-provides.sh
 cd $LFS
 chmod -v +x build-to-bash.sh
 chmod -v +x finish-base.sh
-chmod -v +x package-manager.sh
 chmod -v +x user-group-setup.sh
-chmod -v +x vpkg-provides.sh
 
 cd $LFS/sources
 rm -R -- */

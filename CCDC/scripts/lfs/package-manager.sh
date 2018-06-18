@@ -230,8 +230,8 @@ function dpkg_deps
   make install
 
   cd $LFS/sources
-  tar xvf Python-2.7.14.tar.xz
-  cd Python-2.7.14
+  tar xvf Python-2.7.15.tar.xz
+  cd Python-2.7.15
 
   sed -i '/#SSL/,+3 s/^#//' Modules/Setup.dist
   ./configure --prefix=/usr       \
@@ -282,8 +282,8 @@ build_libmd
 build_dpkg
 cd $LFS/sources
 
-dpkg -i gpgv_2.1.18-8~deb9u2_amd64.deb
-dpkg -i debian-archive-keyring_2017.5_all.deb
-dpkg -i init-system-helpers_1.48_all.deb
-dpkg -i libapt-pkg5.0_1.4.8_amd64.deb
-dpkg -i apt_1.4.8_amd64.deb
+#dpkg -i gpgv_2.1.18-8~deb9u2_amd64.deb
+#dpkg -i debian-archive-keyring_2017.5_all.deb
+#dpkg -i init-system-helpers_1.48_all.deb
+#dpkg -i libapt-pkg5.0_1.4.8_amd64.deb
+#dpkg -i apt_1.4.8_amd64.deb
