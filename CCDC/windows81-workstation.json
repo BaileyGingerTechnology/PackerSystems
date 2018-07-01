@@ -11,7 +11,7 @@
     "numcpus": "2",
     "update": "true",
     "build_num": "1.0",
-    "vmname": "Workstation"
+    "vmname": "Ee"
   },
   "builders": [
     {

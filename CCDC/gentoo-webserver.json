@@ -7,13 +7,13 @@
       "country": "USA",
       "arch_country": "US",
       "headless": "false",
-      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20180603T214502Z/stage3-amd64-20180603T214502Z.tar.xz",
+      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180614T214502Z.tar.xz",
       "cpus": "8",
       "cpus_after": "2",
-      "memory": "1024",
+      "memory": "2048",
       "disk_size": "20480",
       "build_num": "1.0",
-      "vmname": "GentWeb"
+      "vmname": "dLacey"
   },
   "builders": [
       {

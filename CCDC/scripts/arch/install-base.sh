@@ -9,7 +9,7 @@ else
 	DISK='/dev/sda'
 fi
 
-FQDN='database.gingertech.com'
+FQDN='maas.gingertech.com'
 KEYMAP='us'
 LANGUAGE='en_US.UTF-8'
 PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')

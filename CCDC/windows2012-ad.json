@@ -6,11 +6,11 @@
     "autounattend": "floppy/server/Autounattend.xml",
     "headless": "false",
     "cpus": "2",
-    "memory_size": "8192",
+    "memory_size": "4096",
     "disk_size": "40960",
     "exchange_iso": "files/exchange.iso",
     "build_num": "1.0",
-    "vmname": "AD-DC-Exchange"
+    "vmname": "Riordan"
   },
   "builders": [
     {
@@ -117,6 +117,7 @@
     },
     {
       "type": "shell-local",
+      "only": ["virtualbox-iso"],
       "command": "vboxmanage controlvm {{user `vmname`}}-{{user `build_num`}} poweroff soft && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium emptydrive && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium {{user `exchange_iso`}} && vboxmanage startvm {{user `vmname`}}-{{user `build_num`}} && sleep 10"
     },
     {

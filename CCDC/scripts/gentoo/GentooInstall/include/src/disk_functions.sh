@@ -15,7 +15,7 @@ function set_filesystems
 
 	echo "Filesystems set. Mounting partition where system will be built."
 
-	orangeEcho "Making an fstab file now, which will be used later."
+	echo "Making an fstab file now, which will be used later."
 	# This file is used by both the system and genkernel. Easier to make it now than later
 	touch /tmp/fstab
 	echo "/dev/$12		/boot		ext2	defaults,noatime	0 2" >> /tmp/fstab

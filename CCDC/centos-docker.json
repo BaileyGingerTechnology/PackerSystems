@@ -4,7 +4,7 @@
     "memory": "2048",
     "disk_size": "8192",
     "build_num": "1.0",
-    "vmname": "CentShip"
+    "vmname": "Falls"
   },
   "builders": [
     {

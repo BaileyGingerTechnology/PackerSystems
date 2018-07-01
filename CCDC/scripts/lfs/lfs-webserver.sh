@@ -10,7 +10,7 @@ echo "On $LFS_TGT"
 
 echo "We made it. Now for finishing touches."
 
-bash -c 'echo "gingertechweb" > /etc/hostname'
+bash -c 'echo "white" > /etc/hostname'
 
 echo "Install Apache webserver and it's dependencies"
 

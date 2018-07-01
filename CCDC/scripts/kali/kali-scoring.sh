@@ -1,6 +1,8 @@
 #!/bin/bash
 # Author: Bailey Kasin
 
+echo 'ward.gingertech.com' > /etc/hostname
+
 apt install -y zsh golang-go nginx python
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 

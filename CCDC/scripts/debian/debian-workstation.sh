@@ -92,7 +92,7 @@ cat <<-EOF > "/temp/arch-config.sh"
 	set -e
 	set -x
 	
-	echo 'tuna.gingertech.com' > /etc/hostname
+	echo 'blake.gingertech.com' > /etc/hostname
 	/usr/bin/ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 	echo 'KEYMAP=${KEYMAP}' > /etc/vconsole.conf
 	/usr/bin/sed -i 's/#${LANGUAGE}/${LANGUAGE}/' /etc/locale.gen
@@ -124,7 +124,7 @@ cat << EOF > "/temp/finish.sh"
 	set -x
 	
   pacman -Syu --noconfirm
-  yes | pacman -S --needed base-devel git wget yajl curl openssl
+  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl
 	update-ca-trust
 	git config --system http.sslverify false
 

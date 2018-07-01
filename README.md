@@ -79,39 +79,41 @@ So I already know that getting a faithful CCDC environemnt to be built through a
 
 Creds for all these boxes is going to be "administrator" and "password" for Linux and "GingerTech" and "password" on Windows.
 
+The codenames of the machines are the lastnames of authors that I like. When I make blog posts for them, I'll probably briefly mention the author.
+
 My current plans are something along the lines of:
 
-Arch Database:
+Arch Database (Codename="Maas"):
 
     - Of all the Linux OSes I have used, Arch has been the worst when it comes to hosting a database server. So it's an easy pick.
 
     - Most people panic when they see Arch or Gentoo because of their reputation. So of course I need at least one of them in here.
 
-Windows 2012r2 Server:
+Windows 2012r2 Server (Codename="Riordan"):
 
     - Going to do AD and potentially have it be a monolithic Exchange box.
 
-Debian workstation:
+Debian workstation (Codename="Blake"):
 
     - Was gonna do Fedora, but I guess it has really bad ESXi support (or vice versa), so I'll do Debian instead.
 
     - I dub thee "Tuna Linux" because it's friggen stupid. I install Arch alongside Debian, and it auto-chroots into the Arch install whenever one opens Bash.
 
-Windows 8.1 workstation:
+Windows 8.1 workstation (Codename="Ee"):
 
     - Pretty standard.
 
-FreeBSD BAMP server:
+FreeBSD BAMP server (Codename="Beddor"):
 
     - BSD, Apache, MySQL, PHP
 
     - Theoretically best web server you can have. Also jails are fun. Specifically iocage ones.
 
-VyOS router/firewall:
+VyOS router/firewall (Codename="Schwab"):
 
     - Gonna have to git gud at networking I guess.
 
-Gentoo Webserver:
+Gentoo Webserver (Codename="dLacey"):
     
     - Gentoo is a pretty good webserver, and I automated building it, so why not?
 
@@ -119,18 +121,18 @@ Gentoo Webserver:
 
     - Set default shell to "oh" which is a shell built in Go, and Go is great.
 
-LFS Webserver:
+LFS Webserver (Codename="White"):
 
     - Yep.
 
     - Was originally gonna do something with RPM, and I still might, but it currently seems like that won't work as planned.
         - Now looking at DPKG (Debian/Ubuntu) or libzypp (Suse).
 
-CentOS Docker:
+CentOS Docker (Codename="Falls"):
 
     - Docker host. Makes sense enough I think.
 
-Kali Scoring Box:
+Kali Scoring Box (Codename="Ward"):
 
     - Will not have an account for the player to use.
 

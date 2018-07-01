@@ -9,7 +9,7 @@
     "mirror": "http://ftp.riken.go.jp/Linux/debian/debian-cdimage/archive/latest-oldstable/amd64/iso-cd/debian-8.9.0-amd64-netinst.iso",
     "ssh_timeout": "60m",
     "build_num": "1.0",
-    "vmname": "Tuna"
+    "vmname": "Blake"
   },
   "builders": [
     {

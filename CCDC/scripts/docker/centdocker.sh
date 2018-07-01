@@ -5,8 +5,8 @@ set -u
 set -e
 set -x
 
-sudo bash -c "echo 'centship.gingertech.com' > /etc/hostname"
-sudo hostname centship.gingertech.com
+sudo bash -c "echo 'falls.gingertech.com' > /etc/hostname"
+sudo hostname falls.gingertech.com
 
 sudo mkdir -pv /usr/share/docker
 sudo chown -v administrator:docker /usr/share/docker

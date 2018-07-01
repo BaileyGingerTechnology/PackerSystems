@@ -6,7 +6,7 @@
     "iso_checksum_type": "sha256",
     "memory": "512",
     "build_num": "1.0",
-    "vmname": "BNMP"
+    "vmname": "Beddor"
   },
   "builders": [{
     "type": "qemu",

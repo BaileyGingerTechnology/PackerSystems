@@ -1,13 +1,13 @@
 {
   "variables": {
-    "iso_url": "http://mirrors.kernel.org/archlinux/iso/2018.05.01/archlinux-2018.05.01-x86_64.iso",
-    "iso_checksum_url": "http://mirrors.kernel.org/archlinux/iso/2018.05.01/sha1sums.txt",
+    "iso_url": "http://mirrors.kernel.org/archlinux/iso/2018.06.01/archlinux-2018.06.01-x86_64.iso",
+    "iso_checksum_url": "http://mirrors.kernel.org/archlinux/iso/2018.06.01/sha1sums.txt",
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",
     "country": "US",
     "headless": "false",
     "build_num": "1.0",
-    "vmname": "ArchDB"
+    "vmname": "Maas"
   },
   "builders": [
     {

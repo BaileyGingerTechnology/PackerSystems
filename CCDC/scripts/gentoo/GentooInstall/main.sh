@@ -13,7 +13,6 @@ curl -s "$MIRRORLIST" |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist
 
 source ./include/src/disk_functions.sh
 source ./include/src/tarball_functions.sh
-source ./include/src/useful_functions.sh
 source ./include/src/profile_functions.sh
 source ./include/src/kernel_functions.sh
 source ./include/src/system_var_functions.sh

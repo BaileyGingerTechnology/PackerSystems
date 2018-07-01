@@ -13,7 +13,7 @@ emerge www-servers/apache dev-lang/php
 emerge www-apps/owncloud
 emerge app-admin/webapp-config
 
-webapp-config -h gentweb.gingertech.com -d gingercloud -I owncloud 10.0.8
+webapp-config -h dlacey.gingertech.com -d gingercloud -I owncloud 10.0.8
 
 sed -i 's/-D\ LANGUAGE/-D\ LANGUAGE\ -D\ PHP/g' /etc/conf.d/apache2
 rc-update add apache2 default
@@ -33,5 +33,5 @@ yes -- "-5" | etc-update
 
 # Now for fun stuff
 
-sed -i 's/\/var\/www\/localhost\/htdocs/\/var\/www\/gentweb.gingertech.com\/htdocs/g' /etc/apache2/vhosts.d/default_vhost.include
-echo '<?php phpinfo(); ?>' > /var/www/gentweb.gingertech.com/htdocs/info.php
+sed -i 's/\/var\/www\/localhost\/htdocs/\/var\/www\/dlacey.gingertech.com\/htdocs/g' /etc/apache2/vhosts.d/default_vhost.include
+echo '<?php phpinfo(); ?>' > /var/www/dlacey.gingertech.com/htdocs/info.php

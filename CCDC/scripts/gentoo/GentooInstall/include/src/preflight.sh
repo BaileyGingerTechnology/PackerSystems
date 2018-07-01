@@ -5,19 +5,19 @@
 
 function check_root
 {
-    redEcho "Super user access is needed as disk partition modification and mounting will happen."
+    echo "Super user access is needed as disk partition modification and mounting will happen."
 
     if [ "$EUID" != 0 ]; then
-      redEcho "$_MSGERROR No Super User access....now exiting..";
+      echo "$_MSGERROR No Super User access....now exiting..";
       exit 0;
     fi
 }
 
 function not_gentoo
 {
-    orangeEcho "Since you are not on Gentoo, some extra steps will need to be taken
+    echo "Since you are not on Gentoo, some extra steps will need to be taken
     during portions of this install, but it should still all go fine."
-    orangeEcho "Since you are not using Gentoo, going to install mirrorselect from source."
+    echo "Since you are not using Gentoo, going to install mirrorselect from source."
     chmod +x /tmp/install_mirrorselect.sh
     /tmp/install_mirrorselect.sh
 }

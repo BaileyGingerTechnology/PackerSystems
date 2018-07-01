@@ -55,7 +55,7 @@ function resolv_mount
 		chmod 1777 /dev/shm
 	fi
 
-	greenEcho "About to chroot. This will begin step two, which will cause a second run of the preflight steps, and then everything will pick up where it left off. Press enter to continue."
+	echo "About to chroot. This will begin step two, which will cause a second run of the preflight steps, and then everything will pick up where it left off. Press enter to continue."
 	chroot /mnt/gentoo /bin/bash GentooInstall/step_two.sh
 }
 
@@ -66,7 +66,7 @@ function make_make
 	let core_count+=1
 
 	# Use the mirrorselect script to autoselect the best mirror to sync from
-	greenEcho "Now autopicking the closest mirror to you by downloading 100kb from each option and going with the fastest one."
+	echo "Now autopicking the closest mirror to you by downloading 100kb from each option and going with the fastest one."
 
   mirrorselect -s4 -b10 -o -c ${COUNTRY:-USA} -D >> /mnt/gentoo/etc/portage/make.conf
 
@@ -87,7 +87,7 @@ function download_tarball
 {
 	cd /mnt/gentoo
 
-	greenEcho "This is where we get the tarball that will be used to make the base filesystem. Eventually I may be able to automate this part, but for now I am going to open links to Gentoo's mirror page.
+	echo "This is where we get the tarball that will be used to make the base filesystem. Eventually I may be able to automate this part, but for now I am going to open links to Gentoo's mirror page.
 	Pick a server close to you, and then the stage 3 .tar.bz2 that best matches your system."
 	
 	wget ${TARBALL}

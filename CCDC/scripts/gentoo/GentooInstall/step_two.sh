@@ -8,7 +8,6 @@ cd /GentooInstall/
 source ./include/src/preflight.sh
 source ./include/src/disk_functions.sh
 source ./include/src/tarball_functions.sh
-source ./include/src/useful_functions.sh
 source ./include/src/profile_functions.sh
 source ./include/src/kernel_functions.sh
 source ./include/src/system_var_functions.sh
@@ -88,10 +87,7 @@ emerge -1 portage && emerge nullmailer
 
 emerge sys-apps/shadow
 echo "Now setting password for root user!"
-chpasswd <<EOL
-root:password
-EOL
-passwd root
+yes password | passwd root
 
 # Install sudo for privilege escalation
 emerge app-admin/sudo
@@ -114,13 +110,11 @@ rc-update add sshd default
 # Install DHCP client
 emerge net-misc/dhcpcd
 
-greenEcho "Installing grub"
+echo "Installing grub"
 # Install GRUB on that disk
 install_grub /dev/sda
 
 set -x
-
-yes '8RG7s%XP$e' | passwd
 
 PASSWORD=$(openssl passwd -crypt 'password')
 useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
@@ -130,6 +124,6 @@ chmod 0440 /etc/sudoers.d/10_administrator
 
 yes password | passwd administrator
 
-greenEcho "We should be done."
+echo "We should be done."
 
-greenEcho "Going to reboot now. Good luck, soldier."
+echo "Going to reboot now. Good luck, soldier."

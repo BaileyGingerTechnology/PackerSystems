@@ -12,7 +12,7 @@
     "memory_after": "1024",
     "disk_size": "20480",
     "build_num": "1.0",
-    "vmname": "GingerTechWeb"
+    "vmname": "White"
   },
   "builders": [
     {

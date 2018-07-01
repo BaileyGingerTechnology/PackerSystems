@@ -8,7 +8,7 @@
     "memory": "512",
     "ssh_timeout": "60m",
     "build_num": "1.0",
-    "vmname": "Router"
+    "vmname": "Schwab"
   },
   "builders": [
     {
@@ -32,7 +32,7 @@
       "<enter><wait>",
       "Yes<enter><wait>",
       "<enter><wait10><wait10><wait10><wait10><wait10>",
-      "<enter><wait><wait10><wait10><wait10><wait10>",
+      "<enter><wait><wait10><wait10>",
       "password<enter><wait>",
       "password<enter><wait>",
       "<enter><wait5>",
@@ -53,13 +53,17 @@
       "administrator<enter><wait>",
       "password<enter><wait>",
       "configure<enter><wait>",
-      "delete system login user vyos<enter><wait>",
       "delete interfaces ethernet eth0 address<enter><wait>",
       "set interfaces ethernet eth0 address 'dhcp'<enter><wait>",
       "commit<enter><wait>",
       "save<enter><wait>",
       "exit<enter><wait><wait5>",
       "ping 8.8.8.8 count 5<enter><wait>",
+      "configure<enter><wait>",
+      "set system host-name schwab<enter><wait>",
+      "commit<enter><wait>",
+      "save<enter><wait>",
+      "exit<enter><wait>",
       "sudo shutdown -r now<enter><wait10><wait10>"
     ],
     "ssh_timeout": "{{user `ssh_timeout`}}",
@@ -77,6 +81,7 @@
   "provisioners": [{
     "type": "shell",
     "scripts": [
+      "scripts/vyos/vmware.sh",
       "scripts/vyos/router.sh"
     ]
   }]
