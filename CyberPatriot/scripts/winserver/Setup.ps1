@@ -68,8 +68,8 @@ Install-WindowsFeature ADLDS
 
 Import-Module ActiveDirectory
 Import-Csv -Delimiter : -Path "C:\userlist.csv" | foreach-object {
-    $userprinicpalname = $_.SamAccountName + "@gingertech.com"
-    New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprinicpalname -Name $_.Firstname -DisplayName $_.Firstname -GivenName $_.Firstname -SurName $_.Lastname -Department $_.Department -Path "CN=Users,DC=gingertech,DC=com" -AccountPassword (ConvertTo-SecureString "password321" -AsPlainText -force) -Enabled $True -PasswordNeverExpires $True -PassThru
+    $userprincipalname = $_.SamAccountName + "@gingertech.com"
+    New-ADUser -SamAccountName $_.SamAccountName -UserPrincipalName $userprincipalname -Name $_.Firstname -DisplayName $_.Firstname -GivenName $_.Firstname -SurName $_.Lastname -Department $_.Department -Path "CN=Users,DC=gingertech,DC=com" -AccountPassword (ConvertTo-SecureString "password321" -AsPlainText -force) -Enabled $True -PasswordNeverExpires $True -PassThru
 }
 
 
