@@ -222,14 +222,6 @@ function dpkg_deps
   cp -v -R docs/*     /usr/share/doc/curl-7.58.0
 
   cd $LFS/sources
-  tar xvf  Error-0.17025.tar.gz
-  cd Error-0.17025
-
-  perl Makefile.PL &&
-  make &&
-  make install
-
-  cd $LFS/sources
   tar xvf Python-2.7.15.tar.xz
   cd Python-2.7.15
 
@@ -282,8 +274,8 @@ build_libmd
 build_dpkg
 cd $LFS/sources
 
-#dpkg -i gpgv_2.1.18-8~deb9u2_amd64.deb
-#dpkg -i debian-archive-keyring_2017.5_all.deb
-#dpkg -i init-system-helpers_1.48_all.deb
-#dpkg -i libapt-pkg5.0_1.4.8_amd64.deb
-#dpkg -i apt_1.4.8_amd64.deb
+dpkg -i gpgv_2.1.18-8~deb9u2_amd64.deb
+dpkg -i debian-archive-keyring_2017.5_all.deb
+dpkg -i init-system-helpers_1.48_all.deb
+dpkg -i libapt-pkg5.0_1.4.8_amd64.deb
+dpkg -i apt_1.4.8_amd64.deb

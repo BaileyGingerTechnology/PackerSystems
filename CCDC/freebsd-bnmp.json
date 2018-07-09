@@ -110,11 +110,6 @@
       "destination": "/temp/freebsd-fnginx.sh"
     },
     {
-      "type": "file",
-      "source": "scripts/freebsd/freebsd-fmysql.sh",
-      "destination": "/temp/freebsd-fmysql.sh"
-    },
-    {
       "type": "shell",
       "script": "scripts/freebsd/freebsd-bnmp.sh"
     }

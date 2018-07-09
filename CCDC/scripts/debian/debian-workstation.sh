@@ -8,6 +8,8 @@ sudo tee -a /etc/ssh/sshd_config <<EOF
 UseDNS no
 EOF
 
+echo 'blake.gingertech.com' > /etc/hostname
+
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
 TARGET_DIR='/mnt/arch'
 PASSWORD=$(/usr/bin/openssl passwd -crypt 'password')
@@ -141,6 +143,8 @@ cat << EOF > "/temp/finish.sh"
   sudo -H -u administrator makepkg -si --noconfirm
 
   sudo -H -u administrator yaourt -Syu --noconfirm
+
+	echo 'blake.gingertech.com' > /etc/hostname
 
   rm -rf /temp
 	rm /finish.sh 

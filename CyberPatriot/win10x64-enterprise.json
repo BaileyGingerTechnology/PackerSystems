@@ -1,4 +1,16 @@
 {
+  "variables": {
+    "vm_name": "Windows 10",
+    "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
+    "iso_url": "https://files.gingertechnology.net/packersystems/win10.iso",
+    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+    "username": "GingerTech",
+    "password": "UberPassword",
+    "memsize": "2048",
+    "numcpus": "2",
+    "update": "true",
+    "version": "0.1.0"
+  },
   "builders": [
     {
       "type": "qemu",
@@ -51,24 +63,9 @@
       "guest_additions_mode": "upload",
       "guest_additions_path": "c:/Windows/Temp/windows.iso",
       "vboxmanage": [
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--memory",
-            "2048"
-          ],
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--cpus",
-            "2"
-          ],
-          [
-            "modifyvm",
-            "{{.Name}}",
-            "--vram", 
-            "32"
-          ]	
+          [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+          [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+          [ "modifyvm", "{{.Name}}", "--vram", "32" ]	
         ]
     },
     {
@@ -178,17 +175,5 @@
         "cd C:\\Windows\\system32\\",
         ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"UberPassword\""]
     }
-  ],
-  "variables": {
-    "vm_name": "Windows 10",
-    "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
-    "iso_url": "https://files.gingertechnology.net/packersystems/win10.iso",
-    "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-    "username": "GingerTech",
-    "password": "UberPassword",
-    "memsize": "2048",
-    "numcpus": "2",
-    "update": "true",
-    "version": "0.1.0"
-  }
+  ]
 }

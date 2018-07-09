@@ -17,5 +17,8 @@ chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg
 chown root:root /etc/apt/sources.list.d/microsoft-prod.list
 
 apt update && apt install -y dotnet-sdk-2.1 aspnetcore-runtime-2.1
+
+
+
 echo "[+] Removing temporary files"
 rm -rf /tmp/*

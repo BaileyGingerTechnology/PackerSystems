@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo 'maas.gingertech.com' > /etc/hostname
+
 # Updating to most recent packages. Will probably have at least one thing out of date by the time it's used
 echo "Updating"
 /usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf

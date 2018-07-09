@@ -131,6 +131,26 @@ function build_parser
   make install
 }
 
+function build_dpkg_deps
+{
+  # The DPKG Perl deps. Clock issues in final build require them to be made before reboot
+  cd $LFS/sources
+  tar xvf ExtUtils-MakeMaker-7.34.tar.gz
+  cd ExtUtils-MakeMaker-7.34
+
+  perl Makefile.pl
+  make -j${CPUS}
+  make install
+
+  cd $LFS/sources
+  tar xvf Error-0.17025.tar.gz
+  cd Error-0.17025
+
+  perl Makefile.PL &&
+  make &&
+  make install
+}
+
 function build_intltool
 {
   cd $LFS/sources
@@ -592,6 +612,7 @@ build_expat
 build_inetutils
 build_perl
 build_parser
+build_dpkg_deps
 build_intltool
 build_autoconf
 build_automake

@@ -1,4 +1,15 @@
 {
+  "variables": {
+    "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
+    "iso_checksum_type": "md5",
+    "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
+    "autounattend": "floppy/Win2012/Autounattend.xml",
+    "headless": "false",
+    "cpus": "2",
+    "memory_size": "2048",
+    "disk_size": "40960",
+    "version": "0.1.0"
+  },
   "builders": [
     {
       "type": "vmware-iso",
@@ -58,18 +69,8 @@
         "floppy/Win2012/RunPwSh.bat"
       ],
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "{{user `memory_size`}}"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "{{user `cpus`}}"
-        ]
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory_size`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}" ]
       ]
     }
   ],
@@ -122,16 +123,5 @@
       "output": "manifest.json",
       "strip_path": true
     }
-  ],
-  "variables": {
-    "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
-    "iso_checksum_type": "md5",
-    "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
-    "autounattend": "floppy/Win2012/Autounattend.xml",
-    "headless": "false",
-    "cpus": "2",
-    "memory_size": "2048",
-    "disk_size": "40960",
-    "version": "0.1.0"
-  }
+  ]
 }

@@ -3,6 +3,8 @@
 
 echo "Reboot success. In system."
 
+echo 'dlacey.gingertech.com' > /etc/hostname
+
 # Gonna have it be a OwnCloud webserver
 echo ">=dev-lang/php-7.1.16 gd mysql mysqli pdo intl zip xmlreader curl xmlwriter fpm sqlite" >> /etc/portage/package.use/web-unmask
 echo ">=app-eselect/eselect-php-0.9.4-r5 fpm" >> /etc/portage/package.use/web-unmask

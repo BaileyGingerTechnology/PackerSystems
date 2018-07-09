@@ -65,7 +65,7 @@ For Windows Server 2012r2:
 
     - Sets proxy.google.com to be a web proxy
 
-    - Routes search engines to localhost in the hosts file (except Google, which goes to ask.com' IP)
+    - Routes search engines to localhost in the hosts file (except Google, which goes to ask.com's IP)
 
     - Disables Windows firewall
 
@@ -74,8 +74,6 @@ For Windows Server 2012r2:
     - I need to research some AD PowerShell tricks to better mess up this box
 
 ### CCDC:
-
-So I already know that getting a faithful CCDC environemnt to be built through an automated process is going to be extremely difficult. The things they do to those boxes make grown men cry (literally). But I shall do the best I can.
 
 Creds for all these boxes is going to be "administrator" and "password" for Linux and "GingerTech" and "password" on Windows.
 
