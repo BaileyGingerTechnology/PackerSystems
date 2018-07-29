@@ -1,7 +1,7 @@
 {
   "variables": {
-    "iso_url": "http://mirrors.kernel.org/archlinux/iso/2018.07.01/archlinux-2018.07.01-x86_64.iso",
-    "iso_checksum_url": "http://mirrors.kernel.org/archlinux/iso/2018.07.01/sha1sums.txt",
+    "iso_url": "https://mirrors.edge.kernel.org/archlinux/iso/2018.07.01/archlinux-2018.07.01-x86_64.iso",
+    "iso_checksum_url": "https://mirrors.edge.kernel.org/archlinux/iso/2018.07.01/sha1sums.txt",
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",
     "country": "US",
@@ -37,8 +37,8 @@
     },
     {
       "type": "vmware-iso",
-      "iso_url": "{{ user `iso_url` }}",
-      "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+      "iso_urls": [ "https://mirrors.edge.kernel.org/archlinux/iso/2018.07.01/archlinux-2018.07.01-x86_64.iso", "http://mirrors.liquidweb.com/archlinux/iso/2018.07.01/archlinux-2018.07.01-x86_64.iso" ],
+      "iso_checksum": "2993d8d1e8c57287770c7ea6ce1e1290a6cb5e78",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "http_directory": "http",
       "boot_wait": "5s",

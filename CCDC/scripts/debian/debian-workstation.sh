@@ -8,7 +8,8 @@ sudo tee -a /etc/ssh/sshd_config <<EOF
 UseDNS no
 EOF
 
-echo 'blake.gingertech.com' > /etc/hostname
+sudo bash -c "echo 'blake.gingertech.com' > /etc/hostname"
+sudo hostname blake.gingertech.com
 
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
 TARGET_DIR='/mnt/arch'

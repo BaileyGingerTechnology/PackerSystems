@@ -1,13 +1,13 @@
 {
   "variables": {
       "iso_url": "https://files.gingertechnology.net/packersystems/archlinux-2018.05.26-x86_64.iso",
-      "iso_checksum_url": "https://files.gingertechnology.net/packersystems/SHA1SUMS",
+      "iso_checksum": "8632eb765cabd500b589fbf59995b9f09893b12d",
       "iso_checksum_type": "sha1",
       "ssh_timeout": "20m",
       "country": "USA",
       "arch_country": "US",
       "headless": "false",
-      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180614T214502Z.tar.xz",
+      "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20180726T214502Z.tar.xz",
       "cpus": "8",
       "cpus_after": "2",
       "memory": "2048",
@@ -19,7 +19,7 @@
       {
           "type": "virtualbox-iso",
           "iso_url": "{{ user `iso_url` }}",
-          "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+          "iso_checksum": "{{ user `iso_checksum` }}",
           "iso_checksum_type": "{{ user `iso_checksum_type` }}",
           "guest_os_type": "Gentoo_64",
           "guest_additions_mode": "disable",
@@ -52,7 +52,7 @@
       {
           "type": "vmware-iso",
           "iso_url": "{{ user `iso_url` }}",
-          "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+          "iso_checksum": "{{ user `iso_checksum` }}",
           "iso_checksum_type": "{{ user `iso_checksum_type` }}",
           "http_directory": "http",
           "boot_wait": "5s",

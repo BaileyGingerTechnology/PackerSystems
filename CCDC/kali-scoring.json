@@ -23,7 +23,7 @@
       "debian-installer=en_US <wait>",
       "auto <wait>",
       "locale=en_US <wait>",
-      "hostname=scoring domain=locale.lan ",
+      "hostname=ward domain=locale.lan ",
       "kbd-chooser/method=us <wait>",
       "fb=false <wait>",
       "interface=auto ",
@@ -63,7 +63,7 @@
       "debian-installer=en_US <wait>",
       "auto <wait>",
       "locale=en_US <wait>",
-      "hostname=scoring domain=locale.lan ",
+      "hostname=ward domain=locale.lan ",
       "kbd-chooser/method=us <wait>",
       "fb=false <wait>",
       "interface=auto ",
@@ -95,7 +95,7 @@
       "expect_disconnect": true,
       "inline": [
         "sudo mv /tmp/sources.list /etc/apt/sources.list",
-        "sudo apt clean && sudo apt update && sudo apt -y upgrade && sudo apt -y dist-upgrade",
+        "sudo apt clean && sudo apt update && yes | sudo apt upgrade && sudo apt -y dist-upgrade",
         "sudo reboot"
       ]
     },
