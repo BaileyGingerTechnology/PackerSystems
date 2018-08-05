@@ -3,8 +3,7 @@
 # Date    : 12/14/2017
 # Purpose : Functions used for disk setup
 
-function set_filesystems
-{
+function set_filesystems() {
 	# Make the boot partition FAT32
 	mkfs.vfat -F 32 $12
 	# Make the file partition ext4
@@ -18,16 +17,15 @@ function set_filesystems
 	echo "Making an fstab file now, which will be used later."
 	# This file is used by both the system and genkernel. Easier to make it now than later
 	touch /tmp/fstab
-	echo "/dev/$12		/boot		ext2	defaults,noatime	0 2" >> /tmp/fstab
-	echo "/dev/$13		none		swap	sw					0 0" >> /tmp/fstab
-	echo "/dev/$14		/			ext4	noatime				0 1" >> /tmp/fstab
-	echo "/dev/cdrom	/mnt/cdrom	auto	noauto,user			0 0" >> /tmp/fstab
+	echo "/dev/$12		/boot		ext2	defaults,noatime	0 2" >>/tmp/fstab
+	echo "/dev/$13		none		swap	sw					0 0" >>/tmp/fstab
+	echo "/dev/$14		/			ext4	noatime				0 1" >>/tmp/fstab
+	echo "/dev/cdrom	/mnt/cdrom	auto	noauto,user			0 0" >>/tmp/fstab
 }
 
-function partition_disk
-{
+function partition_disk() {
 	# Save the disk used to a file for later use
-	echo $1 > /tmp/diskUsed.txt
+	echo $1 >/tmp/diskUsed.txt
 
 	# Make the disk GPT to make life easy later
 	echo "Using parted to label disk GPT."

@@ -1,5 +1,4 @@
 {
-  
   "variables": {
     "vm_name": "Windows 81",
     "iso_checksum": "5e4ecb86fd8619641f1d58f96e8561ec",
@@ -28,7 +27,7 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/qemu/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "disk_size": 61440,
       "headless": "false",
@@ -36,11 +35,17 @@
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
-      "boot_wait":"2m",
+      "boot_wait": "2m",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "qemuargs": [
-        ["-m", "{{user `memsize`}}"],
-        ["-smp", "{{user `numcpus`}}"]
+        [
+          "-m",
+          "{{user `memsize`}}M"
+        ],
+        [
+          "-smp",
+          "{{user `numcpus`}}"
+        ]
       ]
     },
     {
@@ -57,7 +62,7 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "disk_size": 61440,
       "headless": "false",
@@ -69,15 +74,30 @@
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
-      "boot_wait":"2m",
+      "boot_wait": "2m",
       "guest_os_type": "Windows81_64",
       "guest_additions_mode": "upload",
       "guest_additions_path": "c:/Windows/Temp/windows.iso",
       "vboxmanage": [
-          [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
-          [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
-          [ "modifyvm", "{{.Name}}", "--vram", "32" ]	
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--vram",
+          "32"
         ]
+      ]
     },
     {
       "type": "vmware-iso",
@@ -97,12 +117,12 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "winrm_username": "{{user `username`}}",
       "winrm_password": "{{user `password`}}",
       "winrm_timeout": "6h",
-      "boot_wait":"2m",
+      "boot_wait": "2m",
       "shutdown_command": "{{ user `shutdown_command`}}",
       "tools_upload_flavor": "windows",
       "vmx_data": {
@@ -165,11 +185,12 @@
         "scripts/winshared/Setup81.ps1"
       ]
     },
-    { 
+    {
       "type": "windows-shell",
       "inline": [
         "cd C:\\Windows\\system32\\",
-        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"password\""]
+        ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"password\""
+      ]
     }
   ]
 }

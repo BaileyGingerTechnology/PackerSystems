@@ -23,12 +23,12 @@ mkdir -p ./volumes/app/mattermost/{data,logs,config}
 sudo chown -R 2000:2000 ./volumes/app/mattermost/
 docker-compose up -d
 
-cd ..
+cd /usr/share/docker
 
 git clone https://github.com/BaileyGingerTechnology/system-manager.git
 cd system-manager
 docker-compose up -d
 
-cd ..
+cd /usr/share/docker
 
 docker run -d --restart unless-stopped -p 999:443 --name openvas mikesplain/openvas

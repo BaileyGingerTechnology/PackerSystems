@@ -9,9 +9,9 @@ sudo bash -c "echo 'beddor.gingertech.com' > /etc/hostname"
 sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-iocage
 
 sudo iocage activate zroot
-echo 6 |sudo iocage fetch
+echo 6 | sudo iocage fetch
 
-sudo tee -a /etc/rc.conf << EOF
+sudo tee -a /etc/rc.conf <<EOF
 iocage_enable="YES"
 sshd_enable="YES"
 
@@ -23,7 +23,7 @@ ifconfig_bridge0="addm em0 up"
 ifconfig_em0="up"
 EOF
 
-sudo tee -a /etc/sysctl.conf << EOF
+sudo tee -a /etc/sysctl.conf <<EOF
 net.inet.ip.forwarding=1       # Enable IP forwarding between interfaces
 net.link.bridge.pfil_onlyip=0  # Only pass IP packets when pfil is enabled
 net.link.bridge.pfil_bridge=0  # Packet filter on the bridge interface
@@ -43,10 +43,10 @@ sleep 30
 
 cd /temp
 sudo chmod +x freebsd-*
-sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh\
+sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh
 
 sudo chroot /iocage/jails/rowling/root \
-  ./freebsd-fnginx.sh
+	./freebsd-fnginx.sh
 
 sudo rm -f /iocage/jails/rowling/root/freebsd-fnginx.sh
 

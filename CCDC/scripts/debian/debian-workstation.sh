@@ -31,7 +31,7 @@ sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakero
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 
 # To make it look like an actual workstation
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 sudo apt-get update
@@ -52,9 +52,9 @@ cd pacman
 export LIBARCHIVE_LIBS="-larchive"
 export LIBCURL_CFLAGS="-I/usr/include/curl"
 export LIBCURL_LIBS="-lcurl"
-./configure --prefix=/   \
-						--enable-doc \
-            --with-curl
+./configure --prefix=/ \
+	--enable-doc \
+	--with-curl
 
 make
 make -C contrib
@@ -91,7 +91,7 @@ sudo bash -c "genfstab -U /mnt/arch >> /mnt/arch/etc/fstab"
 echo '==> Generating the system configuration script'
 sudo /usr/bin/install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 
-cat <<-EOF > "/temp/arch-config.sh"
+cat <<-EOF >"/temp/arch-config.sh"
 	set -e
 	set -x
 	
@@ -105,12 +105,12 @@ cat <<-EOF > "/temp/arch-config.sh"
 	# https://wiki.archlinux.org/index.php/Network_Configuration#Device_names
 	/usr/bin/ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 	/usr/bin/ln -s '/usr/lib/systemd/system/dhcpcd@.service' '/etc/systemd/system/multi-user.target.wants/dhcpcd@eth0.service'
-
+	
 	# Admin user config
 	/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 	echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
 	/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator
-
+	
 	/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
@@ -122,7 +122,7 @@ sudo chmod +x ${TARGET_DIR}${CONFIG_SCRIPT}
 sudo bash -c "arch-chroot ${TARGET_DIR} ${CONFIG_SCRIPT}"
 sudo rm "${TARGET_DIR}${CONFIG_SCRIPT}"
 
-cat << EOF > "/temp/finish.sh"
+cat <<EOF >"/temp/finish.sh"
 	set -e
 	set -x
 	
@@ -155,5 +155,5 @@ sudo mv /temp/finish.sh /mnt/arch/finish.sh
 sudo chmod -v +x /mnt/arch/finish.sh
 
 sudo bash -c "arch-chroot ${TARGET_DIR} ./finish.sh"
-echo "sudo arch-chroot ${TARGET_DIR} && exit" >> ~/.bashrc
+echo "sudo arch-chroot ${TARGET_DIR} && exit" >>~/.bashrc
 sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >> /root/.bashrc"

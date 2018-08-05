@@ -50,5 +50,6 @@ Thumbs.db
 # Ignored ignores
 !CCDC/files/ninite.exe
 !CCDC/files/ninite-81.exe
+!CCDC/floppy/server/NetVKM/amd64/netkvmco.dll
 !CyberPatriot/files/ForensicDeployment.exe
 !CyberPatriot/files/CheckScore.exe
