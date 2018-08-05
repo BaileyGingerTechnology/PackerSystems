@@ -53,3 +53,7 @@ Thumbs.db
 !CCDC/floppy/server/NetVKM/amd64/netkvmco.dll
 !CyberPatriot/files/ForensicDeployment.exe
 !CyberPatriot/files/CheckScore.exe
+
+# Ignore submodules
+ScoringEngine/*
+ForensicDeployment/*

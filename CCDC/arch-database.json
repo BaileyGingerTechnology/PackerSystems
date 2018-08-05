@@ -41,7 +41,7 @@
       "iso_checksum_url": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "http_directory": "http",
-      "boot_wait": "5s",
+      "boot_wait": "10s",
       "tools_upload_flavor": "linux",
       "boot_command": [
         "<enter><wait10><wait10><wait10><wait10>",

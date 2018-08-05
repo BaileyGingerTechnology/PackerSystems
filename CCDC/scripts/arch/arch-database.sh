@@ -21,7 +21,7 @@ echo "alias cat='tac'" >>/home/administrator/.bashrc
 	echo "*/5 * * * * /usr/bin/pacman -Syu --noconfirm"
 ) | crontab -
 
-cd /tmp
+cd /tmp || exit 1
 git clone https://github.com/juliavallina/windows-zsh-theme.git
 su - administrator -c "cp windows-zsh-theme/windows.zsh-theme ~/.oh-my-zsh/custom/themes/windows.zsh-theme"
 mv windows-zsh-theme/windows.zsh-theme ~/.oh-my-zsh/custom/themes/windows.zsh-theme
