@@ -1,3 +1,8 @@
+# Windows, and therefore Chocolatey, has really stupid exit codes.
+# For example, 3010 which means success and reboot needed.
+# Because success codes can be non-0, Packer will fail on success.
+# Thus, this bullshit:
+
 if ($args[0] -eq 1) {
   choco install -y dotnet4.5.2
   exit 0

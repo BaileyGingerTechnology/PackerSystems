@@ -1,5 +1,5 @@
 # Whew boi, kill me now
-E:
+Set-Location -Path E:\ -PassThru
 .\Setup.exe /PrepareSchema /IAcceptExchangeServerLicenseTerms
 .\Setup.exe /PrepareAD /OrganizationName:gingertech /IAcceptExchangeServerLicenseTerms
 .\Setup.exe /PrepareAD /OrganizationName:gingertech /IAcceptExchangeServerLicenseTerms
@@ -7,12 +7,12 @@ E:
 # Theoretically Exchange might be installed?
 
 # Disable autologon
-$Regkey= "HKLM:\Software\Microsoft\Windows NT\Currentversion\WinLogon"
-$DefaultUserName = ''
-$DefaultPassword = ''
+$Regkey = "HKLM:\Software\Microsoft\Windows NT\Currentversion\WinLogon"
+Set-ItemProperty -Path $Regkey -Name DefaultUserName -Value ''
+Set-ItemProperty -Path $Regkey -Name DefaultPassword -Value ''
 
 # Disable firewall
-Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
 
 scoop install grep --global
 

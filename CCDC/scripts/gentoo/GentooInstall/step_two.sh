@@ -70,6 +70,7 @@ function configure_network() {
 
 	# Make array of network interfaces
 	interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
+  ipaddr=$(ifconfig ${interfaces[0]} | grep inet | (sed -n 1p) | awk '{print $1}')
 
 	# Send the selected one to a file
 	echo 'config_${interfaces[$choice-1]}="dhcp"'
@@ -78,6 +79,7 @@ function configure_network() {
 	cd /etc/init.d || exit 1
 	ln -s net.lo net.${interfaces[0]}
 	rc-update add net.${interfaces[0]} default
+	echo "${interfaces[0]} $ipaddr" >/home/administrator/ipinfo
 }
 
 configure_network
@@ -122,6 +124,8 @@ echo 'administrator ALL=(ALL) NOPASSWD: ALL' >>/etc/sudoers.d/10_administrator
 chmod 0440 /etc/sudoers.d/10_administrator
 
 yes password | passwd administrator
+
+echo "sudo ifconfig $(cat ~/ipinfo)" >>~/.bashrc
 
 echo "We should be done."
 

@@ -280,7 +280,7 @@
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "scripts": [
-        "scripts/winshared/SetupServ.ps1"
+        "scripts/winserver/SetupServ.ps1"
       ]
     },
     {
@@ -292,19 +292,24 @@
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "scripts": [
-        "scripts/winshared/exchange.ps1"
+        "scripts/winserver/ServerUsers.ps1"
       ]
     },
     {
       "type": "windows-restart",
       "restart_command": "powershell Restart-Computer -Force"
-    }
-  ],
-  "post-processors": [
+    },
     {
-      "type": "manifest",
-      "output": "manifest.json",
-      "strip_path": true
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "scripts": [
+        "scripts/winserver/Exchange.ps1"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell Restart-Computer -Force"
     }
   ]
 }
