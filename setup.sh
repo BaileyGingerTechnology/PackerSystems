@@ -7,16 +7,16 @@ git pull
 git submodule update --init --remote --recursive
 
 echo "Latest changes pulled. Build ScoringEngine? (Requries Go and dpkg-deb, enter 'yes' to continue)"
-read DoIt
+read -r DoIt
 
-if [ $DoIt != "yes" ]; then
+if [ "$DoIt" != "yes" ]; then
  exit
 fi
 
-cd ScoringEngine/CyberPatriotScoringEngine
+cd ScoringEngine/CyberPatriotScoringEngine || exit 1
 go build
 mv CyberPatriotScoringEngine ../CheckScore/usr/local/bin/checkscore
 
-cd ..
+cd .. || exit 1
 dpkg-deb --build CheckScore
 mv CheckScore.deb ../CyberPatriot/files/

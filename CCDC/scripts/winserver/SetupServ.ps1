@@ -46,3 +46,6 @@ Install-ADDSForest `
   -NoRebootOnCompletion:$true `
   -SysvolPath "C:\Windows\SYSVOL" `
   -Force:$true
+
+Write-Host "AD Good"
+exit 0

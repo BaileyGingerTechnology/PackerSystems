@@ -221,6 +221,19 @@
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "inline": [
+        "C:\\WinBullshit.ps1 2"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
         "C:\\WinBullshit.ps1 3"
       ]
     },

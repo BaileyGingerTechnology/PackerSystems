@@ -19,6 +19,6 @@ elseif ($args[0] -eq 4) {
   choco install -y ucma4
   exit 0
 }
-elseif ($args[0] -gt 4) {
+else {
   Write-Host "Please give a number between 1 and 4"
 }
