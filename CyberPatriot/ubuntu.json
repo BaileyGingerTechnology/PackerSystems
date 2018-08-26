@@ -2,7 +2,7 @@
   "variables": {
     "vm_name": "UbuntuWeb",
     "iso_checksum": "http://releases.ubuntu.com/16.04/SHA256SUMS",
-    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso",
+    "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.5-server-amd64.iso",
     "shutdown_command": "sudo systemctl poweroff",
     "username": "administrator",
     "password": "UberPassword",
@@ -14,7 +14,7 @@
     {
       "type": "qemu",
       "http_directory": "http",
-      "vm_name": "{{user `vm_name`}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
@@ -47,15 +47,21 @@
       "ssh_password": "{{user `password`}}",
       "shutdown_command": "{{user `shutdown_command`}}",
       "qemuargs": [
-        ["-m", "{{user `memsize`}}"],
-        ["-smp", "{{user `numcpus`}}"]
+        [
+          "-m",
+          "{{user `memsize`}}"
+        ],
+        [
+          "-smp",
+          "{{user `numcpus`}}"
+        ]
       ]
     },
     {
-      "name": "virtualbox",
+      "name": "virtualbox-iso",
       "type": "virtualbox-iso",
       "http_directory": "http",
-      "vm_name": "{{user `vm_name`}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
@@ -89,15 +95,25 @@
       "shutdown_command": "{{user `shutdown_command`}}",
       "guest_os_type": "Ubuntu_64",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "{{user `memsize`}}"],
-        ["modifyvm", "{{.Name}}", "--cpus", "{{user `numcpus`}}"]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memsize`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `numcpus`}}"
+        ]
       ]
     },
     {
-      "name": "vmware",
+      "name": "vmware-iso",
       "type": "vmware-iso",
       "guest_os_type": "Ubuntu-64",
-      "vm_name": "{{user `vn_name`}}",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_url": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha256",
@@ -142,13 +158,17 @@
       "execute_command": "sudo -E -S bash '{{.Path}}'",
       "type": "shell",
       "scripts": "scripts/ubuntu/virtualbox-tools.sh",
-      "only": ["virtualbox"]
+      "only": [
+        "virtualbox-iso"
+      ]
     },
     {
       "execute_command": "sudo -E -S bash '{{.Path}}'",
       "type": "shell",
       "scripts": "scripts/ubuntu/vmware-tools.sh",
-      "only": ["vmware"]
+      "only": [
+        "vmware-iso"
+      ]
     },
     {
       "type": "shell",

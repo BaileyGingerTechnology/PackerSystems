@@ -136,12 +136,18 @@
   "provisioners": [
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",
       "source": "scripts/winshared/WinBullshit.ps1",
       "destination": "C:\\WinBullshit.ps1"
+    },
+    {
+      "type": "file",
+      "source": "files/7z920-x64.msi",
+      "destination": "C:\\Windows\\Temp\\7z920-x64.msi"
     },
     {
       "type": "powershell",
@@ -153,7 +159,13 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "windows-shell",
@@ -164,7 +176,13 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "shell-local",
@@ -191,7 +209,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -201,7 +220,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -239,7 +259,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -269,7 +290,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -281,7 +303,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",
@@ -298,11 +321,12 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
-      "elevated_user": "GingerTech",
+      "elevated_user": "GINGERTECH\\GingerTech",
       "elevated_password": "password",
       "scripts": [
         "scripts/winserver/ServerUsers.ps1"
@@ -310,19 +334,16 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
-      "elevated_user": "GingerTech",
+      "elevated_user": "GINGERTECH\\GingerTech",
       "elevated_password": "password",
       "scripts": [
         "scripts/winserver/Exchange.ps1"
       ]
-    },
-    {
-      "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
     }
   ]
 }

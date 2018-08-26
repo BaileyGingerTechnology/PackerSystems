@@ -7,17 +7,15 @@ The goal of this project is to eventually provide practice environments for thin
 
 ## Build instructions:
 
-Install packer (packer-io on Arch Linux) and a hypervisor (Virtualbox, KVM, or VMware. I might support Parallels and Hyper-V in the future, but not yet).
+Install packer and a hypervisor (Virtualbox, KVM, or VMware. I might support Parallels and Hyper-V in the future, but not yet).
 
-Download the Windows 10 and Windows Server 2012r2 ISOs. The Ubuntu one will be gotten later.
+Clone the repo and cd into it.
 
-Clone the repo and cd into it
-
-cd into the directory of the environment you are building out
+cd into the directory of the environment you are building out.
 
 packer build -only=(virtualbox-iso, vmware-iso, or qemu) ./(machine).json
 
-And then wait. A really long time. Repeat the last step for each image you want. If you have the resources, you can do several builds at once. If you do not specify -only, it will build all the platforms.
+Note that packer will start a service for each provisioner (step, basically) of the build. For the Windows ones, this can mean more than 15 processes being started all at once, because of all the reboots required. Also note that certain builds can take more than an hour, especially the CCDC ones. I will time the builds on my system and include the build time by each set of notes below. Info on my computer will be at the bottom of this README. The estimated time will not include the length of time it took to download the ISOs.
 
 ## Progress so far:
 
@@ -25,7 +23,7 @@ And then wait. A really long time. Repeat the last step for each image you want.
 
 Ubuntu and Windows 10 are both functional and build the base of what I want. But only in Virtualbox for Windows 10, so now my goal is to get it working in VMware and KVM.
 
-For Ubuntu:
+For Ubuntu (est. build time 15 minutes:
 
     - https://blog.gingertechnology.net/2018/05/28/ubuntu-1-0-a-cyberpatriot-practice-image/
 
@@ -89,7 +87,9 @@ Arch Database (Codename="Maas"):
 
 Windows 2012r2 Server (Codename="Riordan"):
 
-    - Going to do AD and potentially have it be a monolithic Exchange box.
+    - Monolithic Exchange and Active Directory box.
+
+    - For the build to work, download the exchange ISO from https://files.gingertechnology.net/packersystems/ and put it in CCDC/files, then make sure it get's mounted as drive E:\
 
 Debian workstation (Codename="Blake"):
 
@@ -151,3 +151,15 @@ The Linux CyberPatriot one is almost done. The Windows one is also functional, I
 I plan to keep this project completely free to make use of. If you wish to support me in some way, you can become a patron of mine on Patreon here:
 
 https://www.patreon.com/GingerTechnology
+
+### System Specs
+
+To see the amount of CPU cores, RAM, and disk size allocated for builds, look in the variable field at the top of each .json file. That gets allocated from:
+
+    CPU: Ryzen 7 1700
+
+    RAM: Corsair Vengeance LPX 16gb (2x8gb) DDR4 2400
+    
+    HDD: HGST DeskStar 2tb, 7200 RPM
+
+Builds go significantly faster on an SSD, but I'm paranoid about the amount of data that each build writes and then deletes from the drive killing my SSD, so I use the hard drive instead.
