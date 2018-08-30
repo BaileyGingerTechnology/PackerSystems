@@ -120,17 +120,19 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod -v +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
+# Install the scoring engine and set it to start at boot
 sudo dpkg -i CheckScore.deb
 mkdir -p /home/administrator/Desktop
 sudo systemctl enable scoring
 
-# Setting up something a bit annoying but not necessarily bad. Gonna use Shellshock to force the machine to reboot via a cronjob
+# Setting up something a bit annoying but not necessarily bad.
+# Gonna use Shellshock to force the machine to reboot via a cronjob
 sudo mv -v /temp/other/notify.sh /etc/gingertechengine/
 sudo chmod -v +x /etc/gingertechengine/*
 #sudo chown -v -R administrator /etc/gingertechengine
 sudo chown -v root /etc/gingertechengine/notify.sh
 
-# User priv stuff
+# User privilege stuff
 sudo usermod -aG sudo nuzumaki
 sudo usermod -aG sudo jprice
 sudo usermod -aG sudo lpena

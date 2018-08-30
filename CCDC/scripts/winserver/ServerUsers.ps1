@@ -16,4 +16,4 @@ Add-ADGroupMember -Identity 'Schema Admins' -Members "GingerTech"
 # Make one of them the primary group for the main
 # Exchange admin
 $group = Get-ADGroup "Enterprise Admins" -properties @("primaryGroupToken")
-Get-ADUser "GingerTech" | Set-ADUuser -replace @{primaryGroupID = $group.primaryGroupToken}
+Get-ADUser "GingerTech" | Set-ADUser -replace @{primaryGroupID = $group.primaryGroupToken}

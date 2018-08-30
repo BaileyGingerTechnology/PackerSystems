@@ -44,6 +44,12 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.duckduckgo.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.startpage.com"
 Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 
+# Disable firewall
+Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
+
+# I can't remember why this is here, but I'm leaving it just in case for now
+scoop install grep --global
+
 # The rest of this scripts creates the Active Directory Domain for the environment
 Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
 
