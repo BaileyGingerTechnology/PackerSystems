@@ -6,6 +6,8 @@
 function get_sources() {
 	# Got into tmp to avoid cluttering the machine
 	cd /tmp || exit 1
+	pacman -S --noconfirm python-requests
+	sleep 20
 	# Clone the needed repos
 	git clone https://github.com/BaileyGingerTechnology/mirrorselect.git
 	git clone https://github.com/BaileyGingerTechnology/ssl-fetch.git
@@ -38,7 +40,13 @@ function install_mirrorselect() {
 mkdir /etc/portage
 touch /etc/portage/make.conf
 
-get_sources
-install_sslfetch
-install_netselect
-install_mirrorselect
+pacman -S --noconfirm go
+git clone https://github.com/Jguer/yay.git
+cd yay
+make
+./yay -S gentoo-mirrorselect
+
+#get_sources
+#install_sslfetch
+#install_netselect
+#install_mirrorselect
