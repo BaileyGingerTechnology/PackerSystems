@@ -6,7 +6,6 @@
 function get_sources() {
 	# Got into tmp to avoid cluttering the machine
 	cd /tmp || exit 1
-	pacman -S --noconfirm python-requests
 	sleep 20
 	# Clone the needed repos
 	git clone https://github.com/BaileyGingerTechnology/mirrorselect.git
@@ -15,11 +14,10 @@ function get_sources() {
 }
 
 function install_sslfetch() {
-	pip install requests
 	# Go into ssl-fetch and insall
 	cd /tmp/ssl-fetch || exit 1
-	./setup.py build
-	./setup.py install
+	python2 setup.py build
+	python2 setup.py install
 }
 
 function install_netselect() {
@@ -31,8 +29,8 @@ function install_netselect() {
 function install_mirrorselect() {
 	# Go into mirrorselect and install
 	cd /tmp/mirrorselect || exit 1
-	./setup.py build
-	./setup.py install
+	python2 setup.py build
+	python2 setup.py install
 }
 
 # Keeps mirrorselect from getting pissy about not being
@@ -40,13 +38,13 @@ function install_mirrorselect() {
 mkdir /etc/portage
 touch /etc/portage/make.conf
 
-pacman -S --noconfirm go
-git clone https://github.com/Jguer/yay.git
-cd yay
-make
-./yay -S gentoo-mirrorselect
+#pacman -S --noconfirm go
+#git clone https://github.com/Jguer/yay.git
+#cd yay
+#make
+#./yay -S gentoo-mirrorselect
 
-#get_sources
-#install_sslfetch
-#install_netselect
-#install_mirrorselect
+get_sources
+install_sslfetch
+install_netselect
+install_mirrorselect

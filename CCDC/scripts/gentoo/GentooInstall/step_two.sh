@@ -79,7 +79,6 @@ function configure_network() {
 	cd /etc/init.d || exit 1
 	ln -s net.lo net.${interfaces[0]}
 	rc-update add net.${interfaces[0]} default
-	echo "${interfaces[0]} $ipaddr" >/home/administrator/ipinfo
 }
 
 configure_network

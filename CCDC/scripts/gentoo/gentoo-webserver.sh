@@ -36,4 +36,5 @@ yes -- "-5" | etc-update
 # Now for fun stuff
 
 sed -i 's/\/var\/www\/localhost\/htdocs/\/var\/www\/dlacey.gingertech.com\/htdocs/g' /etc/apache2/vhosts.d/default_vhost.include
+mkdir -p /var/www/dlacey.gingertech.com/htdocs
 echo '<?php phpinfo(); ?>' >/var/www/dlacey.gingertech.com/htdocs/info.php

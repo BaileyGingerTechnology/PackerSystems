@@ -111,7 +111,7 @@ VyOS router/firewall (Codename="Schwab"):
 
     - Gonna have to git gud at networking I guess.
 
-Gentoo Webserver (Codename="dLacey"):
+Gentoo Webserver (Codename="dLacey", approx. build time: 1 hour, 10 minutes):
     
     - Gentoo is a pretty good webserver, and I automated building it, so why not?
 

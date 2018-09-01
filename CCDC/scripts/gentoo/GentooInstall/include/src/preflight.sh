@@ -36,7 +36,7 @@ function check_distro() {
 		echo "Since you are not on Gentoo, some extra steps will need to be taken
     during portions of this install, but it should still all go fine."
 		pacman -Sy
-		pacman -S --needed --noconfirm rsync git wget links ntp dialog python-pip
+		pacman -S --needed --noconfirm rsync git wget links ntp dialog python2 python2-pip
 		not_gentoo
 	fi
 }
