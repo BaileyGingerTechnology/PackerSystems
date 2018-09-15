@@ -97,7 +97,7 @@ Debian workstation (Codename="Blake"):
 
     - I dub thee "Tuna Linux" because it's friggen stupid. I install Arch alongside Debian, and it auto-chroots into the Arch install whenever one opens Bash.
 
-Windows 8.1 workstation (Codename="Ee"):
+Windows 8.1 workstation (Codename="Ee", approx. build time: 1 hours, 16 minutes):
 
     - Pretty standard.
 
@@ -111,7 +111,7 @@ VyOS router/firewall (Codename="Schwab"):
 
     - Gonna have to git gud at networking I guess.
 
-Gentoo Webserver (Codename="dLacey", approx. build time: 1 hour, 10 minutes):
+Gentoo Webserver (Codename="dLacey", approx. build time: 1 hours, 10 minutes):
     
     - Gentoo is a pretty good webserver, and I automated building it, so why not?
 
@@ -119,7 +119,7 @@ Gentoo Webserver (Codename="dLacey", approx. build time: 1 hour, 10 minutes):
 
     - Set default shell to "oh" which is a shell built in Go, and Go is great.
 
-LFS Webserver (Codename="White"):
+LFS Webserver (Codename="White", approx. build time: 2 hours, 10 minutes):
 
     - Yep.
 

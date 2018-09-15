@@ -132,8 +132,8 @@ function build_libxml2() {
 	./configure --prefix=/usr \
 		--disable-static \
 		--with-history \
-		--with-python=/usr/bin/python3 &&
-		make -j${CPUS}
+		--with-python=/usr/bin/python3
+	make -j${CPUS}
 	make install
 }
 

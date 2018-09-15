@@ -129,7 +129,7 @@ function build_dpkg_deps() {
 	tar xvf ExtUtils-MakeMaker-7.34.tar.gz
 	cd ExtUtils-MakeMaker-7.34
 
-	perl Makefile.pl
+	perl Makefile.PL
 	make -j${CPUS}
 	make install
 

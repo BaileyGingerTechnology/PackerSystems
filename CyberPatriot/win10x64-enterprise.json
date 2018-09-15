@@ -1,6 +1,6 @@
 {
   "variables": {
-    "vm_name": "Windows 10",
+    "vm_name": "Win10_GT",
     "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
     "iso_url": "https://files.gingertechnology.net/packersystems/win10.iso",
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
@@ -96,17 +96,32 @@
       }
     }
   ],
-  "post-processors": [
-    {
-      "type": "manifest",
-      "output": "manifest.json",
-      "strip_path": true
-    }
-  ],
   "provisioners": [
     {
       "type": "powershell",
       "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+    },
+    {
+      "type": "file",
+      "source": "files/7z920-x64.msi",
+      "destination": "C:\\Windows\\Temp\\7z920-x64.msi"
+    },
+    {
+      "type": "windows-shell",
+      "execute_command": "{{.Vars}} cmd /c C:\\Windows\\Temp\\script.bat",
+      "scripts": [
+        "scripts/winshared/guest-tools.bat"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",

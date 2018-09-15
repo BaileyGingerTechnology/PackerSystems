@@ -130,8 +130,7 @@ install -v -m644 tcsh.html/* /usr/share/doc/tcsh-6.20.00/html
 install -v -m644 FAQ /usr/share/doc/tcsh-6.20.00
 
 cat >>/etc/shells <<"EOF"
-/bin/tcsh
-/bin/csh
+/usr/bin/tcsh
 EOF
 
 cat >~/.cshrc <<"EOF"
@@ -167,3 +166,7 @@ alias ls ls --color=always
 # Clean up after ourselves...
 unset red green yellow blue magenta cyan yellow white end
 EOF
+
+su - administrator -c "chsh -s /usr/bin/tcsh"
+
+rm -rf /sources /tools /finish-base.sh /build-to-bash.sh /user-group-setup.sh /wget-list

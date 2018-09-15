@@ -179,6 +179,7 @@
       "execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",
       "expect_disconnect": true,
       "scripts": [
+        "scripts/lfs/package-manager.sh",
         "scripts/lfs/lfs-webserver.sh"
       ]
     }

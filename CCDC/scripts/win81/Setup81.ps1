@@ -46,3 +46,7 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
+
+rm C:\ninite.exe
+rm C:\userlist.csv
+rm C:\WinBullshit.ps1
