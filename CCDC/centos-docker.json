@@ -96,6 +96,8 @@
     {
       "type": "shell",
       "scripts": [
+        "scripts/docker/vmware-tools.sh",
+        "scripts/docker/virtualbox-tools.sh",
         "scripts/docker/centdocker.sh"
       ]
     }

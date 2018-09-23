@@ -58,7 +58,7 @@ audio:x:11:
 video:x:12:
 utmp:x:13:
 usb:x:14:
-cdrom:x:15:
+cdrom:x:15: || exit 1
 adm:x:16:
 messagebus:x:18:
 systemd-journal:x:23:
@@ -70,6 +70,6 @@ EOF
 
 echo "build to bash"
 
-cd /
+cd / || exit 1
 
 exec /tools/bin/bash --login +h ./build-to-bash.sh

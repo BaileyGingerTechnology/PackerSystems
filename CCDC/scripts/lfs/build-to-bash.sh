@@ -11,9 +11,9 @@ chmod -v 664 /var/log/lastlog
 chmod -v 600 /var/log/btmp
 
 # Start 6.7 Linux API Headers
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf linux-4.16.10.tar.xz
-cd linux-4.16.10
+cd linux-4.16.10 || exit 1
 
 make mrproper
 
@@ -23,16 +23,16 @@ cp -rv dest/include/* /usr/include
 # End 6.7 Linux API Headers
 
 # Start 6.8 Man Pages
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf man-pages-4.16.tar.xz
-cd man-pages-4.16
+cd man-pages-4.16 || exit 1
 make install
 # End 6.8 Man Pages
 
 # Start 6.9 Glibc
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf glibc-2.27.tar.xz
-cd glibc-2.27
+cd glibc-2.27 || exit 1
 
 patch -Np1 -i ../glibc-2.27-fhs-1.patch
 ln -sfv /tools/lib/gcc /usr/lib
@@ -51,7 +51,7 @@ esac
 rm -f /usr/include/limits.h
 
 mkdir -v build
-cd build
+cd build || exit 1
 
 CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" \
 	../configure --prefix=/usr \
@@ -169,9 +169,9 @@ sleep 120
 # End 6.10 Adjusting the Toolchain
 
 # Start 6.11 Zlib
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf zlib-1.2.11.tar.xz
-cd zlib-1.2.11
+cd zlib-1.2.11 || exit 1
 
 ./configure --prefix=/usr
 
@@ -183,9 +183,9 @@ ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 # End 6.11 Zlib
 
 # Start 6.12 File
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf file-5.33.tar.gz
-cd file-5.33
+cd file-5.33 || exit 1
 
 ./configure --prefix=/usr
 make -j${CPUS}
@@ -193,9 +193,9 @@ make install
 # End 6.12 File
 
 # Start 6.13 Readline
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf readline-7.0.tar.gz
-cd readline-7.0
+cd readline-7.0 || exit 1
 
 sed -i '/MV.*old/d' Makefile.in
 sed -i '/{OLDSUFF}/c:' support/shlib-install
@@ -213,9 +213,9 @@ ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so) /usr/lib/libhistory.so
 # End 6.13 Readline
 
 # Start 6.14 M4
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf m4-1.4.18.tar.xz
-cd m4-1.4.18
+cd m4-1.4.18 || exit 1
 
 ./configure --prefix=/usr
 make -j${CPUS}
@@ -223,9 +223,9 @@ make install
 # End 6.14 M4
 
 # Start 6.15 BC
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf bc-1.07.1.tar.gz
-cd bc-1.07.1
+cd bc-1.07.1 || exit 1
 cat >bc/fix-libmath_h <<"EOF"
 #! /bin/bash
 sed -e '1   s/^/{"/' \
@@ -252,13 +252,13 @@ make install
 # End 6.15 BC
 
 # Start 6.16 Binutils
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf binutils-2.30.tar.xz
-cd binutils-2.30
+cd binutils-2.30 || exit 1
 
 expect -c "spawn ls"
 mkdir -v build
-cd build
+cd build || exit 1
 
 ../configure --prefix=/usr \
 	--enable-gold \
@@ -274,9 +274,9 @@ make tooldir=/usr install
 # End 6.16 Binutils
 
 # Start 6.17 GMP
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf gmp-6.1.2.tar.xz
-cd gmp-6.1.2
+cd gmp-6.1.2 || exit 1
 
 cp -v configfsf.guess config.guess
 cp -v configfsf.sub config.sub
@@ -297,9 +297,9 @@ make install-html
 # End 6.17 GMP
 
 # Start 6.18 MPFR
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf mpfr-4.0.1.tar.xz
-cd mpfr-4.0.1
+cd mpfr-4.0.1 || exit 1
 
 ./configure --prefix=/usr \
 	--disable-static \
@@ -313,9 +313,9 @@ make install-html
 # End 6.18 MPFR
 
 # Start 6.19 MPC
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf mpc-1.1.0.tar.gz
-cd mpc-1.1.0
+cd mpc-1.1.0 || exit 1
 
 ./configure --prefix=/usr \
 	--disable-static \
@@ -328,9 +328,9 @@ make install-html
 # End 6.19 MPC
 
 # Start 6.20 GCC
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf gcc-8.1.0.tar.xz
-cd gcc-8.1.0
+cd gcc-8.1.0 || exit 1
 
 case $(uname -m) in
 x86_64)
@@ -341,7 +341,7 @@ esac
 rm -f /usr/lib/gcc
 
 mkdir -v build
-cd build
+cd build || exit 1
 make distclean
 
 SED=sed \
@@ -355,7 +355,6 @@ make -j${CPUS}
 ulimit -s 32768
 
 make install
-echo "FIND ME TEST"
 ln -sv ../usr/bin/cpp /lib
 ln -sv gcc /usr/bin/cc
 
@@ -376,14 +375,14 @@ rm -v dummy.c a.out dummy.log
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 
-cd $LFS/sources
+cd $LFS/sources || exit 1
 rm -R -- */
 # End 6.20 GCC
 
 # Start 6.21 Bzip2
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf bzip2-1.0.6.tar.gz
-cd bzip2-1.0.6
+cd bzip2-1.0.6 || exit 1
 
 patch -Np1 -i ../bzip2-1.0.6-install_docs-1.patch
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
@@ -408,9 +407,9 @@ ln -sv bzip2 /bin/bzcat
 # End 6.21 Bzip2
 
 # Start 6.22 PKG-Config
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf pkg-config-0.29.2.tar.gz
-cd pkg-config-0.29.2
+cd pkg-config-0.29.2 || exit 1
 
 ./configure --prefix=/usr \
 	--with-internal-glib \
@@ -422,9 +421,9 @@ make install
 # End 6.22 PKG-Config
 
 # Start 6.23 Ncurses
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf ncurses-6.1.tar.gz
-cd ncurses-6.1
+cd ncurses-6.1 || exit 1
 
 sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
 ./configure --prefix=/usr \
@@ -465,9 +464,9 @@ cp -av lib/lib*.so.5* /usr/lib
 # End 6.23 Ncurses
 
 # Start 6.24 Attr
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf attr-2.4.47.src.tar.gz
-cd attr-2.4.47
+cd attr-2.4.47 || exit 1
 
 sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
 sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
@@ -477,7 +476,6 @@ sed -i 's:{(:\\{(:' test/run
 	--bindir=/bin \
 	--disable-static
 make -j${CPUS}
-make -j1 tests root-tests
 
 make install install-dev install-lib
 chmod -v 755 /usr/lib/libattr.so
@@ -487,9 +485,9 @@ ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
 # End 6.24 Attr
 
 # Start 6.25 Acl
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf acl-2.2.52.src.tar.gz
-cd acl-2.2.52
+cd acl-2.2.52 || exit 1
 
 sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
 sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
@@ -510,9 +508,9 @@ ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
 # End 6.25 Acl
 
 # Start 6.26 Libcap
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf libcap-2.25.tar.xz
-cd libcap-2.25
+cd libcap-2.25 || exit 1
 
 sed -i '/install.*STALIBNAME/d' libcap/Makefile
 make -j${CPUS}
@@ -524,9 +522,9 @@ ln -sfv ../../lib/$(readlink /usr/lib/libcap.so) /usr/lib/libcap.so
 # End 6.26 Libcap
 
 # Start 6.27 Sed
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf sed-4.5.tar.xz
-cd sed-4.5
+cd sed-4.5 || exit 1
 
 sed -i 's/usr/tools/' build-aux/help2man
 sed -i 's/testsuite.panic-tests.sh//' Makefile.in
@@ -542,9 +540,9 @@ install -m644 doc/sed.html /usr/share/doc/sed-4.5
 # End 6.27 Sed
 
 # Start 6.28 Shadow
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf shadow-4.6.tar.xz
-cd shadow-4.6
+cd shadow-4.6 || exit 1
 
 sed -i 's/groups$(EXEEXT) //' src/Makefile.in
 find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
@@ -569,9 +567,9 @@ usermod --password $(echo password123 | openssl passwd -1 -stdin) root
 # End 6.28 Shadow
 
 # Start 6.29 Psmisc
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf psmisc-23.1.tar.xz
-cd psmisc-23.1
+cd psmisc-23.1 || exit 1
 
 ./configure --prefix=/usr
 make -j${CPUS}
@@ -582,18 +580,18 @@ mv -v /usr/bin/killall /bin
 # End 6.29 Psmisc
 
 # Start 6.30 Iana
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf iana-etc-2.30.tar.bz2
-cd iana-etc-2.30
+cd iana-etc-2.30 || exit 1
 
 make -j${CPUS}
 make install
 # End 6.30 Iana
 
 # Start 6.31 Bison
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf bison-3.0.4.tar.xz
-cd bison-3.0.4
+cd bison-3.0.4 || exit 1
 
 ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.0.4
 make -j${CPUS}
@@ -601,9 +599,9 @@ make install
 # End 6.31 Bison
 
 # Start 6.32 Flex
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf flex-2.6.4.tar.gz
-cd flex-2.6.4
+cd flex-2.6.4 || exit 1
 
 sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
 HELP2MAN=/tools/bin/true \
@@ -615,9 +613,9 @@ ln -sv flex /usr/bin/lex
 # End 6.32 Flex
 
 # Start 6.33 Grep
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf grep-3.1.tar.xz
-cd grep-3.1
+cd grep-3.1 || exit 1
 
 ./configure --prefix=/usr --bindir=/bin
 make -j${CPUS}
@@ -625,9 +623,9 @@ make install
 # End 6.33 Grep
 
 # Start 6.34 Bash
-cd $LFS/sources
+cd $LFS/sources || exit 1
 tar xvf bash-4.4.18.tar.gz
-cd bash-4.4.18
+cd bash-4.4.18 || exit 1
 
 ./configure --prefix=/usr \
 	--docdir=/usr/share/doc/bash-4.4.18 \
@@ -641,8 +639,8 @@ make install
 mv -vf /usr/bin/bash /bin
 # End 6.34 Bash
 
-cd $LFS/sources
+cd $LFS/sources || exit 1
 rm -R -- */
 
-cd $LFS
+cd $LFS || exit 1
 exec /bin/bash --login +h $LFS/finish-base.sh

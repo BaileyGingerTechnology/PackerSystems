@@ -119,18 +119,18 @@ Gentoo Webserver (Codename="dLacey", approx. build time: 1 hours, 10 minutes):
 
     - Set default shell to "oh" which is a shell built in Go, and Go is great.
 
-LFS Webserver (Codename="White", approx. build time: 2 hours, 10 minutes):
+LFS Webserver (Codename="White", approx. build time: 2 hours, 46 minutes):
 
     - Yep.
 
     - Was originally gonna do something with RPM, and I still might, but it currently seems like that won't work as planned.
         - Now looking at DPKG (Debian/Ubuntu) or libzypp (Suse).
 
-CentOS Docker (Codename="Falls"):
+CentOS Docker (Codename="Falls", approx. build time: 30 minutes):
 
     - Docker host. Makes sense enough I think.
 
-Kali Scoring Box (Codename="Ward"):
+Kali Scoring Box (Codename="Arditi"):
 
     - Will not have an account for the player to use.
 
