@@ -41,14 +41,16 @@ sleep 10
 sudo iocage start rowling
 sleep 30
 
-cd /temp
+cd /temp || exit 1
 sudo chmod +x freebsd-*
+sudo mv -v /temp/wordpress.tar.gz /iocage/jails/rowling/root/wordpress.tar.gz
 sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh
 
 sudo chroot /iocage/jails/rowling/root \
 	./freebsd-fnginx.sh
 
 sudo rm -f /iocage/jails/rowling/root/freebsd-fnginx.sh
+sudo rm -f /iocage/jails/rowling/root/wordpress*
 
 sudo iocage set boot=on rowling
 
@@ -57,3 +59,6 @@ sudo pkg install -y mariadb102-server mariadb102-client
 
 sudo sysrc mysql_enable="YES"
 sudo service mysql-server start
+sudo mysql -e 'create database rowlpress;'
+sudo mysql rowlpress </temp/rowlpress.sql
+sudo mysql -e "grant all privileges on rowlpress.* to 'administrator'@'%' identified by 'password';"

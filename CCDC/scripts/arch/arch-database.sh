@@ -10,7 +10,7 @@ echo "Updating"
 pacman -Syu --noconfirm
 
 # Install but don't configure the packages that I want
-yes | pacman -S --needed mariadb postgresql vim cronie
+pacman -S --needed --noconfirm mariadb postgresql vim cronie
 # I plan to give the player a SQL file or two, probably one per database, and force them to figure out how to make it work
 # PSQL isn't too bad, but MySQL/MariaDB can be painful on Arch, since the documentation is mostly but not completely correct
 

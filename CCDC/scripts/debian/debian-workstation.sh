@@ -26,7 +26,8 @@ else
 	DISK='/dev/sda'
 fi
 
-sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
+sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot \
+	libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
 
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 

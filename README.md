@@ -101,7 +101,7 @@ Windows 8.1 workstation (Codename="Ee", approx. build time: 1 hours, 16 minutes)
 
     - Pretty standard.
 
-FreeBSD BAMP server (Codename="Beddor"):
+FreeBSD BAMP server (Codename="Beddor", approx. build time: 12 minutes):
 
     - BSD, Apache, MySQL, PHP
 

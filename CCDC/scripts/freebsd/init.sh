@@ -1,8 +1,5 @@
 #!/bin/sh
 
-set -e
-set -x
-
 sudo tee -a /etc/rc.conf <<EOF
 sendmail_enable="NO"
 sendmail_submit_enable="NO"

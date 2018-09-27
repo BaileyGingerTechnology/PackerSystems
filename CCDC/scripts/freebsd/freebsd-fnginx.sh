@@ -10,5 +10,10 @@ sysrc nginx_enable="yes"
 service nginx start
 
 sed -i.bak 's/\#user\ nobody/user www/g' /usr/local/etc/nginx/nginx.conf
+rm /usr/local/etc/nginx/nginx.conf.bak
 
 sh -c "echo \"<?php phpinfo(); ?>\" | tee /usr/local/www/nginx/phpinfo.php"
+
+cd /root || exit 1
+tar xvf wordpress.tar.gz
+mv wordpress/* /usr/local/www/nginx/
