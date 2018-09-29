@@ -1,4 +1,10 @@
-#!/usr/bin/bash -x
+#!/bin/bash
+
+set -e
+
+if [ "$PACKER_BUILDER_TYPE" != "virtualbox-iso" ]; then
+	exit 0
+fi
 
 # VirtualBox Guest Additions
 # https://wiki.archlinux.org/index.php/VirtualBox

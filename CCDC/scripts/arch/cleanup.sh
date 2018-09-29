@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash
 
 # Clean the pacman cache.
 /usr/bin/yes | /usr/bin/pacman -Scc

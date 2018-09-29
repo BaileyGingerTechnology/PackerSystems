@@ -91,7 +91,7 @@ Windows 2012r2 Server (Codename="Riordan"):
 
     - For the build to work, download the exchange ISO from https://files.gingertechnology.net/packersystems/ and put it in CCDC/files, then make sure it get's mounted as drive E:\
 
-Debian workstation (Codename="Blake"):
+Debian workstation (Codename="Blake", aprrox. build time: 24 minutes):
 
     - Was gonna do Fedora, but I guess it has really bad ESXi support (or vice versa), so I'll do Debian instead.
 

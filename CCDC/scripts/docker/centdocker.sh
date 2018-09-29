@@ -3,7 +3,6 @@
 
 set -u
 set -e
-set -x
 
 sudo bash -c "echo 'falls.gingertech.com' > /etc/hostname"
 sudo hostname falls.gingertech.com

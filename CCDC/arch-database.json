@@ -89,20 +89,13 @@
       "script": "scripts/arch/install-base.sh"
     },
     {
-      "only": [
-        "virtualbox-iso"
-      ],
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "script": "scripts/arch/install-virtualbox.sh"
-    },
-    {
-      "only": [
-        "vmware-iso"
-      ],
-      "type": "shell",
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "script": "scripts/arch/install-vmware.sh"
+      "scripts": [
+        "scripts/arch/install-virtualbox.sh",
+        "scripts/arch/install-vmware.sh",
+        "scripts/arch/install-qemu.sh"
+      ]
     },
     {
       "type": "shell",

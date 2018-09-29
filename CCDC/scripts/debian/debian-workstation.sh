@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 sudo tee -a /etc/ssh/sshd_config <<EOF
 
@@ -79,8 +78,11 @@ sudo pacman -Sy
 mv /home/administrator/debianPKGBUILD /temp/debian/PKGBUILD
 cd /temp/debian && makepkg -si --noconfirm
 rm PKGBUILD
-mv /home/administrator/installScriptsPKGBUILD /temp/debian/PKGBUILD
-makepkg -si --noconfirm
+cd /tmp
+git clone https://projects.archlinux.org/arch-install-scripts.git
+cd arch-install-scripts
+make && sudo make install
+
 sudo pacstrap /mnt/arch base base-devel
 
 sudo arch-chroot ${TARGET_DIR} pacman --version
@@ -129,6 +131,9 @@ cat <<EOF >"/temp/finish.sh"
 	set -e
 	set -x
 
+	mkdir -p /home/administrator/.config/fish && chown administrator:administrator /home/administrator/.config/fish
+	mkdir -p /root/.config/fish
+
   pacman -Syu --noconfirm
   pacman -S --needed --noconfirm base-devel git wget yajl curl openssl fish
 	update-ca-trust
@@ -153,7 +158,7 @@ cat <<EOF >"/temp/finish.sh"
 	echo "/usr/bin/fish" >>/etc/shells
 
 	yes password | passwd
-	yes password | chsh -s /usr/bin/fish
+	chsh -s /usr/bin/fish
 	yes password | sudo -H -u administrator chsh -s /usr/bin/fish
 
   rm -rf /temp
@@ -164,12 +169,13 @@ sudo mv /temp/finish.sh /mnt/arch/finish.sh
 sudo chmod -v +x /mnt/arch/finish.sh
 
 sudo bash -c "arch-chroot ${TARGET_DIR} ./finish.sh"
-echo "sudo arch-chroot ${TARGET_DIR} && exit" >>~/.bashrc
-sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >> /root/.bashrc"
+echo "sudo chroot ${TARGET_DIR} /usr/bin/fish && exit" >>~/.bashrc
+sudo bash -c "echo \"chroot ${TARGET_DIR} /usr/bin/fish && exit\" >> /root/.bashrc"
+echo "sudo arch-chroot ${TARGET_DIR}" >>~/.profile
 
 echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_8.0/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:2.list
 sudo apt-get update
-sudo apt-get install -y fish
+sudo apt-get install -y fish --force-yes
 
-echo "sudo arch-chroot ${TARGET_DIR} && exit" >>~/.config/fish/config.fish
-sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >>/root/.config/fish/config.fish
+cd ~/ || exit 1
+rm pacman.conf

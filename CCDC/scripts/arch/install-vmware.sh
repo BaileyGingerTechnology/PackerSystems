@@ -2,7 +2,6 @@
 # Author: Bailey Kasin
 
 set -e
-set -x
 
 if [ "$PACKER_BUILDER_TYPE" != "vmware-iso" ]; then
 	exit 0

@@ -116,16 +116,10 @@
   "provisioners": [
     {
       "type": "shell",
-      "scripts": "scripts/debian/virtualbox.sh",
-      "only": [
-        "virtualbox-iso"
-      ]
-    },
-    {
-      "type": "shell",
-      "scripts": "scripts/debian/vmware.sh",
-      "only": [
-        "vmware-iso"
+      "scripts": [
+        "scripts/debian/virtualbox.sh",
+        "scripts/debian/vmware.sh",
+        "scripts/debian/qemu.sh"
       ]
     },
     {
@@ -141,11 +135,6 @@
     {
       "type": "file",
       "source": "files/Linux/Debian/debianPKGBUILD",
-      "destination": "/home/administrator/"
-    },
-    {
-      "type": "file",
-      "source": "files/Linux/Debian/installScriptsPKGBUILD",
       "destination": "/home/administrator/"
     },
     {
