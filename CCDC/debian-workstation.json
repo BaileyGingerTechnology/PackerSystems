@@ -135,17 +135,22 @@
     },
     {
       "type": "file",
-      "source": "files/pacman.conf",
+      "source": "files/Linux/pacman.conf",
       "destination": "/home/administrator/"
     },
     {
       "type": "file",
-      "source": "files/debianPKGBUILD",
+      "source": "files/Linux/Debian/debianPKGBUILD",
       "destination": "/home/administrator/"
     },
     {
       "type": "file",
-      "source": "files/tuna.png",
+      "source": "files/Linux/Debian/installScriptsPKGBUILD",
+      "destination": "/home/administrator/"
+    },
+    {
+      "type": "file",
+      "source": "files/Linux/Debian/tuna.png",
       "destination": "/home/administrator/Pictures/tuna.png"
     },
     {

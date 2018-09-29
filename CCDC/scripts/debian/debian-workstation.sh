@@ -21,13 +21,13 @@ TIMEZONE='UTC'
 COUNTRY=${COUNTRY:-US}
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
 if [[ $PACKER_BUILDER_TYPE == "qemu" ]]; then
-	DISK='/dev/vda'
+    DISK='/dev/vda'
 else
-	DISK='/dev/sda'
+    DISK='/dev/sda'
 fi
 
 sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot \
-	libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
+libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
 
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 
@@ -54,8 +54,8 @@ export LIBARCHIVE_LIBS="-larchive"
 export LIBCURL_CFLAGS="-I/usr/include/curl"
 export LIBCURL_LIBS="-lcurl"
 ./configure --prefix=/ \
-	--enable-doc \
-	--with-curl
+--enable-doc \
+--with-curl
 
 make
 make -C contrib
@@ -78,7 +78,9 @@ sudo mkdir -v /mnt/arch/boot
 sudo pacman -Sy
 mv /home/administrator/debianPKGBUILD /temp/debian/PKGBUILD
 cd /temp/debian && makepkg -si --noconfirm
-sudo pacman -S --noconfirm arch-install-scripts
+rm PKGBUILD
+mv /home/administrator/installScriptsPKGBUILD /temp/debian/PKGBUILD
+makepkg -si --noconfirm
 sudo pacstrap /mnt/arch base base-devel
 
 sudo arch-chroot ${TARGET_DIR} pacman --version
@@ -95,7 +97,7 @@ sudo /usr/bin/install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 cat <<-EOF >"/temp/arch-config.sh"
 	set -e
 	set -x
-	
+
 	echo 'blake.gingertech.com' > /etc/hostname
 	/usr/bin/ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 	echo 'KEYMAP=${KEYMAP}' > /etc/vconsole.conf
@@ -106,12 +108,12 @@ cat <<-EOF >"/temp/arch-config.sh"
 	# https://wiki.archlinux.org/index.php/Network_Configuration#Device_names
 	/usr/bin/ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 	/usr/bin/ln -s '/usr/lib/systemd/system/dhcpcd@.service' '/etc/systemd/system/multi-user.target.wants/dhcpcd@eth0.service'
-	
+
 	# Admin user config
 	/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 	echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
 	/usr/bin/chmod 0440 /etc/sudoers.d/10_administrator
-	
+
 	/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
@@ -126,9 +128,9 @@ sudo rm "${TARGET_DIR}${CONFIG_SCRIPT}"
 cat <<EOF >"/temp/finish.sh"
 	set -e
 	set -x
-	
+
   pacman -Syu --noconfirm
-  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl
+  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl fish
 	update-ca-trust
 	git config --system http.sslverify false
 
@@ -148,8 +150,14 @@ cat <<EOF >"/temp/finish.sh"
 
 	echo 'blake.gingertech.com' > /etc/hostname
 
+	echo "/usr/bin/fish" >>/etc/shells
+
+	yes password | passwd
+	yes password | chsh -s /usr/bin/fish
+	yes password | sudo -H -u administrator chsh -s /usr/bin/fish
+
   rm -rf /temp
-	rm /finish.sh 
+	rm /finish.sh
 EOF
 
 sudo mv /temp/finish.sh /mnt/arch/finish.sh
@@ -158,3 +166,10 @@ sudo chmod -v +x /mnt/arch/finish.sh
 sudo bash -c "arch-chroot ${TARGET_DIR} ./finish.sh"
 echo "sudo arch-chroot ${TARGET_DIR} && exit" >>~/.bashrc
 sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >> /root/.bashrc"
+
+echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_8.0/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:2.list
+sudo apt-get update
+sudo apt-get install -y fish
+
+echo "sudo arch-chroot ${TARGET_DIR} && exit" >>~/.config/fish/config.fish
+sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >>/root/.config/fish/config.fish

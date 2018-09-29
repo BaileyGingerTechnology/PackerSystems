@@ -12,7 +12,8 @@ sudo mkdir -pv /usr/share/docker
 sudo chown -v administrator:docker /usr/share/docker
 cd /usr/share/docker
 
-sudo yum install -y git
+sudo yum install -y git ksh
+yes password | chsh -s /bin/ksh
 
 git clone https://github.com/mattermost/mattermost-docker.git
 cd mattermost-docker

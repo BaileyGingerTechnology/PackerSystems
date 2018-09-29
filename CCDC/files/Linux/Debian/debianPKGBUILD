@@ -16,5 +16,9 @@ provides=('python2'
           'pacman'
           'bash'
           'coreutils'
-          'util-linux')
-          
+          'util-linux'
+          'ncurses'
+          'tzdata'
+          'glibc'
+          'readline'
+          'gawk')
