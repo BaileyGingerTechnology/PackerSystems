@@ -133,7 +133,7 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "files/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch",
+      "source": "files/Linux/LFS/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch",
       "destination": "/temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch"
     },
     {

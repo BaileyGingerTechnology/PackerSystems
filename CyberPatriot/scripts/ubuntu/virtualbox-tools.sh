@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$PACKER_BUILDER_TYPE" != "virtualbox-iso" ]; then
+	exit 0
+fi
+
 # Install dependencies
 apt install -y build-essentials linux-headers-generic
 

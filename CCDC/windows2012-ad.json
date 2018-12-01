@@ -146,7 +146,7 @@
     },
     {
       "type": "file",
-      "source": "files/7z920-x64.msi",
+      "source": "files/Windows/7z920-x64.msi",
       "destination": "C:\\Windows\\Temp\\7z920-x64.msi"
     },
     {
@@ -193,7 +193,7 @@
     },
     {
       "type": "file",
-      "source": "files/ninite.exe",
+      "source": "files/Windows/Server/ninite.exe",
       "destination": "C:\\ninite.exe"
     },
     {
@@ -308,7 +308,7 @@
     },
     {
       "type": "file",
-      "source": "files/userlist-win.csv",
+      "source": "files/Windwos/userlist-win.csv",
       "destination": "C:\\userlist.csv"
     },
     {

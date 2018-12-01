@@ -23,7 +23,7 @@ Note that packer will start a service for each provisioner (step, basically) of 
 
 Ubuntu and Windows 10 are both functional and build the base of what I want. But only in Virtualbox for Windows 10, so now my goal is to get it working in VMware and KVM.
 
-For Ubuntu (approx. build time 15 minutes):
+For Ubuntu (approx. build time 17 minutes):
 
     - https://blog.gingertechnology.net/2018/05/28/ubuntu-1-0-a-cyberpatriot-practice-image/
 

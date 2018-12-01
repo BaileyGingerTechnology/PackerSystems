@@ -94,6 +94,31 @@
         "numvcpus": "{{user `numcpus`}}",
         "scsi0.virtualDev": "lsisas1068"
       }
+    },
+    {
+      "type": "hyperv-iso",
+      "communicator": "winrm",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
+      ],
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ram_size": "{{user `memsize`}}",
+      "cpu": "{{user `numcpus`}}",
+      "generation": 1,
+      "switch_name":"packer-hyperv-iso",
+      "enable_secure_boot":false
     }
   ],
   "provisioners": [

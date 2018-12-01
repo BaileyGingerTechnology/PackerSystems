@@ -154,7 +154,7 @@
     },
     {
       "type": "file",
-      "source": "files/oh",
+      "source": "files/Linux/Gentoo/oh",
       "destination": "/home/administrator/"
     },
     {

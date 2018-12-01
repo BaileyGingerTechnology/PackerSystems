@@ -32,7 +32,7 @@
         "<enter><wait>",
         "Yes<enter><wait>",
         "<enter><wait10><wait10><wait10><wait10><wait10>",
-        "<enter><wait><wait10><wait10><enter>",
+        "schwab<enter><wait><wait10><wait10><enter>",
         "password<enter><wait>",
         "password<enter><wait>",
         "<enter><wait5>",
@@ -80,6 +80,11 @@
     }
   ],
   "provisioners": [
+    {
+      "type": "file",
+      "source": "files/Linux/VyOS/cowsay.txt",
+      "destination": "/tmp/cowsay.txt"
+    },
     {
       "type": "shell",
       "scripts": [

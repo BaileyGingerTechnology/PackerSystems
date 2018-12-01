@@ -157,17 +157,10 @@
     {
       "execute_command": "sudo -E -S bash '{{.Path}}'",
       "type": "shell",
-      "scripts": "scripts/ubuntu/virtualbox-tools.sh",
-      "only": [
-        "virtualbox-iso"
-      ]
-    },
-    {
-      "execute_command": "sudo -E -S bash '{{.Path}}'",
-      "type": "shell",
-      "scripts": "scripts/ubuntu/vmware-tools.sh",
-      "only": [
-        "vmware-iso"
+      "scripts": [
+        "scripts/ubuntu/virtualbox-tools.sh",
+        "scripts/ubuntu/qemu-tools.sh",
+        "scripts/ubuntu/vmware-tools.sh"
       ]
     },
     {

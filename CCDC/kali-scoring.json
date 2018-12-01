@@ -4,15 +4,15 @@
     "memory": "2048",
     "disk_size": "16384",
     "build_num": "1.0",
-    "vmname": "Ward"
+    "vmname": "Arditi"
   },
   "builders": [
     {
       "type": "vmware-iso",
       "iso_urls": [
-        "http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"
+        "http://cdimage.kali.org/kali-2018.3a/kali-linux-lxde-2018.3a-amd64.iso"
       ],
-      "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
+      "iso_checksum": "4326ad6fdd16f8acb3cc3070d32738bcacfe7dd8dc4026d18c89027351a46774",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
       "communicator": "ssh",
@@ -53,9 +53,9 @@
     {
       "type": "virtualbox-iso",
       "iso_urls": [
-        "http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"
+        "http://cdimage.kali.org/kali-2018.3a/kali-linux-lxde-2018.3a-amd64.iso"
       ],
-      "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
+      "iso_checksum": "4326ad6fdd16f8acb3cc3070d32738bcacfe7dd8dc4026d18c89027351a46774",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
       "communicator": "ssh",
@@ -91,39 +91,30 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "files/kali.list",
+      "source": "files/Linux/Kali/kali.list",
       "destination": "/tmp/sources.list"
     },
     {
       "type": "shell",
       "expect_disconnect": true,
-      "inline": [
-        "sudo mv /tmp/sources.list /etc/apt/sources.list",
-        "sudo apt clean && sudo apt update && yes | sudo apt upgrade && yes | sudo apt dist-upgrade",
-        "sudo reboot"
+      "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/kali/init.sh"
       ]
     },
     {
       "type": "shell",
       "expect_disconnect": true,
-      "inline": [
-        "sudo apt -y --reinstall install open-vm-tools-desktop fuse",
-        "sudo reboot"
-      ],
-      "only": [
-        "vmware-iso"
+      "scripts": [
+        "scripts/kali/virtualbox-tools.sh",
+        "scripts/kali/vmware-tools.sh",
+        "scripts/kali/qemu-tools.sh"
       ]
     },
     {
-      "type": "shell",
-      "expect_disconnect": true,
-      "inline": [
-        "sudo apt -y install virtualbox-guest-x11",
-        "sudo reboot"
-      ],
-      "only": [
-        "virtualbox-iso"
-      ]
+      "type": "file",
+      "source": "files/Linux/Kali/ScoringEngine.deb",
+      "destination": "/tmp/ScoringEngine.deb"
     },
     {
       "type": "shell",
