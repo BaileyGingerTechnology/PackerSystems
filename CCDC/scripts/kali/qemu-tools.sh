@@ -2,6 +2,8 @@
 
 set -e
 
+export DEBIAN_FRONTEND=noninteractive
+
 if [ "$PACKER_BUILDER_TYPE" != "qemu" ]; then
     exit 0
 fi
