@@ -143,6 +143,11 @@
       "destination": "/home/administrator/Pictures/tuna.png"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Debian/interfaces",
+      "destination": "/home/administrator/interfaces"
+    },
+    {
       "type": "shell",
       "scripts": [
         "scripts/debian/debian-workstation.sh",

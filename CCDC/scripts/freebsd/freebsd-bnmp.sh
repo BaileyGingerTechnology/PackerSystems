@@ -11,7 +11,13 @@ sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-ioca
 sudo iocage activate zroot
 echo 6 | sudo iocage fetch
 
+sudo -i '' '/dhcp/d' /etc/rc.conf
+
 sudo tee -a /etc/rc.conf <<EOF
+hostname="beddor.gingertech.com"
+ifconfig_em0="inet 172.16.16.30 netmask 255.255.255.0"
+defaultrouter="172.16.16.1"
+
 iocage_enable="YES"
 sshd_enable="YES"
 
@@ -36,7 +42,7 @@ sudo service netif cloneup
 sudo ifconfig
 sleep 10
 
-sudo iocage create -n fnginx ip4_addr="em0|10.0.20.31/8" -r 11.1-RELEASE
+sudo iocage create -n rowling ip4_addr="em0|172.16.16.31/24" -r 11.1-RELEASE
 sleep 10
 sudo iocage start rowling
 sleep 30
@@ -62,3 +68,8 @@ sudo service mysql-server start
 sudo mysql -e 'create database rowlpress;'
 sudo mysql rowlpress </temp/rowlpress.sql
 sudo mysql -e "grant all privileges on rowlpress.* to 'administrator'@'%' identified by 'password';"
+
+sudo -i '' '/8.8.8.8/d' /etc/rc.conf
+cat <<EOF > /etc/resolv.conf
+nameserver 172.16.16.50
+EOF

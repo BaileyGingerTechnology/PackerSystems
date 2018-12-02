@@ -111,6 +111,11 @@
       ]
     },
     {
+      "type": "file",
+      "source": "files/Linux/Arch/dhcpcd.conf",
+      "destination": "/home/administrator/dhcpcd.conf"
+    },
+    {
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [

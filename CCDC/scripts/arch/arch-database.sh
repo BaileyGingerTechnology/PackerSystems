@@ -31,3 +31,7 @@ su - administrator -c "sed -i \"s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"windows
 
 echo "/usr/bin/zsh" >>/root/.bashrc
 echo "/usr/bin/zsh" >>/home/administrator/.bashrc
+
+# Setup for static IP
+cd ~/
+sudo mv dhcpcd.conf /etc/dhcpcd.conf

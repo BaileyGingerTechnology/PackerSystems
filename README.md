@@ -83,13 +83,13 @@ Arch Database (Codename="Maas"):
 
     - Of all the Linux OSes I have used, Arch has been the worst when it comes to hosting a database server. So it's an easy pick.
 
-    - Most people panic when they see Arch or Gentoo because of their reputation. So of course I need at least one of them in here.
+    - Most people panic when they see Arch or Gentoo because of their reputation. So of course I need them in here.
 
 Windows 2012r2 Server (Codename="Riordan"):
 
     - Monolithic Exchange and Active Directory box.
 
-    - For the build to work, download the exchange ISO from https://files.gingertechnology.net/packersystems/ and put it in CCDC/files, then make sure it get's mounted as drive E:\
+    - For the build to work, download the exchange ISO from https://files.gingertechnology.net/packersystems/ and put it in CCDC/files/Windows/Server, then make sure it get's mounted as drive E:\
 
 Debian workstation (Codename="Blake", aprrox. build time: 24 minutes):
 
@@ -101,15 +101,15 @@ Windows 8.1 workstation (Codename="Ee", approx. build time: 1 hours, 16 minutes)
 
     - Pretty standard.
 
-FreeBSD BAMP server (Codename="Beddor", approx. build time: 12 minutes):
+FreeBSD BEMP server (Codename="Beddor" and "Rowling", approx. build time: 12 minutes):
 
-    - BSD, Apache, MySQL, PHP
+    - BSD, Nginx, MySQL, PHP
 
     - Theoretically best web server you can have. Also jails are fun. Specifically iocage ones.
 
 VyOS router/firewall (Codename="Schwab"):
 
-    - Gonna have to git gud at networking I guess.
+    - VyOS nat-ing hates me.
 
 Gentoo Webserver (Codename="dLacey", approx. build time: 1 hours, 10 minutes):
     

@@ -184,3 +184,6 @@ sudo apt-get install -y fish --force-yes
 
 cd ~/ || exit 1
 rm pacman.conf
+
+# Setup for static IP
+sudo mv interfaces /etc/network/interfaces
