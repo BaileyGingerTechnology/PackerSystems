@@ -29,5 +29,8 @@ apt install -y dotnet-sdk-2.1
 cd /tmp || exit 1
 dpkg -i ScoringEngine.deb
 
+echo "Setting static IP file"
+mv /tmp/interfaces /etc/network/interfaces
+
 echo "[+] Removing temporary files"
 rm -rf /tmp/*

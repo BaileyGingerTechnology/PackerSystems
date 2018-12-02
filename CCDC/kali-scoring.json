@@ -10,9 +10,9 @@
     {
       "type": "vmware-iso",
       "iso_urls": [
-        "http://cdimage.kali.org/kali-2018.3a/kali-linux-lxde-2018.3a-amd64.iso"
+        "http://cdimage.kali.org/kali-2018.4/kali-linux-lxde-2018.4-amd64.iso"
       ],
-      "iso_checksum": "4326ad6fdd16f8acb3cc3070d32738bcacfe7dd8dc4026d18c89027351a46774",
+      "iso_checksum": "612aebd78f570aac62511b049a45ebf0be027a28c9b4732e0b5d799fa818ca6d",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
       "communicator": "ssh",
@@ -26,7 +26,7 @@
         "debian-installer=en_US <wait>",
         "auto <wait>",
         "locale=en_US <wait>",
-        "hostname=ward domain=locale.lan ",
+        "hostname=arditi domain=locale.lan ",
         "kbd-chooser/method=us <wait>",
         "fb=false <wait>",
         "interface=auto ",
@@ -53,9 +53,9 @@
     {
       "type": "virtualbox-iso",
       "iso_urls": [
-        "http://cdimage.kali.org/kali-2018.3a/kali-linux-lxde-2018.3a-amd64.iso"
+        "http://cdimage.kali.org/kali-2018.4/kali-linux-lxde-2018.4-amd64.iso"
       ],
-      "iso_checksum": "4326ad6fdd16f8acb3cc3070d32738bcacfe7dd8dc4026d18c89027351a46774",
+      "iso_checksum": "612aebd78f570aac62511b049a45ebf0be027a28c9b4732e0b5d799fa818ca6d",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
       "communicator": "ssh",
@@ -68,7 +68,7 @@
         "debian-installer=en_US <wait>",
         "auto <wait>",
         "locale=en_US <wait>",
-        "hostname=ward domain=locale.lan ",
+        "hostname=arditi domain=locale.lan ",
         "kbd-chooser/method=us <wait>",
         "fb=false <wait>",
         "interface=auto ",
@@ -93,6 +93,11 @@
       "type": "file",
       "source": "files/Linux/Kali/kali.list",
       "destination": "/tmp/sources.list"
+    },
+    {
+      "type": "file",
+      "source": "files/Linux/Kali/interfaces",
+      "destination": "/tmp/interfaces"
     },
     {
       "type": "shell",
