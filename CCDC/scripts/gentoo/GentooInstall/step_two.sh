@@ -72,7 +72,7 @@ function configure_network() {
 	interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
   ipaddr=$(ifconfig ${interfaces[0]} | grep inet | (sed -n 1p) | awk '{print $1}')
 
-	# Send the selected one to a file
+	# Echo it
 	echo 'config_${interfaces[$choice-1]}="dhcp"'
 
 	# Set that interface to start at boot

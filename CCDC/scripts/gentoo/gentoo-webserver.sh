@@ -38,3 +38,11 @@ yes -- "-5" | etc-update
 sed -i 's/\/var\/www\/localhost\/htdocs/\/var\/www\/dlacey.gingertech.com\/htdocs/g' /etc/apache2/vhosts.d/default_vhost.include
 mkdir -p /var/www/dlacey.gingertech.com/htdocs
 echo '<?php phpinfo(); ?>' >/var/www/dlacey.gingertech.com/htdocs/info.php
+
+# Assign static IP
+interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
+sudo tee /etc/conf.d/net <<EOF
+config_${interfaces[0]}="172.16.16.7/24"
+routes_${interfaces[0]}="default via 172.16.16.1"
+dns_servers_${interfaces[0]}="172.16.16.50 8.8.8.8"
+EOF

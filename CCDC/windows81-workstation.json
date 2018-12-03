@@ -266,6 +266,15 @@
         "cd C:\\Windows\\system32\\",
         ".\\schtasks.exe /create /tn StartNSATracking /tr \"powershell Restart-Computer\" /sc Hourly /ru \"GingerTech\" /rp \"password\""
       ]
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GINGERTECH\\GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "Set-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name '!SetIP' -Value 'c:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'New-NetIPAddress –IPAddress 172.16.16.24 -DefaultGateway 172.16.16.1 -PrefixLength 255.255.255.0 -InterfaceIndex (Get-NetAdapter).InterfaceIndex'",
+        "Set-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name '!SetIP' -Value 'c:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'Set-DNSClientServerAddress –InterfaceIndex (Get-NetAdapter).InterfaceIndex –ServerAddresses 172.16.16.50'"
+      ]
     }
   ]
 }

@@ -515,3 +515,18 @@ EOF
 su - administrator -c "chsh -s /usr/bin/tcsh"
 
 rm -rf /sources /tools /finish-base.sh /build-to-bash.sh /user-group-setup.sh /wget-list
+
+echo "Setting net rules"
+cd /etc/sysconfig/ || exit 1
+cat >ifconfig.enp0s3 <<"EOF"
+ONBOOT="yes"
+IFACE="enp0s3"
+SERVICE="dhcpcd"
+DHCP_START="-b -q -S ip_address=172.16.16.5/24 -S routers=172.16.16.1"
+DHCP_STOP="-k"
+EOF
+cat >/etc/resolv.conf.head <<"EOF"
+# OpenDNS servers
+nameserver 172.16.16.50
+nameserver 8.8.8.8
+EOF

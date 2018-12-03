@@ -32,3 +32,6 @@ docker-compose up -d
 cd /usr/share/docker
 
 docker run -d --restart unless-stopped -p 999:443 --name openvas mikesplain/openvas
+
+sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+cat /tmp/ip-config >> /etc/sysconfig/network-scripts/ifcfg-eth0
