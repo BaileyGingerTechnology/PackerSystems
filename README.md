@@ -152,9 +152,13 @@ I plan to keep this project completely free to make use of. If you wish to suppo
 
 https://www.patreon.com/GingerTechnology
 
+Or send me feedback at:
+
+bailey@gingertechnology.net
+
 ### System Specs
 
-To see the amount of CPU cores, RAM, and disk size allocated for builds, look in the variable field at the top of each .json file. That gets allocated from:
+To see the amount of CPU cores, RAM, and disk size allocated for builds, look in the variable field at the top of each .json file. On my system, that gets allocated from:
 
     CPU: Ryzen 7 1700
 

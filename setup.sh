@@ -15,6 +15,11 @@ if [ "$DoIt" == "yes" ]; then
     mv CyberPatriotScoringEngine ../CheckScore/usr/local/bin/checkscore
     
     cd .. || exit 1
+    cd ForensicDeployment || exit 1
+    go build
+    mv ForensicDeployment ../CheckScore/usr/local/bin/ForensicDeployment
+    
+    cd .. || exit 1
     dpkg-deb --build CheckScore
     mv CheckScore.deb ../CyberPatriot/files/
 
@@ -25,7 +30,10 @@ echo "Build CCDCScoringEngine? (Requries Go and dpkg-deb, enter 'yes' to continu
 read -r DoIt
 
 if [ "$DoIt" == "yes" ]; then
-    cd ScoringEngine/CCDCScoringEngine || exit 1
+    cd ScoringEngine/ScoringSources || exit 1
+    ./build_sources.sh
+    
+    cd ../CCDCScoringEngine || exit 1
     go build
     mv CCDCScoringEngine ../ScoringEngine/usr/bin/scoringengine
     

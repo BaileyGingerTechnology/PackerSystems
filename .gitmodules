@@ -1,8 +1,5 @@
-[submodule "ForensicDeployment"]
-	path = ForensicDeployment
-	url = https://github.com/BaileyGingerTechnology/ForensicDeployment.git
-	ignore = dirty
 [submodule "ScoringEngine"]
 	path = ScoringEngine
 	url = https://github.com/BaileyGingerTechnology/ScoringEngine.git
+	branch = master
 	ignore = dirty
