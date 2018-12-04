@@ -32,4 +32,3 @@ cmd /c for %%i in (C:\Windows\Temp\virtualbox\cert\vbox*.cer) do C:\Windows\Temp
 cmd /c C:\Windows\Temp\virtualbox\VBoxWindowsAdditions.exe /S
 
 :done
-msiexec /qn /x C:\Windows\Temp\7z920-x64.msi

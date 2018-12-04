@@ -4,24 +4,24 @@
 
 $DownloaderCli = New-Object System.Net.WebClient
 $DownloaderCli.UseDefaultCredentials = $true
-$Counter = 0
+#$Counter = 0
 
 # remote install:
 #   iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
 $erroractionpreference = 'stop' # quit if anything goes wrong
 
-if(($PSVersionTable.PSVersion.Major) -lt 3) {
-    Write-Output "PowerShell 3 or greater is required to run Scoop."
-    Write-Output "Upgrade PowerShell: https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell"
-    break
+if (($PSVersionTable.PSVersion.Major) -lt 3) {
+  Write-Output "PowerShell 3 or greater is required to run Scoop."
+  Write-Output "Upgrade PowerShell: https://docs.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell"
+  break
 }
 
 # show notification to change execution policy:
-if((get-executionpolicy) -gt 'RemoteSigned') {
-    Write-Output "PowerShell requires an execution policy of 'RemoteSigned' to run Scoop."
-    Write-Output "To make this change please run:"
-    Write-Output "'Set-ExecutionPolicy RemoteSigned -scope CurrentUser'"
-    break
+if ((get-executionpolicy) -gt 'RemoteSigned') {
+  Write-Output "PowerShell requires an execution policy of 'RemoteSigned' to run Scoop."
+  Write-Output "To make this change please run:"
+  Write-Output "'Set-ExecutionPolicy RemoteSigned -scope CurrentUser'"
+  break
 }
 
 # get core functions
@@ -30,10 +30,10 @@ Write-Output 'Initializing...'
 Invoke-Expression (new-object net.webclient).downloadstring($core_url)
 
 # prep
-if(installed 'scoop') {
-    write-host "Scoop is already installed. Run 'scoop update' to get the latest version." -f red
-    # don't abort if invoked with iex——that would close the PS session
-    if($myinvocation.mycommand.commandtype -eq 'Script') { return } else { exit 1 }
+if (installed 'scoop') {
+  write-host "Scoop is already installed. Run 'scoop update' to get the latest version." -f red
+  # don't abort if invoked with iex——that would close the PS session
+  if ($myinvocation.mycommand.commandtype -eq 'Script') { return } else { exit 1 }
 }
 $dir = ensure (versiondir 'scoop' 'current')
 
@@ -66,4 +66,4 @@ scoop install firefox --global
 scoop install go --global
 scoop install wget --global
 
-del C:\InstallScoop.ps1
+Remove-Item C:\InstallScoop.ps1

@@ -1,0 +1,6 @@
+Firstname:Lastname:SamAccountName:OU:Maildomain:Password:Description:Department
+Naruto:Uzumaki:Naruto:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password:Uzumaki Naruto:Ninja
+John:Price:John:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password:Price John:Customer Service
+Bailey:Kasin:Bailey:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password:Kasin Bailey:Owner
+Luis:Pena:Luis:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password:Pena Luis:Linux Admin
+Ryan:Parker:Ryan:OU=Standard Users,OU=Users,DC=domain,DC=loc:gingertech.com:password:Ryan Parker:Windows Admin

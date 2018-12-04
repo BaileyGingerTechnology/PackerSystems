@@ -9,7 +9,7 @@ set -x
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${ACOUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
 
 echo "==> Setting local mirror"
-curl -s "$MIRRORLIST" |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist
+curl -s "$MIRRORLIST" | sed 's/^#Server/Server/' >/etc/pacman.d/mirrorlist
 
 source ./include/src/disk_functions.sh
 source ./include/src/tarball_functions.sh
@@ -54,7 +54,7 @@ echo "$(tput setaf 3)
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$(tput sgr0)";
+$(tput sgr0)"
 
 rsync -ah --progress include/src/install_mirrorselect.sh /tmp/install_mirrorselect.sh
 source ./include/src/preflight.sh
@@ -79,8 +79,8 @@ partition_disk /dev/sda
 mkdir /mnt/gentoo
 mount /dev/sda4 /mnt/gentoo
 
-toolLocation=$( find / |grep GentooInstall |head -n1 )
-cd $toolLocation && cd ../
+toolLocation=$(find / | grep GentooInstall | head -n1)
+cd "$toolLocation" && cd ../
 rsync -ah --progress GentooInstall /mnt/gentoo/
 rsync -ah --progress /cleanup.sh /mnt/gentoo/
 

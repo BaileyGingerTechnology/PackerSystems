@@ -6,7 +6,7 @@
     "autounattend": "floppy/server/Autounattend.xml",
     "headless": "false",
     "cpus": "2",
-    "memory_size": "4096",
+    "memory_size": "8192",
     "disk_size": "40960",
     "exchange_iso": "files/exchange.iso",
     "build_num": "1.0",
@@ -18,7 +18,7 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "headless": "{{user `headless`}}",
       "boot_wait": "2m",
@@ -55,7 +55,7 @@
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "headless": "{{user `headless`}}",
       "boot_wait": "2m",
@@ -77,32 +77,95 @@
         "floppy/update-windows.ps1"
       ],
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory_size`}}" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}" ]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory_size`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ]
+      ]
+    },
+    {
+      "type": "qemu",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "floppy/server/00-run-all-scripts.cmd",
+        "floppy/server/fixnetwork.ps1",
+        "floppy/server/install-winrm.cmd",
+        "floppy/server/zz-start-transports.cmd",
+        "floppy/server/Update-Needed.ps1",
+        "floppy/server/RunPwSh.bat",
+        "floppy/server/viostor/amd64/*",
+        "floppy/server/NetKVM/amd64/*"
+      ],
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "Builds/qemu/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "false",
+      "communicator": "winrm",
+      "winrm_username": "GingerTech",
+      "winrm_password": "password",
+      "winrm_timeout": "6h",
+      "boot_wait": "2m",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "qemuargs": [
+        [
+          "-m",
+          "{{user `memory_size`}}"
+        ],
+        [
+          "-smp",
+          "{{user `cpus`}}"
+        ],
+        [
+          "-drive",
+          "file=files/exchange.iso,media=cdrom"
+        ]
       ]
     }
   ],
   "provisioners": [
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",
-      "source": "scripts/winshared/netbullshit.ps1",
-      "destination": "C:\\netbullshit.ps1"
+      "source": "scripts/winshared/WinBullshit.ps1",
+      "destination": "C:\\WinBullshit.ps1"
+    },
+    {
+      "type": "file",
+      "source": "files/Windows/7z920-x64.msi",
+      "destination": "C:\\Windows\\Temp\\7z920-x64.msi"
     },
     {
       "type": "powershell",
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "inline": [
-        "C:\\netbullshit.ps1 1"
+        "C:\\WinBullshit.ps1 1"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "windows-shell",
@@ -113,16 +176,24 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "shell-local",
-      "only": ["virtualbox-iso"],
+      "only": [
+        "virtualbox-iso"
+      ],
       "command": "vboxmanage controlvm {{user `vmname`}}-{{user `build_num`}} poweroff soft && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium emptydrive && vboxmanage storageattach {{user `vmname`}}-{{user `build_num`}} --storagectl \"IDE Controller\" --port 1 --device 0 --type dvddrive --medium {{user `exchange_iso`}} && vboxmanage startvm {{user `vmname`}}-{{user `build_num`}} && sleep 10"
     },
     {
       "type": "file",
-      "source": "files/ninite.exe",
+      "source": "files/Windows/Server/ninite.exe",
       "destination": "C:\\ninite.exe"
     },
     {
@@ -138,7 +209,8 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -148,31 +220,47 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "inline": [
-        "C:\\netbullshit.ps1 2"
+        "C:\\WinBullshit.ps1 2"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "inline": [
-        "C:\\netbullshit.ps1 3"
+        "C:\\WinBullshit.ps1 2"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "C:\\WinBullshit.ps1 3"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -184,23 +272,43 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "inline": [
-        "choco install -y ucma4"
+        "C:\\WinBullshit.ps1 4"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "C:\\WinBullshit.ps1 4"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",
-      "source": "files/userlist-win.csv",
+      "source": "files/Windwos/userlist-win.csv",
       "destination": "C:\\userlist.csv"
     },
     {
@@ -208,31 +316,43 @@
       "elevated_user": "GingerTech",
       "elevated_password": "password",
       "scripts": [
-        "scripts/winshared/SetupServ.ps1"
+        "scripts/winserver/SetupServ.ps1"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
-      "elevated_user": "GingerTech",
+      "elevated_user": "GINGERTECH\\GingerTech",
       "elevated_password": "password",
       "scripts": [
-        "scripts/winshared/exchange.ps1"
+        "scripts/winserver/ServerUsers.ps1"
       ]
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
-    }
-  ],
-  "post-processors": [
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
     {
-      "type": "manifest",
-      "output": "manifest.json",
-      "strip_path": true
+      "type": "powershell",
+      "elevated_user": "GINGERTECH\\GingerTech",
+      "elevated_password": "password",
+      "scripts": [
+        "scripts/winserver/Exchange.ps1"
+      ]
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "GINGERTECH\\GingerTech",
+      "elevated_password": "password",
+      "inline": [
+        "Set-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name '!SetIP' -Value 'c:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'New-NetIPAddress –IPAddress 172.16.16.50 -DefaultGateway 172.16.16.1 -PrefixLength 255.255.255.0 -InterfaceIndex (Get-NetAdapter).InterfaceIndex'",
+        "Set-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name '!SetIP' -Value 'c:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'Set-DNSClientServerAddress –InterfaceIndex (Get-NetAdapter).InterfaceIndex –ServerAddresses 127.0.0.1'"
+      ]
     }
   ]
 }

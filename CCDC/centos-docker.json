@@ -9,7 +9,11 @@
   "builders": [
     {
       "type": "vmware-iso",
-      "iso_urls": [ "http://mirror.compevo.com/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso", "http://centos.den.host-engine.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso", "http://mirror.hackingand.coffee/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso" ],
+      "iso_urls": [
+        "http://mirror.compevo.com/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.den.host-engine.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.hackingand.coffee/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso"
+      ],
       "iso_checksum": "714acc0aefb32b7d51b515e25546835e55a90da9fb00417fbee2d03a62801efd",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/halt -h -p",
@@ -17,23 +21,27 @@
       "ssh_password": "password",
       "communicator": "ssh",
       "boot_command": [
-              "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-ks.cfg<enter><wait>"
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-ks.cfg<enter><wait>"
       ],
       "guest_os_type": "centos-64",
       "boot_wait": "15s",
       "http_directory": "http",
       "ssh_timeout": "10000s",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "disk_size": "{{user `disk_size`}}",
       "vmx_data": {
-              "memsize": "{{user `memory`}}",
-              "numvcpus": "{{user `cpus`}}"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
       }
     },
     {
       "type": "virtualbox-iso",
-      "iso_urls": [ "http://mirror.compevo.com/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso", "http://centos.den.host-engine.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso", "http://mirror.hackingand.coffee/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso" ],
+      "iso_urls": [
+        "http://mirror.compevo.com/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.den.host-engine.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.hackingand.coffee/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso"
+      ],
       "iso_checksum": "714acc0aefb32b7d51b515e25546835e55a90da9fb00417fbee2d03a62801efd",
       "iso_checksum_type": "sha256",
       "shutdown_command": "echo 'password' | sudo /sbin/halt -h -p",
@@ -47,11 +55,21 @@
       "boot_wait": "15s",
       "http_directory": "http",
       "ssh_timeout": "10000s",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ]
       ]
     }
   ],
@@ -76,8 +94,16 @@
       ]
     },
     {
+      "type": "file",
+      "source": "files/Linux/CentOS/ip-config",
+      "distination": "/tmp/ip-config"
+    },
+    {
       "type": "shell",
       "scripts": [
+        "scripts/docker/vmware-tools.sh",
+        "scripts/docker/virtualbox-tools.sh",
+        "scripts/docker/qemu-tools.sh",
         "scripts/docker/centdocker.sh"
       ]
     }

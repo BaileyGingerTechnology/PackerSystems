@@ -49,7 +49,7 @@ echo "$(tput setaf 3)
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-$(tput sgr0)";
+$(tput sgr0)"
 
 # Check for root privileges
 check_root
@@ -64,21 +64,21 @@ download_install_kernel
 # Go into system_var_functions and configure stuff there
 set_hostname
 # Configure network interface
-function configure_network
-{
-    # Install netifrc
-    emerge --noreplace net-misc/netifrc
+function configure_network() {
+	# Install netifrc
+	emerge --noreplace net-misc/netifrc
 
-    # Make array of network interfaces
-    interfaces=( $(ls /sys/class/net |grep -v lo |sort -u -) ) 
+	# Make array of network interfaces
+	interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
+  ipaddr=$(ifconfig ${interfaces[0]} | grep inet | (sed -n 1p) | awk '{print $1}')
 
-    # Send the selected one to a file
-    echo 'config_${interfaces[$choice-1]}="dhcp"'
+	# Echo it
+	echo 'config_${interfaces[$choice-1]}="dhcp"'
 
-    # Set that interface to start at boot
-    cd /etc/init.d
-    ln -s net.lo net.${interfaces[0]}
-    rc-update add net.${interfaces[0]} default
+	# Set that interface to start at boot
+	cd /etc/init.d || exit 1
+	ln -s net.lo net.${interfaces[0]}
+	rc-update add net.${interfaces[0]} default
 }
 
 configure_network
@@ -118,11 +118,13 @@ set -x
 
 PASSWORD=$(openssl passwd -crypt 'password')
 useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
-echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
-echo 'administrator ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/10_administrator
+echo 'Defaults env_keep += "SSH_AUTH_SOCK"' >/etc/sudoers.d/10_administrator
+echo 'administrator ALL=(ALL) NOPASSWD: ALL' >>/etc/sudoers.d/10_administrator
 chmod 0440 /etc/sudoers.d/10_administrator
 
 yes password | passwd administrator
+
+echo "sudo ifconfig $(cat ~/ipinfo)" >>~/.bashrc
 
 echo "We should be done."
 

@@ -14,7 +14,7 @@ CCDC/manifest.json
 CCDC/Builds
 variables.json
 # This can be found here: https://www.microsoft.com/en-us/download/details.aspx?id=55953
-CCDC/files/exchange.iso
+CCDC/files/Windows/Server/exchange.iso
 CCDC/drive2.vdi
 
 # Binaries for programs and plugins
@@ -48,7 +48,12 @@ Thumbs.db
 *.swp
 
 # Ignored ignores
-!CCDC/files/ninite.exe
-!CCDC/files/ninite-81.exe
+!CCDC/files/Windows/Server/ninite.exe
+!CCDC/files/Windows/Workstation/ninite-81.exe
+!CCDC/floppy/server/NetVKM/amd64/netkvmco.dll
 !CyberPatriot/files/ForensicDeployment.exe
 !CyberPatriot/files/CheckScore.exe
+
+# Ignore submodules
+ScoringEngine/*
+ForensicDeployment/*

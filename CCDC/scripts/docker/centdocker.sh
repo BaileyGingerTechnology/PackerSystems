@@ -3,7 +3,6 @@
 
 set -u
 set -e
-set -x
 
 sudo bash -c "echo 'falls.gingertech.com' > /etc/hostname"
 sudo hostname falls.gingertech.com
@@ -12,7 +11,8 @@ sudo mkdir -pv /usr/share/docker
 sudo chown -v administrator:docker /usr/share/docker
 cd /usr/share/docker
 
-sudo yum install -y git
+sudo yum install -y git ksh
+yes password | chsh -s /bin/ksh
 
 git clone https://github.com/mattermost/mattermost-docker.git
 cd mattermost-docker
@@ -23,12 +23,15 @@ mkdir -p ./volumes/app/mattermost/{data,logs,config}
 sudo chown -R 2000:2000 ./volumes/app/mattermost/
 docker-compose up -d
 
-cd ..
+cd /usr/share/docker
 
 git clone https://github.com/BaileyGingerTechnology/system-manager.git
 cd system-manager
 docker-compose up -d
 
-cd ..
+cd /usr/share/docker
 
 docker run -d --restart unless-stopped -p 999:443 --name openvas mikesplain/openvas
+
+sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+cat /tmp/ip-config >> /etc/sysconfig/network-scripts/ifcfg-eth0

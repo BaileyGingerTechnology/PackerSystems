@@ -40,10 +40,10 @@ echo "
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-";
+"
 
 echo "Cleaning up from Gentoo setup"
-cd /mnt/gentoo
+cd /mnt/gentoo || exit 1
 rm -rf GentooInstall stage3-* cleanup.sh
 
 umount -R /mnt/gentoo

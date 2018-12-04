@@ -14,12 +14,12 @@ install -dv -m 0750 /root
 install -dv -m 1777 /tmp /var/tmp
 mkdir -pv /usr/{,local/}{bin,include,lib,sbin,src}
 mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
-mkdir -v  /usr/{,local/}share/{misc,terminfo,zoneinfo}
-mkdir -v  /usr/libexec
+mkdir -v /usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -v /usr/libexec
 mkdir -pv /usr/{,local/}share/man/man{1..8}
 
 case $(uname -m) in
- x86_64) mkdir -v /lib64 ;;
+x86_64) mkdir -v /lib64 ;;
 esac
 
 mkdir -v /var/{log,mail,spool}
@@ -34,7 +34,7 @@ ln -sv /tools/lib/libstdc++.{a,so{,.6}} /usr/lib
 ln -sv bash /bin/sh
 ln -sv /proc/self/mounts /etc/mtab
 
-cat > /etc/passwd << "EOF"
+cat >/etc/passwd <<"EOF"
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/bin/false
@@ -42,7 +42,7 @@ messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
 nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
 EOF
 
-cat > /etc/group << "EOF"
+cat >/etc/group <<"EOF"
 root:x:0:
 bin:x:1:daemon
 sys:x:2:
@@ -58,7 +58,7 @@ audio:x:11:
 video:x:12:
 utmp:x:13:
 usb:x:14:
-cdrom:x:15:
+cdrom:x:15: || exit 1
 adm:x:16:
 messagebus:x:18:
 systemd-journal:x:23:
@@ -70,6 +70,6 @@ EOF
 
 echo "build to bash"
 
-cd /
+cd / || exit 1
 
 exec /tools/bin/bash --login +h ./build-to-bash.sh

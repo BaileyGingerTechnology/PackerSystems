@@ -4,118 +4,122 @@
     "memory": "2048",
     "disk_size": "16384",
     "build_num": "1.0",
-    "vmname": "Ward"
+    "vmname": "Arditi"
   },
-  "builders": [{
-    "type": "vmware-iso",
-    "iso_urls": ["http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"],
-    "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
-    "iso_checksum_type": "sha256",
-    "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
-    "communicator": "ssh",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "version": "{{user `version`}}",
-    "boot_command": [
-      "<esc><wait>",
-      "install <wait>",
-      "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
-      "debian-installer=en_US <wait>",
-      "auto <wait>",
-      "locale=en_US <wait>",
-      "hostname=ward domain=locale.lan ",
-      "kbd-chooser/method=us <wait>",
-      "fb=false <wait>",
-      "interface=auto ",
-      "debconf/frontend=noninteractive <wait>",
-      "debconf/priority=critical ",
-      "console-setup/ask_detect=false <wait>",
-      "keymap=us <wait>",
-      "debian/priority=critical ",
-      "keyboard-configuration/xkb-keymap=us <wait>",
-      "<enter><wait>"
-    ],
-    "guest_os_type": "debian7-64",
-    "boot_wait": "15s",
-    "http_directory": "http",
-    "ssh_timeout": "10000s",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "vmx_data": {
-      "memsize": "{{user `memory`}}",
-      "numvcpus": "{{user `cpus`}}"
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "iso_urls": [
+        "http://cdimage.kali.org/kali-2018.4/kali-linux-lxde-2018.4-amd64.iso"
+      ],
+      "iso_checksum": "612aebd78f570aac62511b049a45ebf0be027a28c9b4732e0b5d799fa818ca6d",
+      "iso_checksum_type": "sha256",
+      "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
+      "communicator": "ssh",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "version": "{{user `version`}}",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "hostname=arditi domain=locale.lan ",
+        "kbd-chooser/method=us <wait>",
+        "fb=false <wait>",
+        "interface=auto ",
+        "debconf/frontend=noninteractive <wait>",
+        "debconf/priority=critical ",
+        "console-setup/ask_detect=false <wait>",
+        "keymap=us <wait>",
+        "debian/priority=critical ",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "guest_os_type": "debian7-64",
+      "boot_wait": "15s",
+      "http_directory": "http",
+      "ssh_timeout": "10000s",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      }
+    },
+    {
+      "type": "virtualbox-iso",
+      "iso_urls": [
+        "http://cdimage.kali.org/kali-2018.4/kali-linux-lxde-2018.4-amd64.iso"
+      ],
+      "iso_checksum": "612aebd78f570aac62511b049a45ebf0be027a28c9b4732e0b5d799fa818ca6d",
+      "iso_checksum_type": "sha256",
+      "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
+      "communicator": "ssh",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
+        "debian-installer=en_US <wait>",
+        "auto <wait>",
+        "locale=en_US <wait>",
+        "hostname=arditi domain=locale.lan ",
+        "kbd-chooser/method=us <wait>",
+        "fb=false <wait>",
+        "interface=auto ",
+        "debconf/frontend=noninteractive <wait>",
+        "debconf/priority=critical ",
+        "console-setup/ask_detect=false <wait>",
+        "keymap=us <wait>",
+        "debian/priority=critical ",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "guest_os_type": "Debian_64",
+      "boot_wait": "15s",
+      "http_directory": "http",
+      "ssh_timeout": "10000s",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
     }
-  },
-  {
-    "type": "virtualbox-iso",
-    "iso_urls": ["http://cdimage.kali.org/kali-2018.2/kali-linux-lxde-2018.2-amd64.iso"],
-    "iso_checksum": "449ecca86b0f49a52f95a51acdde94745821020b7fc0bd2129628c56bc2d145d",
-    "iso_checksum_type": "sha256",
-    "shutdown_command": "echo 'password' | sudo /sbin/shutdown -h now",
-    "communicator": "ssh",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "boot_command": [
-      "<esc><wait>",
-      "install <wait>",
-      "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali.preseed <wait>",
-      "debian-installer=en_US <wait>",
-      "auto <wait>",
-      "locale=en_US <wait>",
-      "hostname=ward domain=locale.lan ",
-      "kbd-chooser/method=us <wait>",
-      "fb=false <wait>",
-      "interface=auto ",
-      "debconf/frontend=noninteractive <wait>",
-      "debconf/priority=critical ",
-      "console-setup/ask_detect=false <wait>",
-      "keymap=us <wait>",
-      "debian/priority=critical ",
-      "keyboard-configuration/xkb-keymap=us <wait>",
-      "<enter><wait>"
-    ],
-    "guest_os_type": "Debian_64",
-    "boot_wait": "15s",
-    "http_directory": "http",
-    "ssh_timeout": "10000s",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}"
-  }
-],
-
+  ],
   "provisioners": [
     {
       "type": "file",
-      "source": "files/kali.list",
+      "source": "files/Linux/Kali/kali.list",
       "destination": "/tmp/sources.list"
+    },
+    {
+      "type": "file",
+      "source": "files/Linux/Kali/interfaces",
+      "destination": "/tmp/interfaces"
     },
     {
       "type": "shell",
       "expect_disconnect": true,
-      "inline": [
-        "sudo mv /tmp/sources.list /etc/apt/sources.list",
-        "sudo apt clean && sudo apt update && yes | sudo apt upgrade && sudo apt -y dist-upgrade",
-        "sudo reboot"
+      "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/kali/init.sh"
       ]
     },
     {
       "type": "shell",
       "expect_disconnect": true,
-      "inline": [
-        "sudo apt -y --reinstall install open-vm-tools-desktop fuse",
-        "sudo reboot"
-      ],
-      "only": ["vmware-iso"]
+      "scripts": [
+        "scripts/kali/virtualbox-tools.sh",
+        "scripts/kali/vmware-tools.sh",
+        "scripts/kali/qemu-tools.sh"
+      ]
     },
     {
-      "type": "shell",
-      "expect_disconnect": true,
-      "inline": [
-        "sudo apt -y install virtualbox-guest-x11",
-        "sudo reboot"
-      ],
-      "only": ["virtualbox-iso"]
+      "type": "file",
+      "source": "files/Linux/Kali/ScoringEngine.deb",
+      "destination": "/tmp/ScoringEngine.deb"
     },
     {
       "type": "shell",

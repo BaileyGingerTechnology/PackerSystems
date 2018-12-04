@@ -40,12 +40,22 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
-      "headless" : "{{ user `headless`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "headless": "{{ user `headless`}}",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "vboxmanage": [
-          ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-          ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ]
       ]
     },
     {
@@ -71,8 +81,8 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
-      "headless" : "{{ user `headless`}}",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "headless": "{{ user `headless`}}",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
       "vmx_data": {
         "memsize": "{{user `memory`}}",
@@ -105,16 +115,26 @@
       "ssh_password": "password",
       "ssh_timeout": "{{ user `ssh_timeout` }}",
       "shutdown_command": "sudo poweroff",
-      "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
+      "output_directory": "Builds/qemu/{{user `vmname`}}-{{user `build_num`}}",
       "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-      "headless" : "{{ user `headless`}}"
+      "headless": "{{ user `headless`}}",
+      "qemuargs": [
+        [
+          "-m",
+          "{{user `memory`}}M"
+        ],
+        [
+          "-smp",
+          "{{user `cpus`}}"
+        ]
+      ]
     }
   ],
   "provisioners": [
     {
-        "type": "file",
-        "source": "files/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch",
-        "destination": "/temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch"
+      "type": "file",
+      "source": "files/Linux/LFS/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch",
+      "destination": "/temp/0001-Ensure-that-packed-structs-follow-the-gcc-memory-lay.patch"
     },
     {
       "type": "file",
@@ -129,7 +149,7 @@
     {
       "type": "file",
       "source": "scripts/lfs/user-group-setup.sh",
-      "destination": "/temp/user-group-setup.sh" 
+      "destination": "/temp/user-group-setup.sh"
     },
     {
       "type": "shell",
@@ -139,8 +159,8 @@
     },
     {
       "environment_vars": [
-          "COUNTRY={{ user `country` }}",
-          "CPUS={{ user `cpus` }}"
+        "COUNTRY={{ user `country` }}",
+        "CPUS={{ user `cpus` }}"
       ],
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",
@@ -152,8 +172,8 @@
     },
     {
       "environment_vars": [
-          "COUNTRY={{ user `country` }}",
-          "CPUS={{ user `cpus` }}"
+        "COUNTRY={{ user `country` }}",
+        "CPUS={{ user `cpus` }}"
       ],
       "type": "shell",
       "execute_command": "{{.Vars}} sudo -E -S bash '{{.Path}}'",

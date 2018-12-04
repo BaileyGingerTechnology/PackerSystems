@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 sudo tee -a /etc/ssh/sshd_config <<EOF
 
@@ -10,6 +9,11 @@ EOF
 
 sudo bash -c "echo 'blake.gingertech.com' > /etc/hostname"
 sudo hostname blake.gingertech.com
+
+# Join Windows Domain
+sudo apt update
+export DEBIAN_FRONTEND=noninteractive ;
+sudo apt install -y acl ldap-utils krb5-config krb5-user sssd chrony
 
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
 TARGET_DIR='/mnt/arch'
@@ -21,17 +25,18 @@ TIMEZONE='UTC'
 COUNTRY=${COUNTRY:-US}
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
 if [[ $PACKER_BUILDER_TYPE == "qemu" ]]; then
-	DISK='/dev/vda'
+    DISK='/dev/vda'
 else
-	DISK='/dev/sda'
+    DISK='/dev/sda'
 fi
 
-sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
+sudo apt -y install gettext autoconf automake pkg-config libtool asciidoc fakeroot \
+libcurl4-openssl-dev bsdcpio bsdtar libarchive-dev alien git parted vim apt-transport-https
 
 sudo apt -y install xfce4 xfce4-goodies task-xfce-desktop
 
 # To make it look like an actual workstation
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >microsoft.gpg
 sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 sudo apt-get update
@@ -52,9 +57,9 @@ cd pacman
 export LIBARCHIVE_LIBS="-larchive"
 export LIBCURL_CFLAGS="-I/usr/include/curl"
 export LIBCURL_LIBS="-lcurl"
-./configure --prefix=/   \
-						--enable-doc \
-            --with-curl
+./configure --prefix=/ \
+--enable-doc \
+--with-curl
 
 make
 make -C contrib
@@ -77,7 +82,12 @@ sudo mkdir -v /mnt/arch/boot
 sudo pacman -Sy
 mv /home/administrator/debianPKGBUILD /temp/debian/PKGBUILD
 cd /temp/debian && makepkg -si --noconfirm
-sudo pacman -S --noconfirm arch-install-scripts
+rm PKGBUILD
+cd /tmp
+git clone https://projects.archlinux.org/arch-install-scripts.git
+cd arch-install-scripts
+make && sudo make install
+
 sudo pacstrap /mnt/arch base base-devel
 
 sudo arch-chroot ${TARGET_DIR} pacman --version
@@ -91,10 +101,10 @@ sudo bash -c "genfstab -U /mnt/arch >> /mnt/arch/etc/fstab"
 echo '==> Generating the system configuration script'
 sudo /usr/bin/install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 
-cat <<-EOF > "/temp/arch-config.sh"
+cat <<-EOF >"/temp/arch-config.sh"
 	set -e
 	set -x
-	
+
 	echo 'blake.gingertech.com' > /etc/hostname
 	/usr/bin/ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 	echo 'KEYMAP=${KEYMAP}' > /etc/vconsole.conf
@@ -122,12 +132,15 @@ sudo chmod +x ${TARGET_DIR}${CONFIG_SCRIPT}
 sudo bash -c "arch-chroot ${TARGET_DIR} ${CONFIG_SCRIPT}"
 sudo rm "${TARGET_DIR}${CONFIG_SCRIPT}"
 
-cat << EOF > "/temp/finish.sh"
+cat <<EOF >"/temp/finish.sh"
 	set -e
 	set -x
-	
+
+	mkdir -p /home/administrator/.config/fish && chown administrator:administrator /home/administrator/.config/fish
+	mkdir -p /root/.config/fish
+
   pacman -Syu --noconfirm
-  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl
+  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl fish
 	update-ca-trust
 	git config --system http.sslverify false
 
@@ -147,13 +160,30 @@ cat << EOF > "/temp/finish.sh"
 
 	echo 'blake.gingertech.com' > /etc/hostname
 
+	echo "/usr/bin/fish" >>/etc/shells
+
+	yes password | passwd
+	chsh -s /usr/bin/fish
+	yes password | sudo -H -u administrator chsh -s /usr/bin/fish
+
   rm -rf /temp
-	rm /finish.sh 
+	rm /finish.sh
 EOF
 
 sudo mv /temp/finish.sh /mnt/arch/finish.sh
 sudo chmod -v +x /mnt/arch/finish.sh
 
 sudo bash -c "arch-chroot ${TARGET_DIR} ./finish.sh"
-echo "sudo arch-chroot ${TARGET_DIR} && exit" >> ~/.bashrc
-sudo bash -c "echo \"arch-chroot ${TARGET_DIR} && exit\" >> /root/.bashrc"
+echo "sudo chroot ${TARGET_DIR} /usr/bin/fish && exit" >>~/.bashrc
+sudo bash -c "echo \"chroot ${TARGET_DIR} /usr/bin/fish && exit\" >> /root/.bashrc"
+echo "sudo arch-chroot ${TARGET_DIR}" >>~/.profile
+
+echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_8.0/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:2.list
+sudo apt-get update
+sudo apt-get install -y fish --force-yes
+
+cd ~/ || exit 1
+rm pacman.conf
+
+# Setup for static IP
+sudo mv interfaces /etc/network/interfaces

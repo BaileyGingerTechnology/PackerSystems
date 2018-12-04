@@ -3,12 +3,12 @@
 
 echo "Reboot success. In system."
 
-echo 'dlacey.gingertech.com' > /etc/hostname
+echo 'dlacey.gingertech.com' >/etc/hostname
 
 # Gonna have it be a OwnCloud webserver
-echo ">=dev-lang/php-7.1.16 gd mysql mysqli pdo intl zip xmlreader curl xmlwriter fpm sqlite" >> /etc/portage/package.use/web-unmask
-echo ">=app-eselect/eselect-php-0.9.4-r5 fpm" >> /etc/portage/package.use/web-unmask
-echo "www-apps/owncloud" >> /etc/portage/package.accept_keywords/web-words
+echo ">=dev-lang/php-7.1.16 gd mysql mysqli pdo intl zip xmlreader curl xmlwriter fpm sqlite" >>/etc/portage/package.use/web-unmask
+echo ">=app-eselect/eselect-php-0.9.4-r5 fpm" >>/etc/portage/package.use/web-unmask
+echo "www-apps/owncloud" >>/etc/portage/package.accept_keywords/web-words
 #sed -i 's/\bUSE=\b/apache2\ /' /etc/portage/make.conf
 
 emerge www-servers/apache dev-lang/php
@@ -27,8 +27,8 @@ rc-update add apache2 default
 emerge dev-lang/go
 mv /home/administrator/oh /bin/oh
 chmod +x /bin/oh
-echo /bin/oh >> /etc/shells
-echo /bin/oh >> /home/administrator/.bashrc
+echo /bin/oh >>/etc/shells
+echo /bin/oh >>/home/administrator/.bashrc
 chsh -s /bin/oh administrator
 
 yes -- "-5" | etc-update
@@ -36,4 +36,13 @@ yes -- "-5" | etc-update
 # Now for fun stuff
 
 sed -i 's/\/var\/www\/localhost\/htdocs/\/var\/www\/dlacey.gingertech.com\/htdocs/g' /etc/apache2/vhosts.d/default_vhost.include
-echo '<?php phpinfo(); ?>' > /var/www/dlacey.gingertech.com/htdocs/info.php
+mkdir -p /var/www/dlacey.gingertech.com/htdocs
+echo '<?php phpinfo(); ?>' >/var/www/dlacey.gingertech.com/htdocs/info.php
+
+# Assign static IP
+interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
+sudo tee /etc/conf.d/net <<EOF
+config_${interfaces[0]}="172.16.16.7/24"
+routes_${interfaces[0]}="default via 172.16.16.1"
+dns_servers_${interfaces[0]}="172.16.16.50 8.8.8.8"
+EOF

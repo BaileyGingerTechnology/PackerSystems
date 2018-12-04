@@ -4,96 +4,82 @@
     "disk_size": "40000",
     "iso_checksum": "ff4c749ea0aaaceedb2432ba3e0fd0c1b64f5a72141b1ec06b9ced52b5de0dbf",
     "iso_checksum_type": "sha256",
-    "memory": "512",
+    "memory": "1024",
     "build_num": "1.0",
     "vmname": "Beddor"
   },
-  "builders": [{
-    "type": "qemu",
-    "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "false",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "2<enter><wait10><wait10><wait10>",
-      "<enter><wait>",
-      "mdmfs -s 100m md1 /tmp<enter><wait>",
-      "dhclient -l /tmp/dhclient.leases -p /tmp/dhclient.pid vtnet0<enter><wait5>",
-      "fetch -o /tmp/installerconfig http://{{.HTTPIP}}:{{.HTTPPort}}/installerconfig<enter><wait>",
-      "bsdinstall script /tmp/installerconfig && reboot<enter>"
-    ],
-    "ssh_timeout": "20m",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "shutdown_command": "sudo poweroff",
-    "qemuargs": [
-      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
-    ]
-  }, {
-    "type": "virtualbox-iso",
-    "guest_os_type": "FreeBSD_64",
-    "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "false",
-    "http_directory": "http",
-    "boot_wait": "10s",
-    "boot_command": [
-      "2<enter><wait10><wait10><wait10>",
-      "<enter><wait>",
-      "mdmfs -s 100m md1 /tmp<enter><wait>",
-      "dhclient -l /tmp/dhclient.leases -p /tmp/dhclient.pid em0<enter><wait5>",
-      "fetch -o /tmp/installerconfig http://{{.HTTPIP}}:{{.HTTPPort}}/installerconfig<enter><wait>",
-      "bsdinstall script /tmp/installerconfig && reboot<enter>"
-    ],
-    "ssh_timeout": "20m",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "guest_additions_mode": "disable",
-    "shutdown_command": "sudo poweroff",
-    "vboxmanage": [
-      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
-    ]
-  }, {
-    "type": "vmware-iso",
-    "guest_os_type": "freeBSD-64",
-    "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "Builds/{{user `vmname`}}-{{user `build_num`}}",
-    "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "false",
-    "http_directory": "http",
-    "boot_wait": "10s",
-    "boot_command": [
-      "2<enter><wait10><wait10><wait10>",
-      "<enter><wait>",
-      "mdmfs -s 100m md1 /tmp<enter><wait>",
-      "dhclient -l /tmp/dhclient.leases -p /tmp/dhclient.pid em0<enter><wait5>",
-      "fetch -o /tmp/installerconfig http://{{.HTTPIP}}:{{.HTTPPort}}/installerconfig<enter><wait>",
-      "bsdinstall script /tmp/installerconfig && reboot<enter>"
-    ],
-    "ssh_timeout": "20m",
-    "ssh_username": "administrator",
-    "ssh_password": "password",
-    "tools_upload_flavor": "freebsd",
-    "shutdown_command": "sudo poweroff",
-    "vmx_data": {
-      "memsize": "{{user `memory`}}",
-      "numvcpus": "{{user `cpus`}}"
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "FreeBSD_64",
+      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "false",
+      "http_directory": "http",
+      "boot_wait": "10s",
+      "boot_command": [
+        "2<enter><wait10><wait10><wait10>",
+        "<enter><wait>",
+        "mdmfs -s 100m md1 /tmp<enter><wait>",
+        "dhclient -l /tmp/dhclient.leases -p /tmp/dhclient.pid em0<enter><wait5>",
+        "fetch -o /tmp/installerconfig http://{{.HTTPIP}}:{{.HTTPPort}}/installerconfig<enter><wait>",
+        "bsdinstall script /tmp/installerconfig && reboot<enter>"
+      ],
+      "ssh_timeout": "20m",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "guest_additions_mode": "disable",
+      "shutdown_command": "sudo poweroff",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ]
+      ]
+    },
+    {
+      "type": "vmware-iso",
+      "guest_os_type": "freeBSD-64",
+      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",
+      "vm_name": "{{user `vmname`}}-{{user `build_num`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "false",
+      "http_directory": "http",
+      "boot_wait": "10s",
+      "boot_command": [
+        "2<enter><wait10><wait10><wait10>",
+        "<enter><wait>",
+        "mdmfs -s 100m md1 /tmp<enter><wait>",
+        "dhclient -l /tmp/dhclient.leases -p /tmp/dhclient.pid em0<enter><wait5>",
+        "fetch -o /tmp/installerconfig http://{{.HTTPIP}}:{{.HTTPPort}}/installerconfig<enter><wait>",
+        "bsdinstall script /tmp/installerconfig && reboot<enter>"
+      ],
+      "ssh_timeout": "20m",
+      "ssh_username": "administrator",
+      "ssh_password": "password",
+      "tools_upload_flavor": "freebsd",
+      "shutdown_command": "sudo poweroff",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
+      }
     }
-  }],
+  ],
   "provisioners": [
     {
       "type": "shell",
@@ -108,6 +94,16 @@
       "type": "file",
       "source": "scripts/freebsd/freebsd-fnginx.sh",
       "destination": "/temp/freebsd-fnginx.sh"
+    },
+    {
+      "type": "file",
+      "source": "files/BSD/rowlpress.sql",
+      "destination": "/temp/rowlpress.sql"
+    },
+    {
+      "type": "file",
+      "source": "files/BSD/wordpress.tar.gz",
+      "destination": "/temp/wordpress.tar.gz"
     },
     {
       "type": "shell",

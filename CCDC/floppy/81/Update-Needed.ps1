@@ -1,2 +1,2 @@
 choco install -y powershell
-choco upgrade -y powerhsell
+choco upgrade -y powershell

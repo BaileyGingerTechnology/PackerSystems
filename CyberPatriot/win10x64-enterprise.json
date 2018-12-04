@@ -1,6 +1,6 @@
 {
   "variables": {
-    "vm_name": "Windows 10",
+    "vm_name": "Win10_GT",
     "iso_checksum": "3b5f9494d870726d6d8a833aaf6169a964b8a9be",
     "iso_url": "https://files.gingertechnology.net/packersystems/win10.iso",
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
@@ -94,19 +94,59 @@
         "numvcpus": "{{user `numcpus`}}",
         "scsi0.virtualDev": "lsisas1068"
       }
-    }
-  ],
-  "post-processors": [
+    },
     {
-      "type": "manifest",
-      "output": "manifest.json",
-      "strip_path": true
+      "type": "hyperv-iso",
+      "communicator": "winrm",
+      "disk_size": 61440,
+      "floppy_files": [
+        "floppy/Win10/Autounattend.xml",
+        "floppy/update-windows.ps1",
+        "floppy/configure-winrm.ps1"
+      ],
+      "headless": false,
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "output_directory": "Builds/{{build_type}}/{{user `vm_name`}}-{{user `version`}}",
+      "winrm_username": "{{user `username`}}",
+      "winrm_password": "{{user `password`}}",
+      "winrm_timeout": "6h",
+      "shutdown_command": "{{ user `shutdown_command`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "ram_size": "{{user `memsize`}}",
+      "cpu": "{{user `numcpus`}}",
+      "generation": 1,
+      "switch_name":"packer-hyperv-iso",
+      "enable_secure_boot":false
     }
   ],
   "provisioners": [
     {
       "type": "powershell",
       "inline": "Set-MpPreference -DisableRealtimeMonitoring $true"
+    },
+    {
+      "type": "file",
+      "source": "files/7z920-x64.msi",
+      "destination": "C:\\Windows\\Temp\\7z920-x64.msi"
+    },
+    {
+      "type": "windows-shell",
+      "execute_command": "{{.Vars}} cmd /c C:\\Windows\\Temp\\script.bat",
+      "scripts": [
+        "scripts/winshared/guest-tools.bat"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "file",

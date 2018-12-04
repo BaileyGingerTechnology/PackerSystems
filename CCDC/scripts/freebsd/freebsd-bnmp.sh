@@ -9,9 +9,15 @@ sudo bash -c "echo 'beddor.gingertech.com' > /etc/hostname"
 sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-iocage
 
 sudo iocage activate zroot
-echo 6 |sudo iocage fetch
+echo 6 | sudo iocage fetch
 
-sudo tee -a /etc/rc.conf << EOF
+sudo -i '' '/dhcp/d' /etc/rc.conf
+
+sudo tee -a /etc/rc.conf <<EOF
+hostname="beddor.gingertech.com"
+ifconfig_em0="inet 172.16.16.30 netmask 255.255.255.0"
+defaultrouter="172.16.16.1"
+
 iocage_enable="YES"
 sshd_enable="YES"
 
@@ -23,7 +29,7 @@ ifconfig_bridge0="addm em0 up"
 ifconfig_em0="up"
 EOF
 
-sudo tee -a /etc/sysctl.conf << EOF
+sudo tee -a /etc/sysctl.conf <<EOF
 net.inet.ip.forwarding=1       # Enable IP forwarding between interfaces
 net.link.bridge.pfil_onlyip=0  # Only pass IP packets when pfil is enabled
 net.link.bridge.pfil_bridge=0  # Packet filter on the bridge interface
@@ -36,19 +42,21 @@ sudo service netif cloneup
 sudo ifconfig
 sleep 10
 
-sudo iocage create -n fnginx ip4_addr="em0|10.0.20.31/8" -r 11.1-RELEASE
+sudo iocage create -n rowling ip4_addr="em0|172.16.16.31/24" -r 11.1-RELEASE
 sleep 10
 sudo iocage start rowling
 sleep 30
 
-cd /temp
+cd /temp || exit 1
 sudo chmod +x freebsd-*
-sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh\
+sudo mv -v /temp/wordpress.tar.gz /iocage/jails/rowling/root/wordpress.tar.gz
+sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh
 
 sudo chroot /iocage/jails/rowling/root \
-  ./freebsd-fnginx.sh
+	./freebsd-fnginx.sh
 
 sudo rm -f /iocage/jails/rowling/root/freebsd-fnginx.sh
+sudo rm -f /iocage/jails/rowling/root/wordpress*
 
 sudo iocage set boot=on rowling
 
@@ -57,3 +65,11 @@ sudo pkg install -y mariadb102-server mariadb102-client
 
 sudo sysrc mysql_enable="YES"
 sudo service mysql-server start
+sudo mysql -e 'create database rowlpress;'
+sudo mysql rowlpress </temp/rowlpress.sql
+sudo mysql -e "grant all privileges on rowlpress.* to 'administrator'@'%' identified by 'password';"
+
+sudo -i '' '/8.8.8.8/d' /etc/rc.conf
+cat <<EOF > /etc/resolv.conf
+nameserver 172.16.16.50
+EOF

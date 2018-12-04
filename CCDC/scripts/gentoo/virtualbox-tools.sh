@@ -7,6 +7,6 @@ emerge app-emulation/virtualbox-guest-additions
 gpasswd -a administrator vboxguest
 gpasswd -a root vboxguest
 
-echo 'modules="vboxdrv vboxnetadp vboxnetflt vboxpci"' >> /etc/conf.d/modules
+echo 'modules="vboxdrv vboxnetadp vboxnetflt vboxpci"' >>/etc/conf.d/modules
 
 reboot

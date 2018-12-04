@@ -22,7 +22,7 @@ COUNTRY=${COUNTRY:-US}
 MIRRORLIST="https://www.archlinux.org/mirrorlist/?country=${COUNTRY}&protocol=http&protocol=https&ip_version=4&use_mirror_status=on"
 
 echo "==> Setting local mirror"
-curl -s "$MIRRORLIST" |  sed 's/^#Server/Server/' > /etc/pacman.d/mirrorlist
+curl -s "$MIRRORLIST" | sed 's/^#Server/Server/' >/etc/pacman.d/mirrorlist
 
 echo "==> Clearing partition table on ${DISK}"
 /usr/bin/sgdisk --zap ${DISK}
@@ -57,12 +57,12 @@ echo '==> Bootstrapping the base installation'
 /usr/bin/sed -i 's/TIMEOUT 50/TIMEOUT 10/' "${TARGET_DIR}/boot/syslinux/syslinux.cfg"
 
 echo '==> Generating the filesystem table'
-/usr/bin/genfstab -p ${TARGET_DIR} >> "${TARGET_DIR}/etc/fstab"
+/usr/bin/genfstab -p ${TARGET_DIR} >>"${TARGET_DIR}/etc/fstab"
 
 echo '==> Generating the system configuration script'
 /usr/bin/install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 
-cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
+cat <<-EOF >"${TARGET_DIR}${CONFIG_SCRIPT}"
 	echo '${FQDN}' > /etc/hostname
 	/usr/bin/ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 	echo 'KEYMAP=${KEYMAP}' > /etc/vconsole.conf
@@ -75,7 +75,7 @@ cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
 	/usr/bin/ln -s '/usr/lib/systemd/system/dhcpcd@.service' '/etc/systemd/system/multi-user.target.wants/dhcpcd@eth0.service'
 	/usr/bin/sed -i 's/#UseDNS yes/UseDNS no/' /etc/ssh/sshd_config
 	/usr/bin/systemctl enable sshd.service
-
+	
 	# Admin user config
 	/usr/bin/useradd --password ${PASSWORD} --comment 'administrator User' --create-home --user-group administrator
 	echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/10_administrator
@@ -84,14 +84,16 @@ cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
 	/usr/bin/install --directory --owner=administrator --group=administrator --mode=0700 /home/administrator/.ssh
 	/usr/bin/chown administrator:administrator /home/administrator/.ssh/authorized_keys
 	/usr/bin/chmod 0600 /home/administrator/.ssh/authorized_keys
-
+	
 	# clean up
 	/usr/bin/pacman -Rcns --noconfirm gptfdisk
-
+	
 	/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
 	/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
 	/usr/bin/pacman -Syu --noconfirm
+	
+	/bin/ip addr
 EOF
 
 echo '==> Entering chroot and configuring system'
