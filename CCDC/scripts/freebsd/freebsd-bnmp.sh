@@ -11,22 +11,26 @@ sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-ioca
 sudo iocage activate zroot
 echo 6 | sudo iocage fetch
 
-sudo -i '' '/dhcp/d' /etc/rc.conf
-
-sudo tee -a /etc/rc.conf <<EOF
-hostname="beddor.gingertech.com"
-ifconfig_em0="inet 172.16.16.30 netmask 255.255.255.0"
-defaultrouter="172.16.16.1"
-
-iocage_enable="YES"
+sudo tee /etc/rc.conf <<EOF
+zfs_enable="YES"
 sshd_enable="YES"
+sendmail_enable="NO"
+sendmail_submit_enable="NO"
+sendmail_outbound_enable="NO"
+sendmail_msp_queue_enable="NO"
+
+hostname="beddor.gingertech.com"
+
+ifconfig em0 inet 172.16.16.30 netmask 255.255.255.0
+route add default 172.16.16.1
 
 # set up two bridge interfaces for iocage
-cloned_interfaces="bridge0 bridge1"
+cloned_interfaces="bridge0"
 
 # plumb interface em0 into bridge0
 ifconfig_bridge0="addm em0 up"
 ifconfig_em0="up"
+iocage_enable="YES"
 EOF
 
 sudo tee -a /etc/sysctl.conf <<EOF
@@ -51,6 +55,9 @@ cd /temp || exit 1
 sudo chmod +x freebsd-*
 sudo mv -v /temp/wordpress.tar.gz /iocage/jails/rowling/root/wordpress.tar.gz
 sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh
+
+ASSUME_ALWAYS_YES=yes sudo iocage pkg rowling install nginx mod_php71 php71-mysqli php71-xml php71-hash php71-gd php71-curl php71-tokenizer php71-zlib php71-zip
+sudo iocage set host_hostname="rowling" rowling
 
 sudo chroot /iocage/jails/rowling/root \
 	./freebsd-fnginx.sh

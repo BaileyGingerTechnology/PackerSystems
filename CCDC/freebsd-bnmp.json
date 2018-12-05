@@ -77,6 +77,13 @@
       "vmx_data": {
         "memsize": "{{user `memory`}}",
         "numvcpus": "{{user `cpus`}}"
+      },
+      "vmx_data_post": {
+        "ethernet0.present": true,
+        "ethernet0.virtualDev": "e1000",
+        "ethernet0.startConnected": true,
+        "ethernet0.connectionType": "custom",
+        "ethernet0.vnet": "vmnet2"
       }
     }
   ],

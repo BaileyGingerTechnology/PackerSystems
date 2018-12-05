@@ -12,4 +12,4 @@ allow-hotplug eth0
 iface eth0 inet static
   address 172.16.16.27/24
   gateway 172.16.16.1
-  dns-nameserver 172.16.16.50
+  dns-nameservers 172.16.16.50

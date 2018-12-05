@@ -45,7 +45,7 @@
         "set interfaces ethernet eth0 address dhcp<enter><wait>",
         "set system login user administrator authentication plaintext-password password<enter><wait>",
         "set system login user administrator level admin<enter><wait>",
-        "set service ssh<enter><wait>",
+        "set service ssh port 22<enter><wait>",
         "commit<enter><wait>",
         "save<enter><wait>",
         "exit<enter><wait>",
@@ -58,7 +58,7 @@
         "commit<enter><wait>",
         "save<enter><wait>",
         "exit<enter><wait><wait5>",
-        "ping 8.8.8.8 count 5<enter><wait>",
+        "ping 8.8.8.8 count 2<enter><wait>",
         "configure<enter><wait>",
         "set system host-name schwab<enter><wait>",
         "commit<enter><wait>",
@@ -74,14 +74,14 @@
       "vmx_data": {
         "memsize": "{{user `memory`}}",
         "numvcpus": "{{user `cpus`}}",
-        "ethernet0.present": "TRUE",
+        "ethernet0.present": true,
         "ethernet0.virtualDev": "e1000",
-        "ethernet0.startConnected": "TRUE",
+        "ethernet0.startConnected": true,
+        "ethernet0.connectionType": "custom",
         "ethernet0.vnet": "vmnet2",
-        "ethernet1.present": "TRUE",
+        "ethernet1.present": true,
         "ethernet1.virtualDev": "e1000",
-        "ethernet1.startConnected": "TRUE",
-        "ethernet1.vnet": "vmnet8"
+        "ethernet1.startConnected": true
       }
     }
   ],

@@ -44,5 +44,5 @@ interfaces=($(ls /sys/class/net | grep -v lo | sort -u -))
 sudo tee /etc/conf.d/net <<EOF
 config_${interfaces[0]}="172.16.16.7/24"
 routes_${interfaces[0]}="default via 172.16.16.1"
-dns_servers_${interfaces[0]}="172.16.16.50 8.8.8.8"
+dns_servers_${interfaces[0]}="172.16.16.50"
 EOF
