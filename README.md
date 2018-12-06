@@ -51,7 +51,7 @@ For Windows 10:
 
     - Installs scoop package manager for future use
 
-For Windows Server 2012r2:
+For Windows Server 2012r2 (approx. build time 36 minutes):
 
     - Does not install updates
 

@@ -1,5 +1,6 @@
 {
   "variables": {
+    "vm_name": "Windows2012r2-AD-FTP",
     "iso_url": "https://files.gingertechnology.net/packersystems/Win2012R2.iso",
     "iso_checksum_type": "md5",
     "iso_checksum": "0e7c09aab20dec3cd7eab236dab90e78",
@@ -13,6 +14,7 @@
   "builders": [
     {
       "type": "vmware-iso",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
@@ -34,7 +36,9 @@
         "floppy/Win2012/00-run-all-scripts.cmd",
         "floppy/Win2012/fixnetwork.ps1",
         "floppy/Win2012/install-winrm.cmd",
-        "floppy/Win2012/zz-start-transports.cmd"
+        "floppy/Win2012/zz-start-transports.cmd",
+        "floppy/Win2012/Update-Needed.ps1",
+        "floppy/Win2012/RunPwSh.bat"
       ],
       "vmx_data": {
         "RemoteDisplay.vnc.enabled": "false",
@@ -46,6 +50,7 @@
     },
     {
       "type": "virtualbox-iso",
+      "vm_name": "{{user `vm_name`}}-{{user `version`}}",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
@@ -160,7 +165,13 @@
     },
     {
       "type": "windows-restart",
-      "restart_command": "powershell Restart-Computer -Force"
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     },
     {
       "type": "powershell",
@@ -169,6 +180,16 @@
       "scripts": [
         "scripts/winserver/MoreSetup.ps1"
       ]
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
+    },
+    {
+      "type": "windows-restart",
+      "restart_command": "powershell \"& {(Get-WmiObject win32_operatingsystem).LastBootUpTime > C:\\ProgramData\\lastboot.txt; Restart-Computer -force}\"",
+      "restart_check_command": "powershell -command \"& {if ((get-content C:\\ProgramData\\lastboot.txt) -eq (Get-WmiObject win32_operatingsystem).LastBootUpTime) {Write-Output 'Sleeping for 600 seconds to wait for reboot'; start-sleep 600} else {Write-Output 'Reboot complete'}}\""
     }
   ]
 }

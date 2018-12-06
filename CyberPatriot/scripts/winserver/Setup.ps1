@@ -2,7 +2,7 @@
 # This script setups/messes up the Windows Server image
 
 # Share the C:\ drive, because duh, that's a great idea
-net share FullDrive=C:\ /grant:Everyone,Full
+net share FullDrive=C:\ /grant:Everyone,FULL
 
 function Disable-PasswordComplexity {
   param()
@@ -63,6 +63,9 @@ Install-ADDSForest `
 
 Install-WindowsFeature NET-Framework-45-Features
 
-Install-WindowsFeature ADLDS
+Write-Host "AD Good"
 
-# Reboot is needed to properly continue, so doing that now
+# Even though the setup is successful, the script will exit with code 3010, which
+# means "success but reboot needed" which causes Packer to fail the build. So change
+# exit code to 0
+exit 0

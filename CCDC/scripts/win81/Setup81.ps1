@@ -2,7 +2,7 @@
 # This script sets/messes up the Windows Server image
 
 # Share the C:\ drive, because duh, that's a great idea
-net share FullDrive=C:\ /grant:Everyone,Full
+net share FullDrive=C:\ /grant:Everyone, Full
 
 function Disable-PasswordComplexity {
   param()
