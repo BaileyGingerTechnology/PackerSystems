@@ -2,7 +2,7 @@
   "variables": {
     "cpus": "1",
     "memory": "2048",
-    "disk_size": "16384",
+    "disk_size": "32768",
     "build_num": "1.0",
     "vmname": "Arditi"
   },
