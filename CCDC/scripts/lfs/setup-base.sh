@@ -208,15 +208,15 @@ sleep 5
 
 # Start 5.6 Linux API Headers
 cd $LFS/sources || exit 1
-tar xvf linux-4.16.10.tar.xz
-cd linux-4.16.10 || exit 1
+tar xvf v4.14.35-1902.0.1.tar.gz
+cd linux-uek-4.14.35-1902.0.1 || exit 1
 
 make mrproper
 make INSTALL_HDR_PATH=dest headers_install
 cp -rv dest/include/* /tools/include
 
 cd $LFS/sources || exit 1
-rm -rf linux-4.16.10
+rm -rf linux-uek-4.14.35-1902.0.1
 sleep 5
 # End 5.6 Linux API Headers
 

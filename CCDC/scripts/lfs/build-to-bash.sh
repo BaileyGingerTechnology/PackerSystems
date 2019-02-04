@@ -12,8 +12,8 @@ chmod -v 600 /var/log/btmp
 
 # Start 6.7 Linux API Headers
 cd $LFS/sources || exit 1
-tar xvf linux-4.16.10.tar.xz
-cd linux-4.16.10 || exit 1
+tar xvf v4.14.35-1902.0.1.tar.gz
+cd linux-uek-4.14.35-1902.0.1 || exit 1
 
 make mrproper
 
@@ -622,7 +622,16 @@ make -j${CPUS}
 make install
 # End 6.33 Grep
 
-# Start 6.34 Bash
+# Start 6.34 libdtrace-ctf
+cd $LFS/sources || exit 1
+tar xvf 1.1.0.tar.gz
+cd libdtrace-ctf-1.1.0 || exit 1
+
+make
+make install
+# End 6.34 libdtrace-ctf
+
+# Start 6.35 Bash
 cd $LFS/sources || exit 1
 tar xvf bash-4.4.18.tar.gz
 cd bash-4.4.18 || exit 1
@@ -637,7 +646,7 @@ su nobody -s /bin/bash -c "PATH=$PATH make tests"
 
 make install
 mv -vf /usr/bin/bash /bin
-# End 6.34 Bash
+# End 6.35 Bash
 
 cd $LFS/sources || exit 1
 rm -R -- */

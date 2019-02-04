@@ -945,18 +945,18 @@ EOF
 function build_kernel() {
 	echo "Starting kernel"
 	cd $LFS/sources || exit 1
-	tar xvf linux-4.16.10.tar.xz
-	cd linux-4.16.10 || exit 1
+	tar xvf v4.14.35-1902.0.1.tar.gz
+	cd linux-uek-4.14.35-1902.0.1 || exit 1
 
 	make
 	make modules_install
 
 	# Make system bootable
-	cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.16.10-gt-1.0
-	cp -iv System.map /boot/System.map-4.16.10
-	cp -iv .config /boot/config-4.16.10
-	install -d /usr/share/doc/linux-4.16.10
-	cp -r Documentation/* /usr/share/doc/linux-4.16.10
+	cp -iv arch/x86/boot/bzImage /boot/vmlinuz-4.14.35-1902.0.1-gt-1.0
+	cp -iv System.map /boot/System.map-4.14.35-1902.0.1
+	cp -iv .config /boot/config-4.14.35-1902.0.1
+	install -d /usr/share/doc/linux-uek-4.14.35-1902.0.1
+	cp -r Documentation/* /usr/share/doc/linux-uek-4.14.35-1902.0.1
 
 	install -v -m755 -d /etc/modprobe.d
 	echo "Finished kernel"
@@ -983,8 +983,8 @@ set timeout=5
 insmod ext2
 set root=(hd0,2)
 
-menuentry "GNU/Linux, Linux 4.16.10-gt-1.0" {
-        linux   /vmlinuz-4.16.10-gt-1.0 root=/dev/sda4 ro
+menuentry "GNU/Linux, Linux 4.14.35-1902.0.1-gt-1.0" {
+        linux   /vmlinuz-4.14.35-1902.0.1-gt-1.0 root=/dev/sda4 ro
 }
 EOF
 
