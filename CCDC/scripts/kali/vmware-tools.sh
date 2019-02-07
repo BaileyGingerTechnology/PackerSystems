@@ -10,4 +10,7 @@ fi
 
 sudo apt update && sudo apt -y full-upgrade
 sudo apt -y --reinstall install open-vm-tools fuse
+
+sudo systemctl enable open-vm-tools
+
 sudo reboot

@@ -10,4 +10,7 @@ fi
 
 sudo apt update && apt -y full-upgrade
 sudo apt -y --reinstall install qemu-guest-agent fuse
+
+sudo systemctl enable qemu-guest-agent
+
 sudo reboot
