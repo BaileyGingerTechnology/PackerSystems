@@ -100,6 +100,11 @@
       "destination": "/tmp/interfaces"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Kali/scoring_engine.conf",
+      "destination": "/tmp/scoring_engine.conf"
+    },
+    {
       "type": "shell",
       "expect_disconnect": true,
       "execute_command": "echo 'password' | {{.Vars}} sudo -E -S bash '{{.Path}}'",

@@ -42,6 +42,8 @@ systemctl enable score_web
 
 # Setup NGINX reverse proxy
 unlink /etc/nginx/sites-enabled/default
+cp /tmp/scoring_engine.conf /etc/nginx/sites-available/scoring_engine.conf
+ln -s /etc/nginx/sites-available/scoring_engine.conf /etc/nginx/sites-enabled/scoring_engine.conf
 
 echo "Setting static IP file"
 mv /tmp/interfaces /etc/network/interfaces
