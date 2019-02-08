@@ -1,7 +1,7 @@
 {
   "variables": {
-    "iso_url": "https://mirrors.edge.kernel.org/archlinux/iso/2018.01.01/archlinux-2018.01.01-x86_64.iso",
-    "iso_checksum": "https://mirrors.edge.kernel.org/archlinux/iso/2018.01.01/sha1sums.txt",
+    "iso_url": "https://mirrors.edge.kernel.org/archlinux/iso/2019.02.01/archlinux-2019.02.01-x86_64.iso",
+    "iso_checksum": "https://mirrors.edge.kernel.org/archlinux/iso/2019.02.01/sha1sums.txt",
     "iso_checksum_type": "sha1",
     "ssh_timeout": "20m",
     "country": "US",

@@ -33,5 +33,10 @@ cd /usr/share/docker
 
 docker run -d --restart unless-stopped -p 999:443 --name openvas mikesplain/openvas
 
-sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-cat /tmp/ip-config >> /etc/sysconfig/network-scripts/ifcfg-eth0
+if [ "$PACKER_BUILDER_TYPE" == "virtualbox-iso" ] || [ "$PACKER_BUILDER_TYPE" == "qemu" ]; then
+  sudo sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-eth0
+  cat /tmp/ip-config | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth0
+elif [ "$PACKER_BUILDER_TYPE" == "vmware-iso" ]; then
+  sudo sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-ens33
+  cat /tmp/ip-config | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-ens33
+fi

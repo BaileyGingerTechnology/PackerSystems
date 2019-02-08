@@ -11,28 +11,6 @@ sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-ioca
 sudo iocage activate zroot
 echo 6 | sudo iocage fetch
 
-sudo tee /etc/rc.conf <<EOF
-zfs_enable="YES"
-sshd_enable="YES"
-sendmail_enable="NO"
-sendmail_submit_enable="NO"
-sendmail_outbound_enable="NO"
-sendmail_msp_queue_enable="NO"
-
-hostname="beddor.gingertech.com"
-
-ifconfig em0 inet 172.16.16.30 netmask 255.255.255.0
-route add default 172.16.16.1
-
-# set up two bridge interfaces for iocage
-cloned_interfaces="bridge0"
-
-# plumb interface em0 into bridge0
-ifconfig_bridge0="addm em0 up"
-ifconfig_em0="up"
-iocage_enable="YES"
-EOF
-
 sudo tee -a /etc/sysctl.conf <<EOF
 net.inet.ip.forwarding=1       # Enable IP forwarding between interfaces
 net.link.bridge.pfil_onlyip=0  # Only pass IP packets when pfil is enabled
@@ -40,11 +18,6 @@ net.link.bridge.pfil_bridge=0  # Packet filter on the bridge interface
 net.link.bridge.pfil_member=0  # Packet filter on the member interface
 EOF
 echo "FIND ME"
-## Restart netif ##
-sudo service netif cloneup
-## Verify it ##
-sudo ifconfig
-sleep 10
 
 sudo iocage create -n rowling ip4_addr="em0|172.16.16.31/24" -r 11.1-RELEASE
 sleep 10
@@ -70,7 +43,6 @@ sudo iocage set boot=on rowling
 # Install MySQL on Beddor rather than in Rowling
 sudo pkg install -y mariadb102-server mariadb102-client
 
-sudo sysrc mysql_enable="YES"
 sudo service mysql-server start
 sudo mysql -e 'create database rowlpress;'
 sudo mysql rowlpress </temp/rowlpress.sql
@@ -80,3 +52,27 @@ sudo -i '' '/8.8.8.8/d' /etc/rc.conf
 cat <<EOF > /etc/resolv.conf
 nameserver 172.16.16.50
 EOF
+
+sudo tee /etc/rc.conf <<EOF
+zfs_enable="YES"
+sshd_enable="YES"
+sendmail_enable="NO"
+sendmail_submit_enable="NO"
+sendmail_outbound_enable="NO"
+sendmail_msp_queue_enable="NO"
+
+hostname="beddor.gingertech.com"
+
+ifconfig em0 inet 172.16.16.30 netmask 255.255.255.0
+route add default 172.16.16.1
+
+# set up two bridge interfaces for iocage
+cloned_interfaces="bridge0"
+
+# plumb interface em0 into bridge0
+ifconfig_bridge0="addm em0 up"
+ifconfig_em0="up"
+iocage_enable="YES"
+EOF
+
+sudo sysrc mysql_enable="YES"

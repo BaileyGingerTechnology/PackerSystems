@@ -3,6 +3,10 @@ source /opt/vyatta/etc/functions/script-template
 
 # Theorectically, this will NAT traffic and provide VMs with internet
 
+# Can't comment in the JSON file, so will explain here:
+# For some reason, the order of adapters in the JSON is reversed in the VM
+# So ethernet0 is actually eth1, which is why this looks wrong
+# But I swear its right! Probably
 configure
 delete int ethernet eth0 address
 delete int ethernet eth1 address

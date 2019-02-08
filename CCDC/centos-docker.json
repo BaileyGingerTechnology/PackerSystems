@@ -96,7 +96,7 @@
     {
       "type": "file",
       "source": "files/Linux/CentOS/ip-config",
-      "distination": "/tmp/ip-config"
+      "destination": "/tmp/ip-config"
     },
     {
       "type": "shell",

@@ -10,10 +10,10 @@ EOF
 sudo bash -c "echo 'blake.gingertech.com' > /etc/hostname"
 sudo hostname blake.gingertech.com
 
-# Join Windows Domain
-sudo apt update
-export DEBIAN_FRONTEND=noninteractive ;
-sudo apt install -y acl ldap-utils krb5-config krb5-user sssd chrony
+# Join Windows Domain (Incomplete)
+#sudo apt update
+#export DEBIAN_FRONTEND=noninteractive ;
+#sudo apt install -y acl ldap-utils krb5-config krb5-user sssd chrony
 
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
 TARGET_DIR='/mnt/arch'
