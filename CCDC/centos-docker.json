@@ -99,6 +99,11 @@
       "destination": "/tmp/ip-config"
     },
     {
+      "type": "file",
+      "source": "files/Linux/CentOS/userlist-cent.csv",
+      "destination": "/tmp/userlist.csv"
+    },
+    {
       "type": "shell",
       "scripts": [
         "scripts/docker/vmware-tools.sh",

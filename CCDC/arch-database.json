@@ -116,6 +116,11 @@
       "destination": "/home/administrator/dhcpcd.conf"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Arch/userlist-arch.csv",
+      "destination": "/tmp/userlist.csv"
+    },
+    {
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [

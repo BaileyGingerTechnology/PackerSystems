@@ -7,7 +7,7 @@
     "country": "USA",
     "arch_country": "US",
     "headless": "false",
-    "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20190122T214501Z.tar.xz",
+    "TARBALL": "http://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-20190210T214503Z.tar.xz",
     "cpus": "8",
     "cpus_after": "2",
     "memory": "2048",

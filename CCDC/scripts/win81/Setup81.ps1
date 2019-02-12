@@ -47,6 +47,17 @@ Add-Content C:\Windows\System32\drivers\etc\hosts "0.0.0.0 www.aol.com"
 # Disable firewall
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
 
+# Loop through userlist.csv to add client users
+Import-Csv -Path C:\userlist.csv -Delimiter : | Foreach-Object { 
+
+  foreach ($property in $_.PSObject.Properties)
+  {
+    $password = ConvertTo-SecureString -String $property.Password
+    New-LocalUser -Name $property.Firstname -FullName $property.Description -Description $property.Department -password $password
+  } 
+
+}
+
 rm C:\ninite.exe
 rm C:\userlist.csv
 rm C:\WinBullshit.ps1
