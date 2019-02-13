@@ -4,9 +4,16 @@
 echo "BNMP = BSD Nginx Mysql/MariaDB PHP"
 echo "Such clever"
 
-sudo bash -c "echo 'beddor.gingertech.com' > /etc/hostname"
+sudo sh -c "echo 'beddor.gingertech.com' > /etc/hostname"
 
 sudo pkg install -y python36 git-lite libgit2 py36-cython py36-pip vim py36-iocage
+
+# Because this version of FreeBSD is old, stuff is broken a bit
+# Workaround for that
+ioput=$(sudo iocage 2>&1)
+if [ $ioput == *"Shared object"* ]; then
+	ln -sf /lib/libc.so.7 /usr/lib/libdl.so.1
+fi
 
 sudo iocage activate zroot
 echo 6 | sudo iocage fetch
@@ -47,6 +54,8 @@ sudo service mysql-server start
 sudo mysql -e 'create database rowlpress;'
 sudo mysql rowlpress </temp/rowlpress.sql
 sudo mysql -e "grant all privileges on rowlpress.* to 'administrator'@'%' identified by 'password';"
+
+sudo pw user add -n scoringengine -s /bin/tcsh -d /home/scoringengine -m -w yes
 
 sudo -i '' '/8.8.8.8/d' /etc/rc.conf
 cat <<EOF > /etc/resolv.conf

@@ -26,7 +26,7 @@ if [ "$DoIt" == "yes" ]; then
     cd .. || exit 1
 fi
 
-echo "Build CCDCScoringEngine? (Requries Go and dpkg-deb, enter 'yes' to continue)"
+echo "Build CCDCScoringEngine? This build is for Kali. Arch will be asked after. (Requries Go and dpkg-deb, enter 'yes' to continue)"
 read -r DoIt
 
 if [ "$DoIt" == "yes" ]; then
@@ -40,4 +40,22 @@ if [ "$DoIt" == "yes" ]; then
     cd .. || exit 1
     dpkg-deb --build ScoringEngine
     mv ScoringEngine.deb ../CCDC/files/Linux/Kali/
+    cd .. || exit 1
+fi
+
+echo "Build CCDCScoringEngine for Arch?"
+read -r DoIt
+
+if [ "$DoIt" == "yes" ]; then
+    cp CCDC/files/Linux/Kali/ScoringEngine.deb ScoringEngine/ScoringEngineArch/
+    cd ScoringEngine/ScoringEngineArch || exit 1
+    
+    check=$(sha256sum ScoringEngine.deb | awk '{print $1}')
+    sed -i "/sha256sums/s/.*/sha256sums=(\'$check\')/" PKGBUILD
+    makepkg --printsrcinfo > .SRCINFO
+    makepkg
+
+    mv *.tar.xz ../../CCDC/files/Linux/Arch-Scoring/ScoringEngine.pkg.tar.xz
+
+    cd ../../ || exit 1
 fi

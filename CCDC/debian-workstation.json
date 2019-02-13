@@ -148,6 +148,11 @@
       "destination": "/home/administrator/interfaces"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Debian/userlist-debian.csv",
+      "destination": "/tmp/userlist.csv"
+    },
+    {
       "type": "shell",
       "scripts": [
         "scripts/debian/debian-workstation.sh",

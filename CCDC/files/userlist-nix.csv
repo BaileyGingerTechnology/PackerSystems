@@ -3,3 +3,4 @@ jprice:password::::/home/jprice:/bin/bash
 bkasin:password::::/home/bkasin:/bin/bash
 lpena:password::::/home/lpena:/bin/bash
 rparker:password::::/home/rparker:/bin/bash
+scoringengine:scoringengine::::/home/scoringengine:/bin/bash

@@ -516,11 +516,17 @@ su - administrator -c "chsh -s /usr/bin/tcsh"
 
 rm -rf /sources /tools /finish-base.sh /build-to-bash.sh /user-group-setup.sh /wget-list
 
+# Add users from CSV
+cd /tmp
+sudo newusers <userlist.csv
+
 echo "Setting net rules"
 cd /etc/sysconfig/ || exit 1
-cat >ifconfig.enp0s3 <<"EOF"
+
+intface=$(ifconfig | grep -E '192|172|10' -B1 | grep -v -E 'bond|txq|\-\-' | head -n1 | awk '{print $1}' | cut -d":" -f1)
+cat >ifconfig.$intface <<"EOF"
 ONBOOT="yes"
-IFACE="enp0s3"
+IFACE="$intface"
 SERVICE="dhcpcd"
 DHCP_START="-b -q -S ip_address=172.16.16.5/24 -S routers=172.16.16.1"
 DHCP_STOP="-k"

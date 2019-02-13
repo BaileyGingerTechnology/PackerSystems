@@ -185,5 +185,11 @@ sudo apt-get install -y fish --force-yes
 cd ~/ || exit 1
 rm pacman.conf
 
+# Add users from CSV
+cd /tmp
+sudo newusers <userlist.csv
+
 # Setup for static IP
+intface=$(ip a | grep 2: | head -n1 | awk '{print $2}' | cut -d":" -f1)
+sed -i "s/REPLACE/$intface/g" interfaces
 sudo mv interfaces /etc/network/interfaces

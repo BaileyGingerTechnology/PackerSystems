@@ -46,7 +46,10 @@ cp /tmp/scoring_engine.conf /etc/nginx/sites-available/scoring_engine.conf
 ln -s /etc/nginx/sites-available/scoring_engine.conf /etc/nginx/sites-enabled/scoring_engine.conf
 
 echo "Setting static IP file"
-mv /tmp/interfaces /etc/network/interfaces
+cd /tmp
+intface=$(ip a | grep 2: | head -n1 | awk '{print $2}' | cut -d":" -f1)
+sed -i "s/REPLACE/$intface/g" interfaces
+mv interfaces /etc/network/interfaces
 
 echo "[+] Removing temporary files"
 rm -rf /tmp/*

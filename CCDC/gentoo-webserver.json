@@ -158,6 +158,11 @@
       "destination": "/home/administrator/"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Gentoo/userlist-gentoo.csv",
+      "destination": "/tmp/userlist.csv"
+    },
+    {
       "pause_before": "1m",
       "environment_vars": [
         "COUNTRY={{ user `country` }}"

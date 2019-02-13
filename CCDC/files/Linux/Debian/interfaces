@@ -8,8 +8,8 @@ auto lo
 iface lo inet loopback
 
 # The primary network interface
-allow-hotplug eth0
-iface eth0 inet static
+allow-hotplug REPLACE
+iface REPLACE inet static
   address 172.16.16.27/24
   gateway 172.16.16.1
   dns-nameservers 172.16.16.50

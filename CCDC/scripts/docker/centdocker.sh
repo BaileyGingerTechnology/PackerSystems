@@ -43,11 +43,7 @@ git clone https://github.com/BaileyGingerTechnology/system-manager.git
 cd system-manager
 docker-compose up -d
 
-# Set static IP, setting NIC name as required by the build type
-if [ "$PACKER_BUILDER_TYPE" == "virtualbox-iso" ] || [ "$PACKER_BUILDER_TYPE" == "qemu" ]; then
-  sudo sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-  cat /tmp/ip-config | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth0
-elif [ "$PACKER_BUILDER_TYPE" == "vmware-iso" ]; then
-  sudo sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-ens33
-  cat /tmp/ip-config | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-ens33
-fi
+# Setup static IP
+intface=$(ip a | grep 2: | head -n1 | awk '{print $2}' | cut -d":" -f1)
+sudo sed -i '/dhcp/d' /etc/sysconfig/network-scripts/ifcfg-$intface
+cat /tmp/ip-config | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-$intface

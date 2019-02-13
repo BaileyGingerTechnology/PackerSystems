@@ -171,6 +171,11 @@
       ]
     },
     {
+      "type": "file",
+      "source": "files/Linux/LFS/userlist-lfs.csv",
+      "destination": "/tmp/userlist.csv"
+    },
+    {
       "environment_vars": [
         "COUNTRY={{ user `country` }}",
         "CPUS={{ user `cpus` }}"
