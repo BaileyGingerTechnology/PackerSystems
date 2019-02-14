@@ -47,7 +47,12 @@
         "RemoteDisplay.vnc.port": "5900",
         "memsize": "{{user `memory_size`}}",
         "numvcpus": "{{user `cpus`}}",
-        "scsi0.virtualDev": "lsisas1068"
+        "scsi0.virtualDev": "lsisas1068",
+        "ide1:0.present": "true",
+        "ide1:0.clientDevice": "false",
+        "ide1:0.fileName": "/home/bailey/Expand2/PackerSystems/CCDC/files/Windows/Server/exchange.iso",
+        "ide1:0.deviceType": "cdrom-image",
+        "ide1:0,.startConnected": "true"
       }
     },
     {
@@ -308,7 +313,7 @@
     },
     {
       "type": "file",
-      "source": "files/Windwos/userlist-win.csv",
+      "source": "files/Windows/userlist-win.csv",
       "destination": "C:\\userlist.csv"
     },
     {

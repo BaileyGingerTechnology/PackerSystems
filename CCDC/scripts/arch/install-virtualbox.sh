@@ -6,6 +6,12 @@ if [ "$PACKER_BUILDER_TYPE" != "virtualbox-iso" ]; then
 	exit 0
 fi
 
+# Build sometimes forgets DNS is a thing
+resolv=$(cat /etc/resolv.conf)
+if [ "$resolv" != *"nameserver"* ]; then
+	echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+fi
+
 # VirtualBox Guest Additions
 # https://wiki.archlinux.org/index.php/VirtualBox
 /usr/bin/pacman -S --needed --noconfirm linux-headers virtualbox-guest-utils virtualbox-guest-modules-arch nfs-utils

@@ -130,7 +130,7 @@ CentOS Docker (Codename="Falls", approx. build time: 30 minutes):
 
     - Docker host. Makes sense enough I think.
 
-Kali Scoring Box (Codename="Arditi"):
+Pick one of: Kali Scoring Box or Arch Scoring Box (Codename="Arditi"):
 
     - Will not have an account for the player to use.
 

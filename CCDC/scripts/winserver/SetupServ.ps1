@@ -68,6 +68,17 @@ Install-ADDSForest `
   -SysvolPath "C:\Windows\SYSVOL" `
   -Force:$true
 
+Add-DnsServerResourceRecordA -Name "arditi" -ZoneName "gingertech.com" -IPv4Address "172.16.16.66"
+Add-DnsServerResourceRecordA -Name "maas" -ZoneName "gingertech.com" -IPv4Address "172.16.16.15"
+Add-DnsServerResourceRecordA -Name "blake" -ZoneName "gingertech.com" -IPv4Address "172.16.16.13"
+Add-DnsServerResourceRecordA -Name "falls" -ZoneName "gingertech.com" -IPv4Address "172.16.16.20"
+Add-DnsServerResourceRecordA -Name "beddor" -ZoneName "gingertech.com" -IPv4Address "172.16.16.30"
+Add-DnsServerResourceRecordA -Name "rowling" -ZoneName "gingertech.com" -IPv4Address "172.16.16.31"
+Add-DnsServerResourceRecordA -Name "dlacey" -ZoneName "gingertech.com" -IPv4Address "172.16.16.7"
+Add-DnsServerResourceRecordA -Name "white" -ZoneName "gingertech.com" -IPv4Address "172.16.16.5"
+Add-DnsServerResourceRecordA -Name "schwab" -ZoneName "gingertech.com" -IPv4Address "172.16.16.1"
+Add-DnsServerResourceRecordA -Name "ee" -ZoneName "gingertech.com" -IPv4Address "172.16.16.24"
+
 Write-Host "AD Good"
 
 # Even though the setup is successful, the script will exit with code 3010, which

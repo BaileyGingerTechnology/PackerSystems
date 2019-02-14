@@ -108,3 +108,5 @@ echo '==> Installation complete!'
 /usr/bin/sleep 3
 /usr/bin/umount ${TARGET_DIR}
 /usr/bin/systemctl reboot
+
+echo 'Packer seems to have shortened the gap between provisioners and this part breaks without this here.'; sleep 3
