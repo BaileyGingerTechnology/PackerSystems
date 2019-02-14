@@ -32,7 +32,7 @@ cd /tmp
 curl -O https://blackarch.org/strap.sh
 chmod +x strap.sh ; ./strap.sh
 
-pacman -S --needed --noconfirm blackarch-webapp blackarch-scanner blackarch-windows blackarch-networking blackarch-exploitation blackarch-database blackarch-scan
+pacman -S --needed --noconfirm blackarch-webapp blackarch-scanner blackarch-windows blackarch-networking blackarch-exploitation blackarch-database blackarch-scan firefox
 
 # Openbox desktop environment
 sudo pacman -S --needed --noconfirm openbox blackarch-config-openbox obmenu obconf oblogout python2-xdg xorg-xinit

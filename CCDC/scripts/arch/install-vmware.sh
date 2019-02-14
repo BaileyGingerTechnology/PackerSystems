@@ -15,3 +15,5 @@ cd yay
 sudo -u administrator bash -c 'makepkg -si --noconfirm'
 
 sudo -u administrator bash -c 'yay -S open-vm-tools-dkms --noconfirm'
+
+systemctl reboot

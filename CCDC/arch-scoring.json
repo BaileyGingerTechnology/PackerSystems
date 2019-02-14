@@ -15,7 +15,7 @@
     {
       "type": "virtualbox-iso",
       "iso_url": "{{ user `iso_url` }}",
-      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_url": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "guest_os_type": "ArchLinux_64",
       "guest_additions_mode": "disable",
@@ -111,6 +111,7 @@
     {
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "expect_disconnect": true,
       "scripts": [
         "scripts/arch/install-virtualbox.sh",
         "scripts/arch/install-vmware.sh",

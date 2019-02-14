@@ -16,3 +16,5 @@ echo -e 'vboxguest\nvboxsf\nvboxvideo' >/etc/modules-load.d/virtualbox.conf
 
 # Add groups for VirtualBox folder sharing
 /usr/bin/usermod --append --groups administrator,vboxsf administrator
+
+systemctl reboot
