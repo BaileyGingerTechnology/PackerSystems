@@ -5,15 +5,7 @@ set -x
 
 sudo bash -c "echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf"
 
-WRAPPER=/opt/vyatta/sbin/vyatta-cfg-cmd-wrapper
-
-$WRAPPER begin
-$WRAPPER set system package repository jessie components 'main contrib non-free'
-$WRAPPER set system package repository jessie distribution 'jessie'
-$WRAPPER set system package repository jessie url 'http://mirrors.kernel.org/debian'
-$WRAPPER commit
-$WRAPPER save
-$WRAPPER end
+sudo bash -c "echo 'http://mirrors.kernel.org/debian jessie main contrib non-free' >> /etc/apt/sources.list"
 
 sudo apt -y update
 

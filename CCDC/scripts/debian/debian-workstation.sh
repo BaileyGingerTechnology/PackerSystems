@@ -57,8 +57,7 @@ cd pacman
 export LIBARCHIVE_LIBS="-larchive"
 export LIBCURL_CFLAGS="-I/usr/include/curl"
 export LIBCURL_LIBS="-lcurl"
-./configure --prefix=/ \
---enable-doc \
+./configure --enable-doc \
 --with-curl
 
 make
@@ -67,8 +66,8 @@ sudo make install
 sudo make -C contrib install
 
 cd /temp
-wget http://dl.fedoraproject.org/pub/fedora/linux/releases/27/Everything/x86_64/os/Packages/l/libalpm-5.0.2-3.fc27.x86_64.rpm
-sudo alien -i libalpm-5.0.2-3.fc27.x86_64.rpm
+wget https://dl.fedoraproject.org/pub/fedora/linux/releases/30/Everything/x86_64/os/Packages/l/libalpm-5.0.2-7.fc30.x86_64.rpm
+sudo alien -i libalpm-5.0.2-7.fc30.x86_64.rpm
 
 echo "==> Setting local mirror"
 sudo mkdir /etc/pacman.d
@@ -178,18 +177,21 @@ echo "sudo chroot ${TARGET_DIR} /usr/bin/fish && exit" >>~/.bashrc
 sudo bash -c "echo \"chroot ${TARGET_DIR} /usr/bin/fish && exit\" >> /root/.bashrc"
 echo "sudo arch-chroot ${TARGET_DIR}" >>~/.profile
 
-echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_8.0/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:2.list
+echo 'APT::Get::Assume-Yes "true";' | sudo tee -a /etc/apt/apt.conf.d/90-force-yes
+
+echo 'deb http://download.opensuse.org/repositories/shells:/fish:/release:/2/Debian_9.0/ /' | sudo tee /etc/apt/sources.list.d/shells:fish:release:2.list
 sudo apt-get update
-sudo apt-get install -y fish --force-yes
+sudo apt-get install -y fish --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
 
 cd ~/ || exit 1
 rm pacman.conf
 
 # Add users from CSV
-cd /tmp
+cd /tmp || exit 1
 sudo newusers <userlist.csv
 
 # Setup for static IP
 intface=$(ip a | grep 2: | head -n1 | awk '{print $2}' | cut -d":" -f1)
+cd ~/ || exit 1
 sed -i "s/REPLACE/$intface/g" interfaces
 sudo mv interfaces /etc/network/interfaces
