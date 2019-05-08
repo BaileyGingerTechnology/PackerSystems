@@ -87,13 +87,15 @@ git clone https://projects.archlinux.org/arch-install-scripts.git
 cd arch-install-scripts
 make && sudo make install
 
+sudo mkdir -p /mnt/arch/usr/local/var/lib/pacman/
 sudo pacstrap /mnt/arch base base-devel
 
 sudo arch-chroot ${TARGET_DIR} pacman --version
 sudo arch-chroot ${TARGET_DIR} pacman-key --init
 sudo arch-chroot ${TARGET_DIR} mkdir /root/.gnupg && touch /root/.gnupg/dirmngr_ldapservers.conf
 sudo arch-chroot ${TARGET_DIR} sed -i 's/Required DatabaseOptional/Never/g' /etc/pacman.conf
-sudo arch-chroot ${TARGET_DIR} pacman -S --noconfirm archlinux-keyring
+sudo arch-chroot ${TARGET_DIR} pacman -Sy
+sudo arch-chroot ${TARGET_DIR} pacman -S --noconfirm archlinux-keyring --force
 sudo arch-chroot ${TARGET_DIR} sed -i 's/Never/Required DatabaseOptional/g' /etc/pacman.conf
 sudo bash -c "genfstab -U /mnt/arch >> /mnt/arch/etc/fstab"
 
@@ -138,8 +140,8 @@ cat <<EOF >"/temp/finish.sh"
 	mkdir -p /home/administrator/.config/fish && chown administrator:administrator /home/administrator/.config/fish
 	mkdir -p /root/.config/fish
 
-  pacman -Syu --noconfirm
-  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl fish
+  pacman -Syu --noconfirm --force
+  pacman -S --needed --noconfirm base-devel git wget yajl curl openssl fish --force
 	update-ca-trust
 	git config --system http.sslverify false
 
