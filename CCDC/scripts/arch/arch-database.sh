@@ -46,7 +46,7 @@ cd /tmp
 sudo newusers <userlist.csv
 
 # Setup for static IP
-cd ~/
+cd /home/administrator/
 intface=$(ip a | grep 2: | head -n1 | awk '{print $2}' | cut -d":" -f1)
 sed -i "s/REPLACE/$intface/" dhcpcd.conf 
-sudo mv dhcpcd.conf /etc/dhcpcd.conf
+mv dhcpcd.conf /etc/dhcpcd.conf

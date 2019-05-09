@@ -9,3 +9,5 @@ fi
 sudo apt update
 
 sudo apt-get -y install qemu-guest-agent
+
+mkdir /home/administrator/Pictures

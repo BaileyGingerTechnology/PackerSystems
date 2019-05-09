@@ -14,6 +14,6 @@ fi
 
 pacman -S --needed --noconfirm qemu-guest-agent
 
-systemctl enable qemu-guest-agent
+systemctl enable qemu-ga
 
 systemctl reboot
