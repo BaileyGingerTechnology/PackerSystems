@@ -2,7 +2,7 @@
   "variables": {
     "cpus": "1",
     "disk_size": "40000",
-    "iso_checksum": "ff4c749ea0aaaceedb2432ba3e0fd0c1b64f5a72141b1ec06b9ced52b5de0dbf",
+    "iso_checksum": "710d237907f1753dbfbecb1186e401d9635156eeef6914f24f632f3219e59d3b",
     "iso_checksum_type": "sha256",
     "memory": "1024",
     "build_num": "1.0",
@@ -12,7 +12,7 @@
     {
       "type": "virtualbox-iso",
       "guest_os_type": "FreeBSD_64",
-      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
+      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.2/FreeBSD-11.2-RELEASE-amd64-disc1.iso",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "Builds/virtualbox/{{user `vmname`}}-{{user `build_num`}}",
@@ -52,7 +52,7 @@
     {
       "type": "vmware-iso",
       "guest_os_type": "freeBSD-64",
-      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.1/FreeBSD-11.1-RELEASE-amd64-disc1.iso",
+      "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/ISO-IMAGES/11.2/FreeBSD-11.2-RELEASE-amd64-disc1.iso",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "Builds/vmware/{{user `vmname`}}-{{user `build_num`}}",

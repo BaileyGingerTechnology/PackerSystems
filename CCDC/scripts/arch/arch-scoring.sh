@@ -5,18 +5,15 @@ echo 'arditi.gingertech.com' >/etc/hostname
 # Build sometimes forgets DNS is a thing
 resolv=$(cat /etc/resolv.conf)
 if [ "$resolv" != *"nameserver"* ]; then
-	echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+	echo "nameserver 9.9.9.9" >> /etc/resolv.conf
 fi
 
 # Updating to most recent packages
 echo "Updating"
-/usr/bin/sed -i 's/#\[/\[/g' /etc/pacman.conf
-/usr/bin/sed -i 's/\[custom/#\[custom/g' /etc/pacman.conf
-/usr/bin/sed -i 's/#Include = /Include = /g' /etc/pacman.conf
 pacman -Syu --noconfirm
 
 # Install packages that will be needed
-pacman -S --needed --noconfirm dotnet-host dotnet-runtime dotnet-sdk libarchive go nginx python git xorg-server
+pacman -S --needed --noconfirm libarchive go nginx python git xorg-server
 
 # Enable NGINX for the reverse proxy
 systemctl enable nginx
@@ -27,8 +24,7 @@ yes password | chsh -s /usr/bin/zsh
 # Install scoring engine
 cd /tmp || exit 1
 pacman -U --noconfirm ScoringEngine.pkg.tar.xz
-systemctl enable scoring
-systemctl enable score_web
+systemctl enable gogios
 
 # Setup NGINX reverse proxy
 mv /tmp/nginx.conf /etc/nginx/nginx.conf
@@ -38,7 +34,7 @@ cd /tmp
 curl -O https://blackarch.org/strap.sh
 chmod +x strap.sh ; ./strap.sh
 
-pacman -S --needed --noconfirm blackarch-webapp blackarch-scanner blackarch-windows blackarch-networking blackarch-exploitation blackarch-database blackarch-scan
+pacman -S --needed --noconfirm blackarch-webapp blackarch-scanner blackarch-windows blackarch-networking blackarch-exploitation
 
 # Openbox desktop environment
 sudo pacman -S --needed --noconfirm openbox blackarch-config-openbox obmenu obconf oblogout python2-xdg xorg-xinit firefox
