@@ -16,7 +16,7 @@ if [ $ioput == *"Shared object"* ]; then
 fi
 
 sudo iocage activate zroot
-echo 6 | sudo iocage fetch
+echo 0 | sudo iocage fetch
 
 sudo tee -a /etc/sysctl.conf <<EOF
 net.inet.ip.forwarding=1       # Enable IP forwarding between interfaces
@@ -26,24 +26,24 @@ net.link.bridge.pfil_member=0  # Packet filter on the member interface
 EOF
 echo "FIND ME"
 
-sudo iocage create -n rowling ip4_addr="em0|172.16.16.31/24" -r 11.1-RELEASE
+sudo iocage create -n rowling ip4_addr="em0|172.16.16.31/24" -r 11.2-RELEASE
 sleep 10
 sudo iocage start rowling
 sleep 30
 
 cd /temp || exit 1
 sudo chmod +x freebsd-*
-sudo mv -v /temp/wordpress.tar.gz /iocage/jails/rowling/root/wordpress.tar.gz
-sudo mv -v /temp/freebsd-fnginx.sh /iocage/jails/rowling/root/freebsd-fnginx.sh
+sudo mv -v /temp/wordpress.tar.gz /zroot/iocage/jails/rowling/root/wordpress.tar.gz
+sudo mv -v /temp/freebsd-fnginx.sh /zroot/iocage/jails/rowling/root/freebsd-fnginx.sh
 
 ASSUME_ALWAYS_YES=yes sudo iocage pkg rowling install nginx mod_php71 php71-mysqli php71-xml php71-hash php71-gd php71-curl php71-tokenizer php71-zlib php71-zip
 sudo iocage set host_hostname="rowling" rowling
 
-sudo chroot /iocage/jails/rowling/root \
+sudo chroot /zroot/iocage/jails/rowling/root \
 	./freebsd-fnginx.sh
 
-sudo rm -f /iocage/jails/rowling/root/freebsd-fnginx.sh
-sudo rm -f /iocage/jails/rowling/root/wordpress*
+sudo rm -f /zroot/iocage/jails/rowling/root/freebsd-fnginx.sh
+sudo rm -f /zroot/iocage/jails/rowling/root/wordpress*
 
 sudo iocage set boot=on rowling
 

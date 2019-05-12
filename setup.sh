@@ -35,7 +35,7 @@ if [ "$DoIt" == "yes" ]; then
     
     cd ../CCDCScoringEngine || exit 1
     go build
-    mv CCDCScoringEngine ../ScoringEngine/usr/bin/scoringengine
+    mv CCDCScoringEngine ../ScoringEngine/usr/bin/servicecheck
     
     cd .. || exit 1
     dpkg-deb --build ScoringEngine
