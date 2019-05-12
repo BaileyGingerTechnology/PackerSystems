@@ -163,6 +163,11 @@
       "destination": "/tmp/userlist.csv"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Gentoo/config.php",
+      "destination": "/tmp/config.php"
+    },
+    {
       "pause_before": "1m",
       "environment_vars": [
         "COUNTRY={{ user `country` }}"

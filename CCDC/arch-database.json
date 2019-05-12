@@ -122,6 +122,11 @@
       "destination": "/tmp/userlist.csv"
     },
     {
+      "type": "file",
+      "source": "files/Linux/Arch/cloud.sql",
+      "destination": "/tmp/cloud.sql"
+    },
+    {
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
       "scripts": [

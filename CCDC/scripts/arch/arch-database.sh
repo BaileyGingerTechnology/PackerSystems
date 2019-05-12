@@ -16,9 +16,12 @@ echo "Updating"
 pacman -Syu --noconfirm
 
 # Install but don't configure the packages that I want
-pacman -S --needed --noconfirm mariadb postgresql vim cronie
-# I plan to give the player a SQL file or two, probably one per database, and force them to figure out how to make it work
-# PSQL isn't too bad, but MySQL/MariaDB can be painful on Arch, since the documentation is mostly but not completely correct
+pacman -S --needed --noconfirm postgresql vim cronie
+
+su - postgres -C "initdb -D /var/lib/postgres/data"
+yes password | su - postgres -C "createuser -d -l -r -s -P administrator"
+su - postgres -C "createdb cloud"
+su - postgres -C "psql -U administrator cloud < /tmp/cloud.sql"
 
 # Set cat to be reverse cat. Why not
 echo "alias cat='tac'" >>/home/administrator/.bashrc
